@@ -66,13 +66,6 @@ impl LogLine {
             || s.ends_with(".js")
             || s.ends_with(".woff2")
     }
-    pub fn looks_like_download(&self) -> bool {
-        let s = &self.path;
-        s.contains("download")
-            && !s.contains("index")
-            && !s.ends_with(".php")
-            && !self.is_resource()
-    }
 }
 
 impl FromStr for LogLine {
@@ -116,11 +109,11 @@ mod log_line_parsing_tests {
         },
     };
 
-    static SIO_PULL_LINE: &str = r#"109.23.28.160 - - [22/Jan/2021:02:49:30 +0000] "GET /socket.io/?EIO=3&transport=polling&t=NSd_nu- HTTP/1.1" 200 99 "https://miaou.dystroy.org/3" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36""#;
+    static SIO_PULL_LINE: &str = r#"10.232.28.160 - - [22/Jan/2021:02:49:30 +0000] "GET /socket.io/?EIO=3&transport=polling&t=NSd_nu- HTTP/1.1" 200 99 "https://miaou.dystroy.org/3" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36""#;
     #[test]
     fn parse_normal_line() -> anyhow::Result<()> {
         let ll = LogLine::from_str(SIO_PULL_LINE).unwrap();
-        assert_eq!(ll.remote_addr, IpAddr::V4(Ipv4Addr::new(109, 23, 28, 160)));
+        assert_eq!(ll.remote_addr, IpAddr::V4(Ipv4Addr::new(10, 232, 28, 160)));
         assert_eq!(ll.verb, Verb::Get);
         assert_eq!(ll.path, "/socket.io/");
         assert_eq!(ll.status, 200);
@@ -128,7 +121,7 @@ mod log_line_parsing_tests {
         Ok(())
     }
 
-    static NO_VERB_LINE: &str = r#"139.162.145.250 - - [10/Jan/2021:10:27:01 +0000] "\x16\x03\x01\x00u\x01\x00\x00q\x03\x039a\xDF\xCA\x90\xB1\xB4\xC2SB\x96\xF0\xB7\x96CJD\xE1\xBF\x0E\xE1Y\xA2\x87v\x1D\xED\xBDo\x05A\x9D\x00\x00\x1A\xC0/\xC0+\xC0\x11\xC0\x07\xC0\x13\xC0\x09\xC0\x14\xC0" 400 173 "-" "-""#;
+    static NO_VERB_LINE: &str = r#"119.142.145.250 - - [10/Jan/2021:10:27:01 +0000] "\x16\x03\x01\x00u\x01\x00\x00q\x03\x039a\xDF\xCA\x90\xB1\xB4\xC2SB\x96\xF0\xB7\x96CJD\xE1\xBF\x0E\xE1Y\xA2\x87v\x1D\xED\xBDo\x05A\x9D\x00\x00\x1A\xC0/\xC0+\xC0\x11\xC0\x07\xC0\x13\xC0\x09\xC0\x14\xC0" 400 173 "-" "-""#;
 
     #[test]
     fn parse_no_verb_line() -> anyhow::Result<()> {

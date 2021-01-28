@@ -17,6 +17,7 @@ chrono = "0.4"
 crossterm = "0.17.7"
 cli-log = "0.1"
 file-size = "1.0.3"
+flate2 = "1.0"
 have = "0.1.1"
 itertools = "0.10"
 lazy_static = "1.4"
@@ -27,6 +28,6 @@ termimad = "0.9.2"
 thiserror = "1.0"
 
 [patch.crates-io]
-#have = { path = "../have" }
-minimad = { path = "../minimad" }
-termimad = { path = "../termimad" }
+# have = { path = "../have" }
+# minimad = { path = "../minimad" }
+# termimad = { path = "../termimad" }

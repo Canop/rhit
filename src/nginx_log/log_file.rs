@@ -2,6 +2,7 @@ use {
     crate::*,
     anyhow::*,
     chrono::{self, DateTime, FixedOffset},
+    flate2::read::GzDecoder,
     std::{
         fs::File,
         io::{BufRead, BufReader},
@@ -18,7 +19,15 @@ pub struct LogFile {
 
 impl LogFile {
     pub fn new(path: PathBuf) -> Result<LogFile> {
-        let mut reader = BufReader::new(File::open(&path)?);
+        let file = File::open(&path)?;
+        if path.extension().and_then(|e| e.to_str()) == Some("gz") {
+            LogFile::read(GzDecoder::new(file), path)
+        } else {
+            LogFile::read(file, path)
+        }
+    }
+    fn read<R: Read>(file: R, path: PathBuf) -> Result<LogFile> {
+        let mut reader = BufReader::new(file);
         let mut lines = Vec::new();
         let mut line = String::new();
         loop {
