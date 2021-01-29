@@ -43,20 +43,30 @@ rhit
 
 (you may have to prefix with sudo to read the files in `/var/log`)
 
-If you want to tell rhit what files to open:
+Tell rhit what files to open:
 
 ```bash
 rhit ~/trav/nginx-logs
 ```
 
-If you want to filter on paths:
+Filter on paths:
 
 ```bash
 rhit -p download
 ```
 
-If you want to filter on paths with a regular expression:
+Filter on paths with a regular expression:
 
 ```bash
 rhit -p "^/blog/.*broot"
 ```
+
+Filter on referer:
+
+```bash
+rhit -r reddit
+```
+
+You may combine filters:
+
+![mixed-filtering](doc/mixed-filter.png)

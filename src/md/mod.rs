@@ -31,7 +31,15 @@ ${popular-remote-addresses
 |${remote-address}|${count}
 }
 |-:
-## ${paths-count} distinct paths. ${paths-limit} most popular (excluding resources like images, CSS, JS, etc.):
+## ${referers-count} referers. ${referers-limit} most frequent:
+|:-|:-:
+|**referer**|**hits**
+|:-|-:
+${popular-referers
+|${referer}|${count}
+}
+|-:
+## ${paths-count} distinct paths. most popular (excluding resources like images, CSS, JS, etc.):
 |:-:|:-|:-:|:-:
 |**#**|**path**|**hits**|**usual bytes per resp.**
 |-:|:-|-:|-:|
@@ -60,6 +68,7 @@ pub fn print_analysis(log_base: &LogBase, skin: &MadSkin) {
     let log_lines = &log_base.lines;
     fill_status_codes(&mut expander, log_lines);
     fill_popular_remote_addresses(&mut expander, log_lines, 5);
+    fill_popular_referers(&mut expander, log_lines, 100);
     fill_popular_paths(&mut expander, log_lines, 100);
     print(expander, MAIN_MD, skin);
 }
@@ -105,15 +114,32 @@ fn fill_popular_remote_addresses(expander: &mut OwningTemplateExpander, log_line
         });
 }
 
+fn fill_popular_referers(expander: &mut OwningTemplateExpander, log_lines: &[LogLine], n: usize) {
+    log_lines.iter()
+        .filter(|ll| ll.referer.len()>1)
+        .into_group_map_by(|ll| &ll.referer)
+        .fun(|g| {
+            expander
+                .set("referers-count", g.len())
+                .set("referers-limit", n);
+        })
+        .into_iter()
+        .sorted_by_key(|e| Reverse(e.1.len()))
+        .take(n)
+        .for_each(|e| {
+            expander.sub("popular-referers")
+                .set("referer", e.0)
+                .set("count", e.1.len());
+        });
+}
+
 fn fill_popular_paths(expander: &mut OwningTemplateExpander, log_lines: &[LogLine], n: usize) {
     log_lines
         .iter()
         .filter(|ll| !ll.is_resource())
         .into_group_map_by(|ll| &ll.path)
         .fun(|g| {
-            expander
-                .set("paths-count", g.len())
-                .set("paths-limit", n);
+            expander.set("paths-count", g.len());
         })
         .into_iter()
         .sorted_by_key(|e| Reverse(e.1.len()))

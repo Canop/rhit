@@ -17,6 +17,10 @@ pub struct Args {
     /// filter the paths with a pattern
     pub path: Option<String>,
 
+    #[argh(option, short = 'r')]
+    /// filter the referers with a pattern
+    pub referer: Option<String>,
+
     #[argh(positional)]
     /// the log file or folder to analyze
     pub file: Option<PathBuf>,

@@ -57,6 +57,7 @@ pub struct LogLine {
     pub path: String,
     pub status: u16,
     pub bytes_sent: u64,
+    pub referer: String,
 }
 
 impl LogLine {
@@ -88,6 +89,7 @@ impl FromStr for LogLine {
         let path = path.split('?').next().unwrap().to_string();
         let status = ranger.between(' ', ' ')?.parse()?;
         let bytes_sent = ranger.between(' ', ' ')?.parse()?;
+        let referer = ranger.between('"', '"')?.to_string();
         Ok(LogLine {
             remote_addr,
             time_local,
@@ -95,6 +97,7 @@ impl FromStr for LogLine {
             path,
             status,
             bytes_sent,
+            referer,
         })
     }
 }
@@ -132,6 +135,7 @@ mod log_line_parsing_tests {
         assert_eq!(ll.path, "/socket.io/");
         assert_eq!(ll.status, 200);
         assert_eq!(ll.bytes_sent, 99);
+        assert_eq!(ll.referer, "https://miaou.dystroy.org/3".to_string());
         Ok(())
     }
 

@@ -20,7 +20,7 @@ pub use {
         path::{Path, PathBuf},
         str::FromStr,
     },
-    termimad::ProgressBar,
+    termimad::{MadSkin, ProgressBar},
 };
 
 pub struct LogBase {
@@ -62,6 +62,9 @@ impl LogBase {
     }
     pub fn retain_paths_matching(&mut self, pattern: &Regex) {
         self.lines.retain(|ll| pattern.is_match(&ll.path));
+    }
+    pub fn retain_referers_matching(&mut self, pattern: &Regex) {
+        self.lines.retain(|ll| pattern.is_match(&ll.referer));
     }
     pub fn start_time(&self) -> DateTime<FixedOffset> {
         self.lines[0].time_local
