@@ -4,9 +4,9 @@ use {
 };
 
 #[derive(Debug, FromArgs)]
-/// I need to explain this, I guess
+/// rhit gives you a small report of the hits found in your nginx logs.
 ///
-/// Source at https://github.com/Canop/csv2svg
+/// Source at https://github.com/Canop/rhit
 pub struct Args {
 
     #[argh(switch, short = 'v')]
@@ -15,10 +15,10 @@ pub struct Args {
 
     #[argh(option, short = 'p')]
     /// filter the paths with a pattern
-    pub pattern: Option<String>,
+    pub path: Option<String>,
 
     #[argh(positional)]
     /// the log file or folder to analyze
-    pub path: Option<PathBuf>,
+    pub file: Option<PathBuf>,
 }
 

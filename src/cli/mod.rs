@@ -14,12 +14,15 @@ pub fn run() -> anyhow::Result<()> {
         println!("rhit {}", env!("CARGO_PKG_VERSION"));
         return Ok(());
     }
-    let path = args.path.unwrap_or_else(|| PathBuf::from("/var/log/nginx"));
+    let path = args.file.unwrap_or_else(|| PathBuf::from("/var/log/nginx"));
     let mut log_base = LogBase::new(&path)?;
     let skin = md::make_skin();
-    println!();
+    if log_base.lines.is_empty() {
+        println!("no hit in logs");
+        return Ok(());
+    }
     md::print_summary(&log_base, &skin);
-    if let Some(pattern) = args.pattern {
+    if let Some(pattern) = args.path {
         let len_before = log_base.lines.len();
         let regex = Regex::new(&pattern)?;
         log_base.retain_paths_matching(&regex);
@@ -31,9 +34,14 @@ pub fn run() -> anyhow::Result<()> {
             &pattern,
             &percent,
         );
+        if log_base.lines.is_empty() {
+            println!("nothing to display");
+            return Ok(());
+        }
         md::print_summary(&log_base, &skin);
     }
+    let histogram = Histogram::of_days(&log_base);
+    histogram.print(&skin);
     md::print_analysis(&log_base, &skin);
     Ok(())
 }
-

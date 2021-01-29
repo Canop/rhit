@@ -1,6 +1,10 @@
 use {
     crate::Ranger,
-    chrono::{self, DateTime, FixedOffset},
+    chrono::{
+        self,
+        DateTime,
+        FixedOffset,
+    },
     std::{
         net::{
             IpAddr,
@@ -73,10 +77,8 @@ impl FromStr for LogLine {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut ranger = Ranger::new(s);
         let remote_addr = IpAddr::from_str(ranger.until(' ')?)?;
-        let time_local = DateTime::parse_from_str(
-            ranger.between('[', ']')?,
-            "%d/%b/%Y:%H:%M:%S %z",
-        )?;
+
+        let time_local = parse_date(ranger.between('[', ']')?)?;
         let mut request = ranger.between('"', '"')?.split(' ');
         let (verb, path) = match (request.next(), request.next()) {
             (Some(verb), Some(path)) => (Verb::from(verb), path),
@@ -95,6 +97,18 @@ impl FromStr for LogLine {
             bytes_sent,
         })
     }
+}
+
+/// this does the same than `DateTime::parse_from_str(s, "%d/%b/%Y:%H:%M:%S %z")`
+/// but it's much faster
+fn parse_date(s: &str) -> chrono::ParseResult<DateTime<FixedOffset>> {
+    use chrono::format::{parse, Parsed, StrftimeItems};
+    lazy_static! {
+        static ref FMT: StrftimeItems<'static> = StrftimeItems::new("%d/%b/%Y:%H:%M:%S %z");
+    }
+    let mut parsed = Parsed::new();
+    parse(&mut parsed, s, FMT.clone())?;
+    parsed.to_datetime()
 }
 
 #[cfg(test)]

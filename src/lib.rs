@@ -5,11 +5,13 @@
 
 mod app;
 mod cli;
+mod histogram;
 pub mod md;
 mod nginx_log;
 
 pub use {
     app::*,
     cli::*,
+    histogram::*,
     nginx_log::*,
 };

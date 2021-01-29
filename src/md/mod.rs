@@ -44,8 +44,12 @@ ${popular-paths
 pub fn print_summary(log_base: &LogBase, skin: &MadSkin) {
     let mut expander = OwningTemplateExpander::new();
     fill_summary(&mut expander, log_base);
+    print(expander, SUMMARY_MD, skin);
+}
+
+pub fn print(expander: OwningTemplateExpander, template: &str, skin: &MadSkin) {
     let (width, _) = terminal_size();
-    let template = TextTemplate::from(SUMMARY_MD);
+    let template = TextTemplate::from(template);
     let text = expander.expand(&template);
     let fmt_text = FmtText::from_text(&skin, text, Some(width as usize));
     print!("{}", fmt_text);
@@ -53,16 +57,11 @@ pub fn print_summary(log_base: &LogBase, skin: &MadSkin) {
 
 pub fn print_analysis(log_base: &LogBase, skin: &MadSkin) {
     let mut expander = OwningTemplateExpander::new();
-    fill_summary(&mut expander, log_base);
     let log_lines = &log_base.lines;
     fill_status_codes(&mut expander, log_lines);
     fill_popular_remote_addresses(&mut expander, log_lines, 5);
     fill_popular_paths(&mut expander, log_lines, 100);
-    let (width, _) = terminal_size();
-    let template = TextTemplate::from(MAIN_MD);
-    let text = expander.expand(&template);
-    let fmt_text = FmtText::from_text(&skin, text, Some(width as usize));
-    print!("{}", fmt_text);
+    print(expander, MAIN_MD, skin);
 }
 
 fn fill_summary(expander: &mut OwningTemplateExpander, log_base: &LogBase) {
@@ -73,7 +72,7 @@ fn fill_summary(expander: &mut OwningTemplateExpander, log_base: &LogBase) {
         .set("end", log_base.end_time());
 }
 
-fn fill_status_codes(expander: &mut OwningTemplateExpander, log_lines: &Vec<LogLine>) {
+fn fill_status_codes(expander: &mut OwningTemplateExpander, log_lines: &[LogLine]) {
     log_lines.iter()
         .into_group_map_by(|ll| ll.status)
         .into_iter()
@@ -88,7 +87,7 @@ fn fill_status_codes(expander: &mut OwningTemplateExpander, log_lines: &Vec<LogL
         });
 }
 
-fn fill_popular_remote_addresses(expander: &mut OwningTemplateExpander, log_lines: &Vec<LogLine>, n: usize) {
+fn fill_popular_remote_addresses(expander: &mut OwningTemplateExpander, log_lines: &[LogLine], n: usize) {
     log_lines.iter()
         .into_group_map_by(|ll| ll.remote_addr)
         .fun(|g| {
@@ -106,7 +105,7 @@ fn fill_popular_remote_addresses(expander: &mut OwningTemplateExpander, log_line
         });
 }
 
-fn fill_popular_paths(expander: &mut OwningTemplateExpander, log_lines: &Vec<LogLine>, n: usize) {
+fn fill_popular_paths(expander: &mut OwningTemplateExpander, log_lines: &[LogLine], n: usize) {
     log_lines
         .iter()
         .filter(|ll| !ll.is_resource())
@@ -138,7 +137,7 @@ fn fill_popular_paths(expander: &mut OwningTemplateExpander, log_lines: &Vec<Log
                 })
                 .map(|i| *i.0)
                 .collect();
-            sizes.sort();
+            sizes.sort_unstable();
             let sizes: Vec<String> = sizes
                 .drain(..)
                 .map(file_size::fit_4)
