@@ -1,7 +1,6 @@
 use {
     crate::*,
     anyhow::*,
-    chrono::{self, DateTime, FixedOffset},
     flate2::read::GzDecoder,
     std::{
         fs::File,
@@ -60,11 +59,11 @@ impl LogFile {
                 tokens.next() == Some("access") && tokens.next() == Some("log")
             })
     }
-    pub fn start_time(&self) -> DateTime<FixedOffset> {
-        self.lines[0].time_local
+    pub fn start_time(&self) -> Date {
+        self.lines[0].date
     }
-    pub fn end_time(&self) -> DateTime<FixedOffset> {
-        self.lines[self.lines.len()-1].time_local
+    pub fn end_time(&self) -> Date {
+        self.lines[self.lines.len()-1].date
     }
 }
 

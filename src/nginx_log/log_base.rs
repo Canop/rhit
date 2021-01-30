@@ -1,7 +1,6 @@
 pub use {
     crate::*,
     anyhow::*,
-    chrono::{self, DateTime, Duration, FixedOffset, TimeZone},
     crossterm::{
         self,
         cursor,
@@ -40,25 +39,27 @@ impl LogBase {
         }
         log_files.sort_by_key(LogFile::start_time);
         let mut lines = Vec::new();
-        for (a, b) in log_files.iter().tuple_windows() {
-            let hole = b.start_time() - a.end_time();
-            if hole < Duration::seconds(0) {
-                bail!("inconsistent sequence");
-            }
-            if hole.num_minutes() > 60 {
-                println!("hole of {} minutes", hole.num_minutes());
-            }
-            if hole.num_hours() > 20 {
-                bail!("hole in log: {} hours are missing", hole.num_hours());
-            }
-        }
         for mut file in log_files {
-            //println!("log file {:?} starts at {}", &file.path, file.start_time());
             lines.append(&mut file.lines);
         }
         Ok(Self {
             lines,
         })
+    }
+    pub fn unique_year_month(&self) -> (Option<u16>, Option<u8>) {
+        let y1 = self.start_time().year;
+        let y2 = self.end_time().year;
+        if y1 == y2 {
+            let m1 = self.start_time().month;
+            let m2 = self.end_time().month;
+            if m1 == m2 {
+                (Some(y1), Some(m1))
+            } else {
+                (Some(y1), None)
+            }
+        } else {
+            (None, None)
+        }
     }
     pub fn retain_paths_matching(&mut self, pattern: &str) -> Result<()> {
         let pattern = Regex::new(pattern)?;
@@ -70,11 +71,17 @@ impl LogBase {
         self.lines.retain(|ll| pattern.is_match(&ll.referer));
         Ok(())
     }
-    pub fn start_time(&self) -> DateTime<FixedOffset> {
-        self.lines[0].time_local
+    pub fn retain_dates_matching(&mut self, pattern: &str) -> Result<()> {
+        let (default_year, default_month) = self.unique_year_month();
+        let filter = DateFilter::from_arg(pattern, default_year, default_month)?;
+        self.lines.retain(|ll| filter.contains(ll.date));
+        Ok(())
     }
-    pub fn end_time(&self) -> DateTime<FixedOffset> {
-        self.lines[self.lines.len()-1].time_local
+    pub fn start_time(&self) -> Date {
+        self.lines[0].date
+    }
+    pub fn end_time(&self) -> Date {
+        self.lines[self.lines.len()-1].date
     }
 }
 

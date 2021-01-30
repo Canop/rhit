@@ -21,7 +21,14 @@ pub fn run() -> anyhow::Result<()> {
         println!("no hit in logs");
         return Ok(());
     }
-    md::print_summary(&log_base, &skin);
+    md::summary::print_summary(&log_base, &skin);
+    if let Some(pattern) = &args.date {
+        let len_before = log_base.lines.len();
+        log_base.retain_dates_matching(pattern)?;
+        if after_filter("date", pattern, len_before, &log_base, &skin)? {
+            return Ok(());
+        }
+    }
     if let Some(pattern) = &args.path {
         let len_before = log_base.lines.len();
         log_base.retain_paths_matching(pattern)?;
@@ -36,9 +43,7 @@ pub fn run() -> anyhow::Result<()> {
             return Ok(());
         }
     }
-    let histogram = Histogram::of_days(&log_base);
-    histogram.print(&skin);
-    md::print_analysis(&log_base, &skin);
+    md::print_analysis(&log_base, &skin, &args.tables, args.length);
     Ok(())
 }
 
@@ -63,6 +68,6 @@ fn after_filter(
         println!("nothing to display");
         return Ok(true);
     }
-    md::print_summary(&log_base, &skin);
+    md::summary::print_summary(&log_base, &skin);
     Ok(false)
 }

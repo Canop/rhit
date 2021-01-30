@@ -4,12 +4,18 @@
 #[macro_use] extern crate termimad;
 
 mod cli;
+mod date;
+mod date_filter;
 mod histogram;
 pub mod md;
 mod nginx_log;
+mod table;
 
 pub use {
     cli::*,
+    date::*,
+    date_filter::*,
     histogram::*,
     nginx_log::*,
+    table::*,
 };

@@ -1,6 +1,5 @@
 use {
     crate::*,
-    chrono::{self, Date, FixedOffset},
     minimad::OwningTemplateExpander,
     termimad::*,
 };
@@ -16,7 +15,7 @@ ${bars
 "#;
 
 pub struct Bar {
-    date: Date<FixedOffset>,
+    date: Date,
     count: usize,
 }
 
@@ -28,7 +27,7 @@ impl Histogram {
         let mut bars = Vec::new();
         let mut cur_bar: Option<Bar> = None;
         for line in &log_base.lines {
-            let date = line.time_local.date();
+            let date = line.date;
             if let Some(bar) = &mut cur_bar {
                 if bar.date == date {
                     bar.count += 1;
@@ -38,6 +37,9 @@ impl Histogram {
                 }
             }
             cur_bar = Some(Bar { date, count: 1 });
+        }
+        if let Some(bar) = cur_bar {
+            bars.push(bar);
         }
         Self { bars }
     }
@@ -52,7 +54,7 @@ impl Histogram {
         for bar in &self.bars {
             let part = (bar.count as f32) / max_hits;
             expander.sub("bars")
-                .set("date", bar.date.format("%a %Y/%m/%d"))
+                .set("date", bar.date)
                 .set("hits", bar.count)
                 .set("bar", ProgressBar::new(part, 20));
         }

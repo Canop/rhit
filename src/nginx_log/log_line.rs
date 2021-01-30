@@ -1,10 +1,5 @@
 use {
-    crate::Ranger,
-    chrono::{
-        self,
-        DateTime,
-        FixedOffset,
-    },
+    crate::{Date, DateParseError, Ranger},
     std::{
         net::{
             IpAddr,
@@ -24,8 +19,8 @@ pub enum LogParseError {
     InvalidLogLine(String),
     #[error("character not found {0:?}")]
     CharNotFound(char),
-    #[error("chrono parse error")]
-    InvalidDate(#[from] chrono::ParseError),
+    #[error("date parse error")]
+    InvalidDate(#[from] DateParseError),
     #[error("expected int")]
     IntExpected(#[from] ParseIntError),
 }
@@ -52,7 +47,7 @@ impl From<&str> for Verb {
 #[derive(Debug, Clone)]
 pub struct LogLine {
     pub remote_addr: IpAddr,
-    pub time_local: DateTime<FixedOffset>,
+    pub date: Date,
     pub verb: Verb,
     pub path: String,
     pub status: u16,
@@ -78,8 +73,7 @@ impl FromStr for LogLine {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut ranger = Ranger::new(s);
         let remote_addr = IpAddr::from_str(ranger.until(' ')?)?;
-
-        let time_local = parse_date(ranger.between('[', ']')?)?;
+        let date = Date::from_nginx(ranger.between('[', ']')?)?;
         let mut request = ranger.between('"', '"')?.split(' ');
         let (verb, path) = match (request.next(), request.next()) {
             (Some(verb), Some(path)) => (Verb::from(verb), path),
@@ -92,7 +86,7 @@ impl FromStr for LogLine {
         let referer = ranger.between('"', '"')?.to_string();
         Ok(LogLine {
             remote_addr,
-            time_local,
+            date,
             verb,
             path,
             status,
@@ -100,18 +94,6 @@ impl FromStr for LogLine {
             referer,
         })
     }
-}
-
-/// this does the same than `DateTime::parse_from_str(s, "%d/%b/%Y:%H:%M:%S %z")`
-/// but it's much faster
-fn parse_date(s: &str) -> chrono::ParseResult<DateTime<FixedOffset>> {
-    use chrono::format::{parse, Parsed, StrftimeItems};
-    lazy_static! {
-        static ref FMT: StrftimeItems<'static> = StrftimeItems::new("%d/%b/%Y:%H:%M:%S %z");
-    }
-    let mut parsed = Parsed::new();
-    parse(&mut parsed, s, FMT.clone())?;
-    parsed.to_datetime()
 }
 
 #[cfg(test)]
