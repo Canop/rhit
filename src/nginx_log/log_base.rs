@@ -60,11 +60,15 @@ impl LogBase {
             lines,
         })
     }
-    pub fn retain_paths_matching(&mut self, pattern: &Regex) {
+    pub fn retain_paths_matching(&mut self, pattern: &str) -> Result<()> {
+        let pattern = Regex::new(pattern)?;
         self.lines.retain(|ll| pattern.is_match(&ll.path));
+        Ok(())
     }
-    pub fn retain_referers_matching(&mut self, pattern: &Regex) {
+    pub fn retain_referers_matching(&mut self, pattern: &str) -> Result<()> {
+        let pattern = Regex::new(pattern)?;
         self.lines.retain(|ll| pattern.is_match(&ll.referer));
+        Ok(())
     }
     pub fn start_time(&self) -> DateTime<FixedOffset> {
         self.lines[0].time_local

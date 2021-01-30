@@ -24,14 +24,14 @@ pub fn run() -> anyhow::Result<()> {
     md::print_summary(&log_base, &skin);
     if let Some(pattern) = &args.path {
         let len_before = log_base.lines.len();
-        log_base.retain_paths_matching(&Regex::new(pattern)?);
+        log_base.retain_paths_matching(pattern)?;
         if after_filter("path", pattern, len_before, &log_base, &skin)? {
             return Ok(());
         }
     }
     if let Some(pattern) = &args.referer {
         let len_before = log_base.lines.len();
-        log_base.retain_referers_matching(&Regex::new(pattern)?);
+        log_base.retain_referers_matching(pattern)?;
         if after_filter("referer", pattern, len_before, &log_base, &skin)? {
             return Ok(());
         }

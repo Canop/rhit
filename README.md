@@ -19,7 +19,7 @@ You just have the standard logs and you'd like to have an idea of what happened 
 
 This program finds and reads the log files (even gzipped), checks their consistency, does some basic analysis and tells you about it in pretty tables in your console, storing and polluting nothing.
 
-That's all.
+It lets you filter hits by patterns on referers or paths to build your insight.
 
 ![filtering](doc/download-filter.png)
 

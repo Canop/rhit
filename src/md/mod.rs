@@ -39,7 +39,7 @@ ${popular-referers
 |${referer}|${count}
 }
 |-:
-## ${paths-count} distinct paths. most popular (excluding resources like images, CSS, JS, etc.):
+## ${paths-count} distinct paths. Most popular (excluding resources like images, CSS, JS, etc.):
 |:-:|:-|:-:|:-:
 |**#**|**path**|**hits**|**usual bytes per resp.**
 |-:|:-|-:|-:|
