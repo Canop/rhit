@@ -16,34 +16,41 @@ pub fn run() -> anyhow::Result<()> {
     }
     let path = args.file.unwrap_or_else(|| PathBuf::from("/var/log/nginx"));
     let mut log_base = LogBase::new(&path)?;
-    let skin = md::make_skin();
     if log_base.lines.is_empty() {
         println!("no hit in logs");
         return Ok(());
     }
-    md::summary::print_summary(&log_base, &skin);
+    let printer = md::Printer::new(args.length, args.tables.clone());
+    md::summary::print_summary(&log_base, &printer);
+    if let Some(pattern) = &args.status {
+        let len_before = log_base.lines.len();
+        log_base.retain_status_matching(pattern)?;
+        if after_filter("status", pattern, len_before, &log_base, &printer)? {
+            return Ok(());
+        }
+    }
     if let Some(pattern) = &args.date {
         let len_before = log_base.lines.len();
         log_base.retain_dates_matching(pattern)?;
-        if after_filter("date", pattern, len_before, &log_base, &skin)? {
+        if after_filter("date", pattern, len_before, &log_base, &printer)? {
             return Ok(());
         }
     }
     if let Some(pattern) = &args.path {
         let len_before = log_base.lines.len();
         log_base.retain_paths_matching(pattern)?;
-        if after_filter("path", pattern, len_before, &log_base, &skin)? {
+        if after_filter("path", pattern, len_before, &log_base, &printer)? {
             return Ok(());
         }
     }
     if let Some(pattern) = &args.referer {
         let len_before = log_base.lines.len();
         log_base.retain_referers_matching(pattern)?;
-        if after_filter("referer", pattern, len_before, &log_base, &skin)? {
+        if after_filter("referer", pattern, len_before, &log_base, &printer)? {
             return Ok(());
         }
     }
-    md::print_analysis(&log_base, &skin, &args.tables, args.length);
+    md::print_analysis(&log_base, &printer);
     Ok(())
 }
 
@@ -52,13 +59,13 @@ fn after_filter(
     pattern: &str,
     before: usize,
     log_base: &LogBase,
-    skin: &MadSkin,
+    printer: &md::Printer,
 ) -> Result<bool> {
     let after = log_base.lines.len();
     let percent = 100f32 * (after as f32) / (before as f32);
     let percent = format!("{:.2}%", percent);
     mad_print_inline!(
-        &skin,
+        &printer.skin,
         "Filtering by *$0* on pattern **$1** kept **$2** of previous lines:\n",
         field,
         &pattern,
@@ -68,6 +75,6 @@ fn after_filter(
         println!("nothing to display");
         return Ok(true);
     }
-    md::summary::print_summary(&log_base, &skin);
+    md::summary::print_summary(&log_base, &printer);
     Ok(false)
 }

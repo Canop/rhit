@@ -11,7 +11,7 @@
 [l3]: https://miaou.dystroy.org/3768?rust
 
 
-**Rhit** finds and reads nginx log files (even gzipped), does some basic analysis and tells you about it in pretty tables in your console, storing and polluting nothing.
+**Rhit** reads your nginx log files (even gzipped), does some basic analysis and tells you about it in pretty tables in your console, storing and polluting nothing.
 
 It lets you filter hits by dates, or by patterns on referers and paths.
 
@@ -65,6 +65,8 @@ rhit -p "^/blog/.*broot"
 rhit -r reddit
 ```
 
+As for the path, you may use a regular expression.
+
 ## Only show a specific day
 
 ```bash
@@ -77,6 +79,17 @@ Symmetrically, you may omit the month if it's not ambiguous: `rhit -d 25`.
 
 ```bash
 rhit -d 2020/12/25-2021/01/03
+```
+
+## Filter by status
+
+The syntax is quite versatile:
+
+```bash
+rhit -s 404
+rhit -s 5xx
+rhit -s 3xx,410-421
+rhit -s 301-305
 ```
 
 ## Combine filters

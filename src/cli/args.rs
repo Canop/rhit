@@ -23,6 +23,11 @@ pub struct Args {
     /// Available tables: date,status,addr,ref,path
     pub tables: Tables,
 
+    #[argh(option, short = 's')]
+    /// comma separated list of statuses or status range.
+    /// (eg: `-s 514` or `-s 4xx,5xx`, or `-s 310-340,400-450` or `-s 5xx`)
+    pub status: Option<String>,
+
     #[argh(option, short = 'd')]
     /// filter the dates, on a precise day or in an inclusive range
     /// (eg: `-r 12/24` or `-r "2021/12/24-2022/01/21"`)

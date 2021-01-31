@@ -9,6 +9,7 @@ mod date_filter;
 mod histogram;
 pub mod md;
 mod nginx_log;
+mod status_filter;
 mod table;
 
 pub use {
@@ -17,5 +18,6 @@ pub use {
     date_filter::*,
     histogram::*,
     nginx_log::*,
+    status_filter::*,
     table::*,
 };

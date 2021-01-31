@@ -2,17 +2,16 @@ use {
     super::*,
     crate::*,
     minimad::OwningTemplateExpander,
-    termimad::*,
 };
 
 static SUMMARY_MD: &str = r#"
 **${hits-count}** hits from *${start}* to *${end}*
 "#;
 
-pub fn print_summary(log_base: &LogBase, skin: &MadSkin) {
+pub fn print_summary(log_base: &LogBase, printer: &Printer) {
     let mut expander = OwningTemplateExpander::new();
     fill_summary(&mut expander, log_base);
-    print(expander, SUMMARY_MD, skin);
+    printer.print(expander, SUMMARY_MD);
 }
 
 fn fill_summary(expander: &mut OwningTemplateExpander, log_base: &LogBase) {

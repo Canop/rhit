@@ -110,17 +110,14 @@ impl fmt::Display for Date {
 #[cfg(test)]
 mod date_parsing_tests {
 
-    use {
-        super::*,
-    };
+    use super::*;
 
     #[test]
-    fn parse_nginx_date() -> anyhow::Result<()> {
+    fn parse_nginx_date() {
         assert_eq!(
             Date::from_nginx("10/Jan/2021:10:27:01 +0000").unwrap(),
-            Date::new(2021, 1, 10),
+            Date::new(2021, 1, 10).unwrap(),
         );
-        Ok(())
     }
 }
 

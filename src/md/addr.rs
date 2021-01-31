@@ -5,7 +5,6 @@ use {
     itertools::*,
     std::cmp::Reverse,
     minimad::OwningTemplateExpander,
-    termimad::*,
 };
 
 
@@ -22,17 +21,16 @@ ${popular-remote-addresses
 
 pub fn print_popular_remote_addresses(
     log_lines: &[LogLine],
-    detail_level: usize,
-    skin: &MadSkin,
+    printer: &Printer,
 ) {
     let mut expander = OwningTemplateExpander::new();
-    let n = match detail_level {
+    let n = match printer.detail_level {
         0 => 3,
         1 => 5,
         l => l * 10,
     };
     log_lines.iter()
-        .into_group_map_by(|ll| ll.remote_addr)
+        .into_group_map_by(|ll| &ll.remote_addr)
         .fun(|g| {
             expander
                 .set("remote-addr-count", g.len())
@@ -48,6 +46,6 @@ pub fn print_popular_remote_addresses(
                 .set("remote-address", e.0)
                 .set("count", e.1.len());
         });
-    print(expander, MD, skin);
+    printer.print(expander, MD);
 }
 

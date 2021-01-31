@@ -5,7 +5,6 @@ use {
     itertools::*,
     std::cmp::Reverse,
     minimad::OwningTemplateExpander,
-    termimad::*,
 };
 
 static MD: &str = r#"
@@ -21,11 +20,10 @@ ${popular-referers
 
 pub fn print_popular_referers(
     log_lines: &[LogLine],
-    detail_level: usize,
-    skin: &MadSkin,
+    printer: &Printer,
 ) {
     let mut expander = OwningTemplateExpander::new();
-    let n = match detail_level {
+    let n = match printer.detail_level {
         0 => 5,
         1 => 10,
         l => l * 20,
@@ -48,6 +46,6 @@ pub fn print_popular_referers(
                 .set("referer", e.0)
                 .set("count", e.1.len());
         });
-    print(expander, MD, skin);
+    printer.print(expander, MD);
 }
 

@@ -311,9 +311,9 @@ dependencies = [
 
 [[package]]
 name = "minimad"
-version = "0.6.8"
+version = "0.6.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "115fc6100ccd7789ad7a1d878ced74a8c94a899e9dc36f8496976b6cb565f9de"
+checksum = "cb5ed7ea8b54916318ac7ec6ff06b2b428fdf9cb54d1867714f699dbd1659ad4"
 dependencies = [
  "lazy_static",
 ]
@@ -453,7 +453,7 @@ checksum = "b5eb417147ba9860a96cfe72a0b93bf88fee1744b5636ec99ab20c1aa9376581"
 
 [[package]]
 name = "rhit"
-version = "1.0.2"
+version = "1.0.3"
 dependencies = [
  "anyhow",
  "argh",
@@ -527,9 +527,9 @@ dependencies = [
 
 [[package]]
 name = "termimad"
-version = "0.9.4"
+version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89f2fc4fb969ac83da95d5800cf54fe5a71f8ca5fde19ffc578c475b8e69e495"
+checksum = "9c0301aa5081d4c41d5ebf728ec7c3e825cebd1d8f301d95d65e27a9d93fef18"
 dependencies = [
  "crossbeam",
  "crossterm",

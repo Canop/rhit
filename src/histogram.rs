@@ -43,7 +43,7 @@ impl Histogram {
         }
         Self { bars }
     }
-    pub fn print(&self, skin: &MadSkin) {
+    pub fn print(&self, printer: &md::Printer) {
         let mut expander = OwningTemplateExpander::new();
         let max_hits = self.bars.iter().map(|b| b.count).max().unwrap();
         expander.set(
@@ -58,6 +58,6 @@ impl Histogram {
                 .set("hits", bar.count)
                 .set("bar", ProgressBar::new(part, 20));
         }
-        md::print(expander, MD, skin);
+        printer.print(expander, MD);
     }
 }
