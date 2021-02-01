@@ -1,7 +1,7 @@
 use {
     crate::*,
     anyhow::*,
-    flate2::read::GzDecoder,
+    flate2::bufread::GzDecoder,
     std::{
         fs::File,
         io::{BufRead, BufReader},
@@ -20,6 +20,7 @@ impl LogFile {
     pub fn new(path: PathBuf) -> Result<LogFile> {
         let file = File::open(&path)?;
         if path.extension().and_then(|e| e.to_str()) == Some("gz") {
+            let file = BufReader::new(file);
             LogFile::read(GzDecoder::new(file), path)
         } else {
             LogFile::read(file, path)
