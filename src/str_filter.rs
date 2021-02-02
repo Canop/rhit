@@ -63,7 +63,7 @@ impl StrFilter {
     /// parse a filter defined with a rich binary expression syntax (parentheses, &, |, etc.)
     /// a sequence of patterns, each one with an optional NOT before.
     ///
-    /// Example: ̀ dystroy,!miaou`
+    /// Example: ̀ dystroy & !miaou`
     pub fn with_be_syntax(pattern: &str) -> Result<Self, StrFilterParseError> {
         let mut expr = BeTree::new();
         let chars: Vec<char> = pattern.chars().collect();
@@ -133,8 +133,6 @@ impl StrFilter {
         }
         Ok(Self { expr })
     }
-    // COPIER en exemple dans bet pour la fonction eval
-    // Expliquer dans bet pourquoi des options
     pub fn accepts(&self, candidate: &str) -> bool {
         self.expr.eval(
             |r| r.is_match(candidate),

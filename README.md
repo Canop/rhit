@@ -135,6 +135,13 @@ rhit -s 3xx,410-421
 rhit -s 301-305
 ```
 
+## Filter by remote address
+
+```bash
+rhit -a 123.123.123.123
+rhit -a !123.123.123.123
+```
+
 ## Combine filters
 
 You can use several arguments.

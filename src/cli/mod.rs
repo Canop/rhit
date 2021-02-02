@@ -29,6 +29,13 @@ pub fn run() -> anyhow::Result<()> {
             return Ok(());
         }
     }
+    if let Some(pattern) = &args.addr {
+        let len_before = log_base.lines.len();
+        log_base.retain_remote_addr_matching(pattern)?;
+        if after_filter("remote address", pattern, len_before, &log_base, &printer)? {
+            return Ok(());
+        }
+    }
     if let Some(pattern) = &args.date {
         let len_before = log_base.lines.len();
         log_base.retain_dates_matching(pattern)?;

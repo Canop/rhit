@@ -61,6 +61,11 @@ impl LogBase {
             (None, None)
         }
     }
+    pub fn retain_remote_addr_matching(&mut self, pattern: &str) -> Result<()> {
+        let filter = IpFilter::new(pattern)?;
+        self.lines.retain(|ll| filter.accepts(ll.remote_addr));
+        Ok(())
+    }
     pub fn retain_status_matching(&mut self, pattern: &str) -> Result<()> {
         let filter = StatusFilter::from_str(pattern)?;
         self.lines.retain(|ll| filter.contains(ll.status));
