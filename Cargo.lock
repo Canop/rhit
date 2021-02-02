@@ -57,6 +57,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
 
 [[package]]
+name = "bet"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5edd00b661a92a0db2263a455ee2c9ae80942dbc804401bbb5a4598c4968af2e"
+
+[[package]]
 name = "bitflags"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -453,10 +459,11 @@ checksum = "b5eb417147ba9860a96cfe72a0b93bf88fee1744b5636ec99ab20c1aa9376581"
 
 [[package]]
 name = "rhit"
-version = "1.0.3"
+version = "1.0.4"
 dependencies = [
  "anyhow",
  "argh",
+ "bet",
  "cli-log",
  "crossterm",
  "file-size",

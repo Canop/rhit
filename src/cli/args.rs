@@ -30,11 +30,12 @@ pub struct Args {
 
     #[argh(option, short = 'd')]
     /// filter the dates, on a precise day or in an inclusive range
-    /// (eg: `-r 12/24` or `-r "2021/12/24-2022/01/21"`)
+    /// (eg: `-r 12/24` or `-r '2021/12/24-2022/01/21'`)
     pub date: Option<String>,
 
     #[argh(option, short = 'p')]
     /// filter the paths with a pattern
+    /// (eg: `-p broot` or `-p '^/\d+'` or `-p 'miaou | blog'`)
     pub path: Option<String>,
 
     #[argh(option, short = 'r')]

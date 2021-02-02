@@ -37,7 +37,7 @@ pub fn print_popular_paths(
         .into_group_map_by(|ll| &ll.path)
         .fun(|g| {
             expander
-                .set("paths-limit", g.len())
+                .set("paths-limit", n)
                 .set("paths-count", g.len());
         })
         .into_iter()

@@ -67,13 +67,13 @@ impl LogBase {
         Ok(())
     }
     pub fn retain_paths_matching(&mut self, pattern: &str) -> Result<()> {
-        let pattern = Regex::new(pattern)?;
-        self.lines.retain(|ll| pattern.is_match(&ll.path));
+        let filter = StrFilter::new(pattern)?;
+        self.lines.retain(|ll| filter.accepts(&ll.path));
         Ok(())
     }
     pub fn retain_referers_matching(&mut self, pattern: &str) -> Result<()> {
-        let pattern = Regex::new(pattern)?;
-        self.lines.retain(|ll| pattern.is_match(&ll.referer));
+        let filter = StrFilter::new(pattern)?;
+        self.lines.retain(|ll| filter.accepts(&ll.referer));
         Ok(())
     }
     pub fn retain_dates_matching(&mut self, pattern: &str) -> Result<()> {

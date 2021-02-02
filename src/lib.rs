@@ -10,6 +10,7 @@ mod histogram;
 pub mod md;
 mod nginx_log;
 mod status_filter;
+mod str_filter;
 mod table;
 
 pub use {
@@ -19,5 +20,6 @@ pub use {
     histogram::*,
     nginx_log::*,
     status_filter::*,
+    str_filter::*,
     table::*,
 };

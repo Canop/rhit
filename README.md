@@ -49,14 +49,57 @@ rhit ~/trav/nginx-logs
 
 ## Filter on paths
 
+Filtering can be quite simple:
+
 ```bash
 rhit -p download
 ```
 
-## Filter on paths with a regular expression
+But the syntax allows for much more interesting queries.
+
+You may use a regular expression:
 
 ```bash
-rhit -p "^/blog/.*broot"
+rhit -p '^/blog/.*broot'
+```
+
+You may negate expressions with a `!`.
+
+For example, I have many paths which are just a number (eg `/12345`) and If I want to filter them, I can do
+
+```bash
+rhit -p '!^/\d+$'
+```
+(remember to use simple quotes and not double quotes to not have your shell interpret the expression)
+
+Separating filters with a comma is an easy way to do a "AND".
+
+If I want to get paths which are neither `broot` or just a number, I'll do
+
+```bash
+rhit -p '!^/\d+$,!broot'
+```
+
+If I want to get all paths containing a digit, but not just a number, and not `broot`, I do
+
+```bash
+rhit -p '!^/\d+$,!broot,\d'
+```
+
+For a more complex logic, switch to binary expressions with parentheses and logic operators `&`, `|` and `!`.
+
+For example to get all paths containing `dystroy` or `blog`  but not `broot`:
+
+```bash
+rhit -p '( dystroy | blog ) & !broot'
+```
+
+(add spaces inside parenthesis to avoid them being understood as part of a regular expression)
+
+To get all paths containing `dystroy` but neither `blog`, nor `space` nor any 4 digits numbers:
+
+```bash
+rhit -p 'dystroy & !( \d{4} | space | blog )'
 ```
 
 ## Filter on referer
@@ -65,7 +108,7 @@ rhit -p "^/blog/.*broot"
 rhit -r reddit
 ```
 
-As for the path, you may use a regular expression.
+As for the path, you may use a complex expression.
 
 ## Only show a specific day
 
@@ -94,6 +137,10 @@ rhit -s 301-305
 
 ## Combine filters
 
+You can use several arguments.
+
+For example, to get all paths resulting in a `404` but not the `robots.txt` (which are legit queries) or the `/crashy` path:
+
 ![mixed-filtering](doc/mixed-filter.png)
 
 # Choose what to show
@@ -108,6 +155,5 @@ rhit -t addr,paths
 (use `rhit --help` for the complete list)
 
 Table *lengths* is decided with the `-l` argument. Use `rhit -l 0` to have just a few lines in the various tables, and `rhit -l 5` for huge tables. Default value is `1`.
-
 
 
