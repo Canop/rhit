@@ -5,17 +5,18 @@ use {
 };
 
 static MD: &str = r#"
-|:-|-:|:-
-|**date**|**hits**|**${scale}**
-|:-|-:|:-
+|:-|-:|:-:|:-
+|**date**|**bytes**|**hits**|**${scale}**
+|:-|-:|-:|:-
 ${bars
-|${date}|${hits}|*${bar}*
+|${date}|${bytes-sent}|${hits}|*${bar}*
 }
 |-:
 "#;
 
 pub struct Bar {
     date: Date,
+    sum_bytes_sent: u64,
     count: usize,
 }
 
@@ -31,12 +32,17 @@ impl Histogram {
             if let Some(bar) = &mut cur_bar {
                 if bar.date == date {
                     bar.count += 1;
+                    bar.sum_bytes_sent += line.bytes_sent;
                     continue;
                 } else {
                     bars.push(cur_bar.take().unwrap());
                 }
             }
-            cur_bar = Some(Bar { date, count: 1 });
+            cur_bar = Some(Bar {
+                date,
+                count: 1,
+                sum_bytes_sent: line.bytes_sent,
+            });
         }
         if let Some(bar) = cur_bar {
             bars.push(bar);
@@ -55,6 +61,7 @@ impl Histogram {
             let part = (bar.count as f32) / max_hits;
             expander.sub("bars")
                 .set("date", bar.date)
+                .set("bytes-sent", file_size::fit_4(bar.sum_bytes_sent))
                 .set("hits", bar.count)
                 .set("bar", ProgressBar::new(part, 20));
         }
