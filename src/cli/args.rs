@@ -10,7 +10,7 @@ use {
 /// Source at https://github.com/Canop/rhit
 pub struct Args {
 
-    #[argh(switch, short = 'v')]
+    #[argh(switch)]
     /// print the version
     pub version: bool,
 
