@@ -5,23 +5,19 @@
 
 mod cli;
 mod date;
-mod date_filter;
+mod filters;
 mod histogram;
-mod ip_filter;
 pub mod md;
 mod nginx_log;
-mod status_filter;
-mod str_filter;
 mod table;
+mod method;
 
 pub use {
     cli::*,
     date::*,
-    date_filter::*,
+    filters::*,
     histogram::*,
-    ip_filter::*,
     nginx_log::*,
-    status_filter::*,
-    str_filter::*,
     table::*,
+    method::*,
 };

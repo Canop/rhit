@@ -5,7 +5,7 @@ use {
 };
 
 #[derive(Debug, FromArgs)]
-/// rhit gives you a small report of the hits found in your nginx logs.
+/// Rhit gives you a report of the hits found in your nginx logs.
 ///
 /// Source at https://github.com/Canop/rhit
 pub struct Args {
@@ -19,8 +19,9 @@ pub struct Args {
     pub length: usize,
 
     #[argh(option, short = 't', default = "Default::default()")]
-    /// tables to display (default all): comma separated list of tables.
-    /// Available tables: date,status,addr,ref,path
+    /// tables to display: comma separated list of tables (default all but methods).
+    /// use `-t a` to get all tables.
+    /// Available tables: date,status,method,addr,ref,path
     pub tables: Tables,
 
     #[argh(option, short = 's')]
@@ -28,8 +29,13 @@ pub struct Args {
     /// (eg: `-s 514` or `-s 4xx,5xx`, or `-s 310-340,400-450` or `-s 5xx`)
     pub status: Option<String>,
 
+    #[argh(option, short = 'm')]
+    /// http method to filter by. Make it negative with a `!`.
+    /// (eg: `-m PUT` or `-m !DELETE` or `-m none` or `-m other`)
+    pub method: Option<String>,
+
     #[argh(option, short = 'a')]
-    /// ip address to filter by. May be negated with a '!'
+    /// ip address to filter by. May be negated with a `!`
     pub addr: Option<String>,
 
     #[argh(option, short = 'd')]

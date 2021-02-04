@@ -9,10 +9,20 @@ pub enum Table {
     RemoteAddresses,
     Referers,
     Paths,
+    Methods,
 }
+
+pub static DEFAULT_TABLES: &[Table] = &[
+    Table::Dates,
+    Table::Status,
+    Table::RemoteAddresses,
+    Table::Referers,
+    Table::Paths,
+];
 
 pub static ALL_TABLES: &[Table] = &[
     Table::Dates,
+    Table::Methods,
     Table::Status,
     Table::RemoteAddresses,
     Table::Referers,
@@ -24,10 +34,15 @@ pub struct Tables(Vec<Table>);
 
 impl Default for Tables {
     fn default() -> Self {
-        Self (ALL_TABLES.to_vec())
+        Self (DEFAULT_TABLES.to_vec())
     }
 }
 
+impl Tables {
+    fn all() -> Self {
+        Self (ALL_TABLES.to_vec())
+    }
+}
 
 impl IntoIterator for Tables {
     type Item = Table;
@@ -41,8 +56,8 @@ impl IntoIterator for Tables {
 impl FromArgValue for Tables {
     fn from_arg_value(value: &str) -> Result<Self, String> {
         let value = value.to_lowercase();
-        if value == "all" {
-            return Ok(Self::default());
+        if value == "all" || value == "a" {
+            return Ok(Self::all());
         }
         let mut v = Vec::new();
         for s in value.split(',') {
@@ -56,6 +71,8 @@ impl FromArgValue for Tables {
                 v.push(Table::Referers);
             } else if s.contains("path") {
                 v.push(Table::Paths);
+            } else if s.contains("method") {
+                v.push(Table::Methods);
             } else {
                 return Err(format!("Unrecognized table : {:?}", s));
             }

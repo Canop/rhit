@@ -1,5 +1,5 @@
 use {
-    crate::{Date, DateParseError, Ranger},
+    crate::*,
     std::{
         net::{
             IpAddr,
@@ -25,30 +25,11 @@ pub enum LogParseError {
     IntExpected(#[from] ParseIntError),
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum Verb {
-    Get,
-    Post,
-    None, // bad request
-    Other,
-}
-
-impl From<&str> for Verb {
-    fn from(s: &str) -> Self {
-        match s {
-            "GET" => Self::Get,
-            "POST" => Self::Post,
-            "" => Self::None,
-            _ => Self::Other,
-        }
-    }
-}
-
 #[derive(Debug, Clone)]
 pub struct LogLine {
     pub remote_addr: IpAddr,
     pub date: Date,
-    pub verb: Verb,
+    pub method: Method,
     pub path: String,
     pub status: u16,
     pub bytes_sent: u64,
@@ -79,9 +60,9 @@ impl FromStr for LogLine {
         let remote_addr = IpAddr::from_str(ranger.until(' ')?)?;
         let date = Date::from_nginx(ranger.between('[', ']')?)?;
         let mut request = ranger.between('"', '"')?.split(' ');
-        let (verb, path) = match (request.next(), request.next()) {
-            (Some(verb), Some(path)) => (Verb::from(verb), path),
-            (Some(path), None) => (Verb::None, path),
+        let (method, path) = match (request.next(), request.next()) {
+            (Some(method), Some(path)) => (Method::from(method), path),
+            (Some(path), None) => (Method::None, path),
             _ => unreachable!(),
         };
         let path = path.split('?').next().unwrap().to_string();
@@ -91,7 +72,7 @@ impl FromStr for LogLine {
         Ok(LogLine {
             remote_addr,
             date,
-            verb,
+            method,
             path,
             status,
             bytes_sent,
@@ -117,7 +98,7 @@ mod log_line_parsing_tests {
     fn parse_normal_line() {
         let ll = LogLine::from_str(SIO_PULL_LINE).unwrap();
         assert_eq!(ll.remote_addr, IpAddr::V4(Ipv4Addr::new(10, 232, 28, 160)));
-        assert_eq!(ll.verb, Verb::Get);
+        assert_eq!(ll.method, Method::Get);
         assert_eq!(ll.path, "/socket.io/");
         assert_eq!(ll.status, 200);
         assert_eq!(ll.bytes_sent, 99);
@@ -127,9 +108,9 @@ mod log_line_parsing_tests {
     static NO_VERB_LINE: &str = r#"119.142.145.250 - - [10/Jan/2021:10:27:01 +0000] "\x16\x03\x01\x00u\x01\x00\x00q\x03\x039a\xDF\xCA\x90\xB1\xB4\xC2SB\x96\xF0\xB7\x96CJD\xE1\xBF\x0E\xE1Y\xA2\x87v\x1D\xED\xBDo\x05A\x9D\x00\x00\x1A\xC0/\xC0+\xC0\x11\xC0\x07\xC0\x13\xC0\x09\xC0\x14\xC0" 400 173 "-" "-""#;
 
     #[test]
-    fn parse_no_verb_line() {
+    fn parse_no_method_line() {
         let ll = LogLine::from_str(NO_VERB_LINE).unwrap();
-        assert_eq!(ll.verb, Verb::None);
+        assert_eq!(ll.method, Method::None);
         assert_eq!(ll.status, 400);
         assert_eq!(ll.bytes_sent, 173);
     }

@@ -22,7 +22,6 @@ pub struct IpFilter {
 
 impl IpFilter {
     pub fn new(mut pattern: &str) -> Result<Self, IpFilterParseError> {
-        println!("patter: {:?}", pattern);
         let negative = pattern.starts_with('!');
         if negative {
             pattern = &pattern[1..];

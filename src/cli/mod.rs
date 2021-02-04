@@ -29,6 +29,13 @@ pub fn run() -> anyhow::Result<()> {
             return Ok(());
         }
     }
+    if let Some(pattern) = &args.method {
+        let len_before = log_base.lines.len();
+        log_base.retain_methods_matching(pattern)?;
+        if after_filter("method", pattern, len_before, &log_base, &printer)? {
+            return Ok(());
+        }
+    }
     if let Some(pattern) = &args.addr {
         let len_before = log_base.lines.len();
         log_base.retain_remote_addr_matching(pattern)?;

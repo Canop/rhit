@@ -3,6 +3,7 @@ mod paths;
 mod referers;
 pub mod summary;
 mod status;
+mod methods;
 
 use {
     crate::*,
@@ -59,6 +60,9 @@ pub fn print_analysis(
             }
             Table::Paths => {
                 paths::print_popular_paths(log_lines, printer);
+            }
+            Table::Methods => {
+                methods::print_methods(log_lines, printer);
             }
         }
     }
