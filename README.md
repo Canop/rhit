@@ -135,6 +135,8 @@ rhit -s 404
 rhit -s 5xx
 rhit -s 3xx,410-421
 rhit -s 301-305
+rhit -s '!404'
+rhit -s '4xx,!404'
 ```
 
 ## Filter by remote address

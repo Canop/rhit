@@ -93,7 +93,7 @@ impl LogBase {
     }
     pub fn retain_status_matching(&mut self, pattern: &str) -> Result<()> {
         let filter = StatusFilter::from_str(pattern)?;
-        self.lines.retain(|ll| filter.contains(ll.status));
+        self.lines.retain(|ll| filter.accepts(ll.status));
         Ok(())
     }
     pub fn retain_paths_matching(&mut self, pattern: &str) -> Result<()> {

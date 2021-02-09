@@ -14,47 +14,64 @@ pub enum StatusFilterParseError {
 
 #[derive(Debug, Clone)]
 pub struct StatusFilter {
-    ranges: Vec<(u16, u16)>,
+    include: Vec<(u16, u16)>,
+    exclude: Vec<(u16, u16)>,
+}
+
+fn ranges_contains(ranges: &[(u16, u16)], status: u16) -> bool {
+    for range in ranges {
+        if range.0 <= status && status <= range.1 {
+            return true;
+        }
+    }
+    false
+}
+
+fn parse_range(s: &str) -> Result<(u16, u16), StatusFilterParseError> {
+    Ok(match s {
+        "2xx" => (200, 299),
+        "3xx" => (300, 399),
+        "4xx" => (400, 499),
+        "5xx" => (500, 599),
+        s if s.contains('-') => {
+            let mut tokens = s.split('-');
+            (
+                tokens.next().unwrap().parse()?,
+                tokens.next().unwrap().parse()?
+            )
+        }
+        s => {
+            let v = s.parse()?;
+            (v, v)
+        }
+    })
 }
 
 impl StatusFilter {
-    pub fn contains(&self, status: u16) -> bool {
-        for range in &self.ranges {
-            if range.0 <= status && status <= range.1 {
-                return true;
-            }
+    pub fn accepts(&self, status: u16) -> bool {
+        if ranges_contains(&self.exclude, status) {
+            false
+        } else if self.include.is_empty() {
+            true
+        } else {
+            ranges_contains(&self.include, status)
         }
-        false
     }
 }
 
 impl FromStr for StatusFilter {
     type Err= StatusFilterParseError;
     fn from_str(value: &str) -> Result<Self, StatusFilterParseError> {
-        let ranges: Result<Vec<(u16, u16)>, StatusFilterParseError> = value
-            .split(',')
-            .map(|s| {
-                Ok(match s {
-                    "2xx" => (200, 299),
-                    "3xx" => (300, 399),
-                    "4xx" => (400, 499),
-                    "5xx" => (500, 599),
-                    s if s.contains('-') => {
-                        let mut tokens = s.split('-');
-                        (
-                            tokens.next().unwrap().parse()?,
-                            tokens.next().unwrap().parse()?
-                        )
-                    }
-                    s => {
-                        let v = s.parse()?;
-                        (v, v)
-                    }
-                })
-            })
-            .collect();
-        let ranges = ranges?;
-        Ok(Self { ranges })
+        let mut include = Vec::new();
+        let mut exclude = Vec::new();
+        for s in value.split(',') {
+            if let Some(s) = s.strip_prefix('!') {
+                exclude.push(parse_range(s)?);
+            } else {
+                include.push(parse_range(s)?);
+            }
+        }
+        Ok(Self { include, exclude })
     }
 }
 
@@ -66,16 +83,21 @@ mod status_filter_tests {
     #[test]
     fn test_status_filter() {
         let sf = StatusFilter::from_str("400").unwrap();
-        assert_eq!(sf.contains(400), true);
-        assert_eq!(sf.contains(401), false);
+        assert_eq!(sf.accepts(400), true);
+        assert_eq!(sf.accepts(401), false);
         let sf = StatusFilter::from_str("2xx,405-512").unwrap();
-        assert_eq!(sf.contains(200), true);
-        assert_eq!(sf.contains(299), true);
-        assert_eq!(sf.contains(300), false);
-        assert_eq!(sf.contains(400), false);
-        assert_eq!(sf.contains(405), true);
-        assert_eq!(sf.contains(512), true);
-        assert_eq!(sf.contains(513), false);
+        assert_eq!(sf.accepts(200), true);
+        assert_eq!(sf.accepts(299), true);
+        assert_eq!(sf.accepts(300), false);
+        assert_eq!(sf.accepts(400), false);
+        assert_eq!(sf.accepts(405), true);
+        assert_eq!(sf.accepts(512), true);
+        assert_eq!(sf.accepts(513), false);
+        let sf = StatusFilter::from_str("4xx,!404").unwrap();
+        assert_eq!(sf.accepts(200), false);
+        assert_eq!(sf.accepts(400), true);
+        assert_eq!(sf.accepts(404), false);
+        assert_eq!(sf.accepts(421), true);
     }
 }
 
