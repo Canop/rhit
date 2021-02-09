@@ -11,13 +11,15 @@
 [l3]: https://miaou.dystroy.org/3768?rust
 
 
-**Rhit** reads your nginx log files (even gzipped), does some basic analysis and tells you about it in pretty tables in your console, storing and polluting nothing.
+**Rhit** reads your nginx log files in their standard location(even gzipped), does some analysis and tells you about it in pretty tables in your console, storing and polluting nothing.
 
-It lets you filter hits by dates, or by patterns on referers and paths.
+It lets you filter hits by dates, status, referers or paths, and does trend analysis.
 
 And it's fast enough (about one second per million lines) so you can iteratively try queries to build your insight.
 
-![filtering](doc/download-filter.png)
+Here I'm especially looking at dates and trends on hits with status 2xx and 3xx, excluding all paths that are just a number:
+
+![intro](doc/intro.png)
 
 # Installation
 
@@ -154,11 +156,14 @@ For example, to get all paths resulting in a `404` but not the `robots.txt` (whi
 
 The displayed tables (all by default) can be chosen with the `-t` argument.
 
-For example to only show remote adresses and paths, use:
+For example to only show remote adresses and statuses, use:
 
 ```bash
-rhit -t addr,paths
+rhit -t addr,status
 ```
+
+![status and addresses](doc/tables-choice.png)
+
 (use `rhit --help` for the complete list)
 
 Table *lengths* is decided with the `-l` argument. Use `rhit -l 0` to have just a few lines in the various tables, and `rhit -l 5` for huge tables. Default value is `1`.

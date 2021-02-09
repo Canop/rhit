@@ -29,11 +29,23 @@ pub enum LogParseError {
 pub struct LogLine {
     pub remote_addr: IpAddr,
     pub date: Date,
+    pub date_idx: usize,
     pub method: Method,
     pub path: String,
     pub status: u16,
     pub bytes_sent: u64,
     pub referer: String,
+}
+
+impl DateIndexed for LogLine {
+    fn date_idx(&self) -> usize {
+        self.date_idx
+    }
+}
+impl DateIndexed for &LogLine {
+    fn date_idx(&self) -> usize {
+        self.date_idx
+    }
 }
 
 impl LogLine {
@@ -72,6 +84,7 @@ impl FromStr for LogLine {
         Ok(LogLine {
             remote_addr,
             date,
+            date_idx: 0,
             method,
             path,
             status,

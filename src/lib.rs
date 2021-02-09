@@ -5,19 +5,27 @@
 
 mod cli;
 mod date;
+mod date_idx;
 mod filters;
 mod histogram;
+mod histo_line;
+mod method;
+mod line_group;
 pub mod md;
 mod nginx_log;
 mod table;
-mod method;
+mod trend;
 
 pub use {
     cli::*,
     date::*,
+    date_idx::*,
     filters::*,
     histogram::*,
+    histo_line::*,
+    line_group::*,
     nginx_log::*,
     table::*,
     method::*,
+    trend::*,
 };

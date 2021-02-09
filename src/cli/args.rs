@@ -21,7 +21,7 @@ pub struct Args {
     #[argh(option, short = 't', default = "Default::default()")]
     /// tables to display: comma separated list of tables (default all but methods).
     /// use `-t a` to get all tables.
-    /// Available tables: date,status,method,addr,ref,path
+    /// Available tables: date,status,method,addr,ref,path,trend
     pub tables: Tables,
 
     #[argh(option, short = 's')]

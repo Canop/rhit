@@ -23,6 +23,8 @@ pub use {
 };
 
 pub struct LogBase {
+    //pub histogram: Histogram,
+    pub dates: Vec<Date>,
     pub lines: Vec<LogLine>,
 }
 
@@ -42,7 +44,25 @@ impl LogBase {
         for mut file in log_files {
             lines.append(&mut file.lines);
         }
+        let mut dates = Vec::new();
+        let mut cur_date: Option<Date> = None;
+        for i in 0..lines.len() {
+            if let Some(date) = &mut cur_date {
+                if lines[i].date == *date {
+                    lines[i].date_idx = dates.len();
+                    continue;
+                } else {
+                    dates.push(cur_date.take().unwrap());
+                }
+            }
+            lines[i].date_idx = dates.len();
+            cur_date = Some(lines[i].date);
+        }
+        if let Some(date) = cur_date {
+            dates.push(date);
+        }
         Ok(Self {
+            dates,
             lines,
         })
     }
@@ -97,6 +117,9 @@ impl LogBase {
     }
     pub fn end_time(&self) -> Date {
         self.lines[self.lines.len()-1].date
+    }
+    pub fn day_count(&self) -> usize {
+        self.dates.len()
     }
 }
 

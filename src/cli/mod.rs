@@ -20,6 +20,8 @@ pub fn run() -> anyhow::Result<()> {
         println!("no hit in logs");
         return Ok(());
     }
+    // the trend computer needs the whole unfiltered base for initialization
+    let trend_computer = TrendComputer::new(&log_base);
     let printer = md::Printer::new(args.length, args.tables.clone());
     md::summary::print_summary(&log_base, &printer);
     if let Some(pattern) = &args.status {
@@ -64,7 +66,7 @@ pub fn run() -> anyhow::Result<()> {
             return Ok(());
         }
     }
-    md::print_analysis(&log_base, &printer);
+    md::print_analysis(&log_base, &printer, trend_computer.as_ref());
     Ok(())
 }
 

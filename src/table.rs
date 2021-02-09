@@ -8,8 +8,9 @@ pub enum Table {
     Status,
     RemoteAddresses,
     Referers,
-    Paths,
+    Paths, // popular paths
     Methods,
+    Trends, // trendy paths
 }
 
 pub static DEFAULT_TABLES: &[Table] = &[
@@ -27,6 +28,7 @@ pub static ALL_TABLES: &[Table] = &[
     Table::RemoteAddresses,
     Table::Referers,
     Table::Paths,
+    Table::Trends,
 ];
 
 #[derive(Debug, Clone)]
@@ -73,6 +75,8 @@ impl FromArgValue for Tables {
                 v.push(Table::Paths);
             } else if s.contains("method") {
                 v.push(Table::Methods);
+            } else if s.contains("trend") {
+                v.push(Table::Trends);
             } else {
                 return Err(format!("Unrecognized table : {:?}", s));
             }

@@ -8,7 +8,7 @@ mod methods;
 use {
     crate::*,
     crossterm::style::{Attribute::*, Color::*},
-    minimad::{OwningTemplateExpander, TextTemplate},
+    minimad::{Compound, OwningTemplateExpander, TextTemplate},
     termimad::*,
 };
 
@@ -37,20 +37,22 @@ impl Printer {
     }
 }
 
-
 pub fn print_analysis(
     log_base: &LogBase,
     printer: &Printer,
+    trend_computer: Option<&TrendComputer>,
 ) {
     let log_lines = &log_base.lines;
+    let mut popular_paths = false;
+    let mut trendy_paths = false;
     for table in printer.tables.clone().into_iter() {
         match table {
             Table::Dates => {
-                let histogram = Histogram::of_days(&log_base);
+                let histogram = Histogram::from(&log_base);
                 histogram.print(printer);
             }
             Table::Status => {
-                status::print_status_codes(log_lines, printer);
+                status::print_status_codes(log_lines, printer, trend_computer);
             }
             Table::RemoteAddresses => {
                 addr::print_popular_remote_addresses(log_lines, printer);
@@ -59,11 +61,30 @@ pub fn print_analysis(
                 referers::print_popular_referers(log_lines, printer);
             }
             Table::Paths => {
-                paths::print_popular_paths(log_lines, printer);
+                popular_paths = true;
+            }
+            Table::Trends => {
+                trendy_paths = true;
             }
             Table::Methods => {
                 methods::print_methods(log_lines, printer);
             }
+        }
+    }
+    if popular_paths || trendy_paths {
+        if let Some(trend_computer) = trend_computer {
+            paths::print_paths(
+                &log_base,
+                printer,
+                trend_computer,
+                popular_paths,
+                trendy_paths,
+            );
+        } else {
+            paths::print_paths_no_trends(
+                &log_base,
+                printer,
+            );
         }
     }
 }
@@ -74,8 +95,16 @@ fn make_skin() -> MadSkin {
     skin.headers[1].compound_style.remove_attr(Underlined);
     skin.italic.remove_attr(Italic);
     skin.bold.set_fg(Yellow);
-    skin.italic.set_fg(Magenta);
+    skin.italic.set_fg(AnsiValue(204)); // Magenta is softer
     skin.scrollbar.thumb.set_fg(AnsiValue(178));
     skin.code_block.align = Alignment::Center;
+    skin.special_chars.insert(
+        Compound::raw_str("U").code(),
+        StyledChar::from_fg_char(Green, '➚'),
+    );
+    skin.special_chars.insert(
+        Compound::raw_str("D").code(),
+        StyledChar::from_fg_char(Red, '➘'),
+    );
     skin
 }

@@ -21,33 +21,26 @@ pub struct Bar {
 }
 
 pub struct Histogram {
-    bars: Vec<Bar>,
+    pub bars: Vec<Bar>,
 }
 impl Histogram {
-    pub fn of_days(log_base: &LogBase) -> Self {
-        let mut bars = Vec::new();
-        let mut cur_bar: Option<Bar> = None;
-        for line in &log_base.lines {
-            let date = line.date;
-            if let Some(bar) = &mut cur_bar {
-                if bar.date == date {
-                    bar.count += 1;
-                    bar.sum_bytes_sent += line.bytes_sent;
-                    continue;
-                } else {
-                    bars.push(cur_bar.take().unwrap());
-                }
-            }
-            cur_bar = Some(Bar {
-                date,
-                count: 1,
-                sum_bytes_sent: line.bytes_sent,
-            });
-        }
-        if let Some(bar) = cur_bar {
-            bars.push(bar);
+    pub fn from(base: &LogBase) -> Self {
+        let mut bars: Vec<Bar> = base.dates.iter()
+            .map(|&date| Bar { date, sum_bytes_sent: 0, count: 0 })
+            .collect();
+        for line in &base.lines {
+            bars[line.date_idx].count += 1;
+            bars[line.date_idx].sum_bytes_sent += line.bytes_sent;
         }
         Self { bars }
+    }
+    /// compute the counts per day of lines
+    pub fn line_counts(base: &LogBase, lines: &[&LogLine]) -> Vec<usize> {
+        let mut counts = vec![0; base.dates.len()];
+        for line in lines {
+            counts[line.date_idx] += 1;
+        }
+        counts
     }
     pub fn print(&self, printer: &md::Printer) {
         let mut expander = OwningTemplateExpander::new();
