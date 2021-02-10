@@ -118,7 +118,7 @@ pub fn print_paths(
         };
         let popular_paths = groups
             .iter()
-            .sorted_by_key(|g| Reverse(g.lines.len()))
+            .sorted_by_key(|g| Reverse(g.hits()))
             .take(n);
         print_table_with_trends("Most popular paths", popular_paths, printer);
     }
@@ -132,13 +132,13 @@ pub fn print_paths(
             .min(30);
         let trendy_paths = groups
             .iter()
-            .filter(|g| g.lines.len() >= treshold && g.trend.value > 200)
+            .filter(|g| g.hits() >= treshold && g.trend.value > 200)
             .sorted_by_key(|g| Reverse(&g.trend))
             .take(n);
         print_table_with_trends("More popular paths", trendy_paths, printer);
         let trendy_paths = groups
             .iter()
-            .filter(|g| g.lines.len() >= treshold && g.trend.value < -200)
+            .filter(|g| g.hits() >= treshold && g.trend.value < -200)
             .sorted_by_key(|g| &g.trend)
             .take(n);
         print_table_with_trends("Less popular paths", trendy_paths, printer);
@@ -173,11 +173,11 @@ fn print_table_with_trends(
                 .set("idx", idx+1)
                 .set("bytes", bytes)
                 .set("path", &g.any().path)
-                .set("count", g.lines.len().to_formatted_string(&Locale::en))
+                .set("count", g.hits().to_formatted_string(&Locale::en))
                 .set("histo_line", histo_line)
                 .set("ref_count", g.trend.ref_count)
                 .set("tail_count", g.trend.tail_count);
-            if g.lines.len() > 4 {
+            if g.hits() > 4 {
                 sub.set_md("trend", g.trend.markdown());
             }
         });

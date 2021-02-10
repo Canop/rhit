@@ -63,7 +63,7 @@ pub fn print_analysis(
                 trendy_paths = true;
             }
             Table::Methods => {
-                methods::print_methods(log_lines, printer);
+                methods::print_methods(log_lines, printer, trend_computer);
             }
         }
     }

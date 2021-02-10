@@ -118,10 +118,10 @@ fn print_all_status_trends(
             let sub = expander.sub("statuses");
             sub
                 .set("status", g.any().status)
-                .set("count", g.lines.len().to_formatted_string(&Locale::en))
-                .set("percent", to_percent(g.lines.len(), log_lines.len()))
+                .set("count", g.hits().to_formatted_string(&Locale::en))
+                .set("percent", to_percent(g.hits(), log_lines.len()))
                 .set("histo_line", histo_line);
-            if g.lines.len() > 9 {
+            if g.hits() > 9 {
                 sub.set_md("trend", g.trend.markdown());
             }
         });
