@@ -19,6 +19,7 @@ pub static DEFAULT_TABLES: &[Table] = &[
     Table::RemoteAddresses,
     Table::Referers,
     Table::Paths,
+    Table::Trends,
 ];
 
 pub static ALL_TABLES: &[Table] = &[
