@@ -133,13 +133,13 @@ pub fn print_paths(
             .min(30);
         let trendy_paths = groups
             .iter()
-            .filter(|g| g.lines.len() >= treshold)
+            .filter(|g| g.lines.len() >= treshold && g.trend.value > 200)
             .sorted_by_key(|g| Reverse(&g.trend))
             .take(n);
         print_table_with_trends("More popular paths", trendy_paths, printer);
         let trendy_paths = groups
             .iter()
-            .filter(|g| g.lines.len() >= treshold)
+            .filter(|g| g.lines.len() >= treshold && g.trend.value < -200)
             .sorted_by_key(|g| &g.trend)
             .take(n);
         print_table_with_trends("Less popular paths", trendy_paths, printer);
@@ -151,12 +151,14 @@ fn print_table_with_trends(
     groups: std::iter::Take<std::vec::IntoIter<&line_group::LineGroup<'_>>>,
     printer: &Printer,
 ) {
+    let mut rows_count = 0;
     let mut expander = OwningTemplateExpander::new();
-    expander
-        .set("title", title);
+    expander.set_default(" ");
+    expander.set("title", title);
     groups
         .enumerate()
         .for_each(|(idx, g)| {
+            rows_count += 1;
             let sum_bytes: u64 = g.lines
                 .iter()
                 .map(|ll| ll.bytes_sent)
@@ -175,8 +177,12 @@ fn print_table_with_trends(
                 .set("count", g.lines.len())
                 .set("histo_line", histo_line)
                 .set("ref_count", g.trend.ref_count)
-                .set("tail_count", g.trend.tail_count)
-                .set_md("trend", g.trend.markdown());
+                .set("tail_count", g.trend.tail_count);
+            if g.lines.len() > 4 {
+                sub.set_md("trend", g.trend.markdown());
+            }
         });
-    printer.print(expander, if DEBUG_TRENDS { MD_TRENDS_DEBUG } else { MD_TRENDS });
+    if rows_count > 0 {
+        printer.print(expander, if DEBUG_TRENDS { MD_TRENDS_DEBUG } else { MD_TRENDS });
+    }
 }

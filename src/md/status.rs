@@ -10,7 +10,7 @@ static MD_NO_TRENDS: &str = r#"
 ## HTTP status codes:
 |:-|:-:|:-:
 |**status**|**hits**|**%**
-|:-|-:|-:
+|:-:|-:|-:
 ${statuses
 |${status}|${count}|${percent}
 }
@@ -21,7 +21,7 @@ static MD_TRENDS: &str = r#"
 ## HTTP status codes:
 |:-|:-:|:-:|:-:|:-:
 |**status**|**hits**|**%**|**days**|**trend**
-|:-|-:|-:|-:|:-:|
+|:-:|-:|-:|-:|:-:|
 ${statuses
 |${status}|*${count}*|${percent}|*${histo_line}*|${trend}
 }

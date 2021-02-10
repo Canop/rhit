@@ -59,10 +59,12 @@ rhit -p download
 
 But the syntax allows for much more interesting queries.
 
-You may use a regular expression:
+You may use a regular expression.
+
+For example when I want to see all downloads of broot:
 
 ```bash
-rhit -p '^/blog/.*broot'
+rhit -p '^/download/.*broot(.exe)?$'
 ```
 
 You may negate expressions with a `!`.
@@ -76,7 +78,7 @@ rhit -p '!^/\d+$'
 
 Separating filters with a comma is an easy way to do a "AND".
 
-If I want to get paths which are neither `broot` or just a number, I'll do
+If I want to get paths which are neither `broot` nor just a number, I'll do
 
 ```bash
 rhit -p '!^/\d+$,!broot'
