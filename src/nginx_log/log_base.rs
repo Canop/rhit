@@ -33,11 +33,11 @@ impl LogBase {
         let mut files = Vec::new();
         find_files(path.to_path_buf(), &mut files)?;
         let mut log_files = read_files(files)?;
-        execute!(io::stdout(), Clear(ClearType::CurrentLine))?;
+        execute!(io::stderr(), Clear(ClearType::CurrentLine))?;
         if log_files.is_empty() {
             bail!("no log file found in {:?}", path);
         } else {
-            println!("I've read {} files in {:?}", log_files.len(), path);
+            eprintln!("I've read {} files in {:?}", log_files.len(), path);
         }
         log_files.sort_by_key(LogFile::start_time);
         let mut lines = Vec::new();
@@ -138,13 +138,13 @@ fn print_progress(done: usize, total: usize) -> Result<()> {
     let width = 40;
     let p = ProgressBar::new(done as f32 / (total as f32), width);
     let s = format!("{:width$}", p, width=width);
-    let mut stdout = io::stdout();
-    queue!(stdout, cursor::SavePosition)?;
-    queue!(stdout, Clear(ClearType::CurrentLine))?;
-    queue!(stdout, Print(format!("{:>4} / {} ", done, total)))?;
-    queue!(stdout, PrintStyledContent(style(s).with(Color::Yellow).on(Color::DarkMagenta)))?;
-    queue!(stdout, cursor::RestorePosition)?;
-    stdout.flush()?;
+    let mut stderr = io::stderr();
+    queue!(stderr, cursor::SavePosition)?;
+    queue!(stderr, Clear(ClearType::CurrentLine))?;
+    queue!(stderr, Print(format!("{:>4} / {} ", done, total)))?;
+    queue!(stderr, PrintStyledContent(style(s).with(Color::Yellow).on(Color::DarkMagenta)))?;
+    queue!(stderr, cursor::RestorePosition)?;
+    stderr.flush()?;
     Ok(())
 }
 

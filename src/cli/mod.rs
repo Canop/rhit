@@ -14,15 +14,15 @@ pub fn run() -> anyhow::Result<()> {
         println!("rhit {}", env!("CARGO_PKG_VERSION"));
         return Ok(());
     }
+    let printer = md::Printer::new(&args);
     let path = args.file.unwrap_or_else(|| PathBuf::from("/var/log/nginx"));
     let mut log_base = LogBase::new(&path)?;
     if log_base.lines.is_empty() {
-        println!("no hit in logs");
+        eprintln!("no hit in logs");
         return Ok(());
     }
     // the trend computer needs the whole unfiltered base for initialization
     let trend_computer = TrendComputer::new(&log_base);
-    let printer = md::Printer::new(args.length, args.tables.clone());
     md::summary::print_summary(&log_base, &printer);
     if let Some(pattern) = &args.status {
         let len_before = log_base.lines.len();

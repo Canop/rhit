@@ -14,6 +14,11 @@ pub struct Args {
     /// print the version
     pub version: bool,
 
+    //#[argh(option, from_str_fn(read_bool))]
+    #[argh(option, default = "Default::default()")]
+    /// color and style: 'yes', 'no' or 'auto' (auto should be good in most cases)
+    pub color: BoolArg,
+
     #[argh(option, short = 'l', default = "1")]
     /// detail level, from 0 to 6 (default 1), impacts the lengths of tables
     pub length: usize,
@@ -57,3 +62,23 @@ pub struct Args {
     pub file: Option<PathBuf>,
 }
 
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BoolArg(Option<bool>);
+
+impl BoolArg {
+    pub fn value(self) -> Option<bool> {
+        self.0
+    }
+}
+
+impl argh::FromArgValue for BoolArg {
+    fn from_arg_value(value: &str) -> Result<Self, String> {
+        match value.to_lowercase().as_ref() {
+            "auto" => Ok(BoolArg(None)),
+            "yes" => Ok(BoolArg(Some(true))),
+            "no" => Ok(BoolArg(Some(false))),
+            _ => Err(format!("Illegal value: {:?}", value)),
+        }
+    }
+}

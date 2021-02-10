@@ -6,10 +6,10 @@ use {
 
 static MD: &str = r#"
 |:-|-:|:-:|:-
-|**date**|**bytes**|**hits**|**${scale}**
+|**date**|**hits**|**bytes**|**${scale}**
 |:-|-:|-:|:-
 ${bars
-|${date}|${bytes-sent}|${hits}|*${bar}*
+|${date}|${hits}|${bytes-sent}|*${bar}*
 }
 |-:
 "#;
@@ -54,8 +54,8 @@ impl Histogram {
             let part = (bar.count as f32) / max_hits;
             expander.sub("bars")
                 .set("date", bar.date)
-                .set("bytes-sent", file_size::fit_4(bar.sum_bytes_sent))
                 .set("hits", bar.count)
+                .set("bytes-sent", file_size::fit_4(bar.sum_bytes_sent))
                 .set("bar", ProgressBar::new(part, 20));
         }
         printer.print(expander, MD);

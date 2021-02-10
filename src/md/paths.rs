@@ -18,7 +18,7 @@ static MD_TITLE: &str = r#"
 
 static MD_NO_TRENDS: &str = r#"
 |:-:|:-|:-:|:-:
-|**#**|**path**|**hits**|**resp. size**
+|**#**|**path**|**hits**|**bytes**
 |-:|:-|-:|-:|
 ${paths
 |${idx}|${path}|${count}|${bytes}
@@ -29,7 +29,7 @@ ${paths
 static MD_TRENDS_DEBUG: &str = r#"
 ### ${title}:
 |:-:|:-|:-:|:-:|:-:|:-:|:-:|:-:
-|**#**|**path**|**hits**|**resp. size**|**days**|**previous ${ref_size} days**|**last ${tail_size} days**|**trend**
+|**#**|**path**|**hits**|**bytes**|**days**|**previous ${ref_size} days**|**last ${tail_size} days**|**trend**
 |-:|:-|-:|-:|:-:|-:|-:|:-:|
 ${paths
 |${idx}|${path}|*${count}*|${bytes}|*${histo_line}*|${ref_count}|${tail_count}|${trend}
@@ -40,7 +40,7 @@ ${paths
 static MD_TRENDS: &str = r#"
 ### ${title}:
 |:-:|:-|:-:|:-:|:-:|:-:
-|**#**|**path**|**hits**|**resp. size**|**days**|**trend**
+|**#**|**path**|**hits**|**bytes**|**days**|**trend**
 |-:|:-|-:|-:|-:|:-:|
 ${paths
 |${idx}|${path}|*${count}*|${bytes}|*${histo_line}*|${trend}
@@ -77,7 +77,7 @@ pub fn print_paths_no_trends(
                 .iter()
                 .map(|ll| ll.bytes_sent)
                 .sum();
-            let bytes = fit_4(sum_bytes / e.1.len() as u64);
+            let bytes = fit_4(sum_bytes);
             let sub = expander.sub("paths");
             sub
                 .set("idx", idx+1)
@@ -163,7 +163,7 @@ fn print_table_with_trends(
                 .iter()
                 .map(|ll| ll.bytes_sent)
                 .sum();
-            let bytes = fit_4(sum_bytes / g.lines.len() as u64);
+            let bytes = fit_4(sum_bytes);
             let sub = expander.sub("paths");
             let histo_line = histo_line(
                 &g.trend.counts_per_day,
