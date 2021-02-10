@@ -4,10 +4,9 @@ use {
     file_size::fit_4,
     have::Fun,
     itertools::*,
-    std::{
-        cmp::Reverse,
-    },
     minimad::OwningTemplateExpander,
+    num_format::{Locale, ToFormattedString},
+    std::cmp::Reverse,
 };
 
 const DEBUG_TRENDS: bool = false;
@@ -65,7 +64,7 @@ pub fn print_paths_no_trends(
         .into_group_map_by(|ll| &ll.path)
         .fun(|g| {
             let mut expander = OwningTemplateExpander::new();
-            expander.set("count", g.len());
+            expander.set("count", g.len().to_formatted_string(&Locale::en));
             printer.print(expander, MD_TITLE);
         })
         .into_iter()
@@ -83,7 +82,7 @@ pub fn print_paths_no_trends(
                 .set("idx", idx+1)
                 .set("bytes", bytes)
                 .set("path", e.0)
-                .set("count", e.1.len());
+                .set("count", e.1.len().to_formatted_string(&Locale::en));
         });
     printer.print(expander, MD_NO_TRENDS);
 }
@@ -109,7 +108,7 @@ pub fn print_paths(
         .collect();
 
     let mut title_expander = OwningTemplateExpander::new();
-    title_expander.set("count", groups.len());
+    title_expander.set("count", groups.len().to_formatted_string(&Locale::en));
     printer.print(title_expander, MD_TITLE);
 
     if popular {
@@ -174,7 +173,7 @@ fn print_table_with_trends(
                 .set("idx", idx+1)
                 .set("bytes", bytes)
                 .set("path", &g.any().path)
-                .set("count", g.lines.len())
+                .set("count", g.lines.len().to_formatted_string(&Locale::en))
                 .set("histo_line", histo_line)
                 .set("ref_count", g.trend.ref_count)
                 .set("tail_count", g.trend.tail_count);

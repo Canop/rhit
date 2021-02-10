@@ -1,8 +1,7 @@
 use {
     super::*,
     crate::*,
-    crossterm::style::{Attribute::*, Color::*},
-    minimad::{Compound, OwningTemplateExpander, TextTemplate},
+    minimad::{OwningTemplateExpander, TextTemplate},
     termimad::*,
 };
 

@@ -2,8 +2,9 @@ use {
     super::*,
     crate::*,
     itertools::*,
-    std::cmp::Reverse,
     minimad::OwningTemplateExpander,
+    num_format::{Locale, ToFormattedString},
+    std::cmp::Reverse,
 };
 
 static MD: &str = r#"
@@ -12,7 +13,7 @@ static MD: &str = r#"
 |**method**|**hits**|**%**
 |:-|-:|-:
 ${statuses
-|${status}|${count}|${percent}
+|${status}|*${count}*|${percent}
 }
 |-:
 "#;
@@ -29,7 +30,7 @@ pub fn print_methods(
         .for_each(|e| {
             expander.sub("statuses")
                 .set("status", e.0)
-                .set("count", e.1.len())
+                .set("count", e.1.len().to_formatted_string(&Locale::en))
                 .set("percent", to_percent(e.1.len(), log_lines.len()));
         });
     printer.print(expander, MD);

@@ -5,6 +5,7 @@ use {
     itertools::*,
     std::cmp::Reverse,
     minimad::OwningTemplateExpander,
+    num_format::{Locale, ToFormattedString},
 };
 
 static MD: &str = r#"
@@ -13,7 +14,7 @@ static MD: &str = r#"
 |**#**|**referer**|**hits**
 |-:|:-|-:
 ${popular-referers
-|${idx}|${referer}|${count}
+|${idx}|${referer}|*${count}*
 }
 |-:
 "#;
@@ -33,7 +34,7 @@ pub fn print_popular_referers(
         .into_group_map_by(|ll| &ll.referer)
         .fun(|g| {
             expander
-                .set("referers-count", g.len())
+                .set("referers-count", g.len().to_formatted_string(&Locale::en))
                 .set("referers-limit", n);
         })
         .into_iter()
@@ -44,7 +45,7 @@ pub fn print_popular_referers(
             expander.sub("popular-referers")
                 .set("idx", idx+1)
                 .set("referer", e.0)
-                .set("count", e.1.len());
+                .set("count", e.1.len().to_formatted_string(&Locale::en));
         });
     printer.print(expander, MD);
 }

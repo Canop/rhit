@@ -1,7 +1,6 @@
 use {
-    super::*,
     crossterm::style::{Attribute::*, Color::*},
-    minimad::{Compound, OwningTemplateExpander, TextTemplate},
+    minimad::Compound,
     termimad::*,
 };
 

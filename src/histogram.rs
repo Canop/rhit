@@ -1,6 +1,7 @@
 use {
     crate::*,
     minimad::OwningTemplateExpander,
+    num_format::{Locale, ToFormattedString},
     termimad::*,
 };
 
@@ -9,7 +10,7 @@ static MD: &str = r#"
 |**date**|**hits**|**bytes**|**${scale}**
 |:-|-:|-:|:-
 ${bars
-|${date}|${hits}|${bytes-sent}|*${bar}*
+|${date}|*${hits}*|${bytes-sent}|*${bar}*
 }
 |-:
 "#;
@@ -54,7 +55,7 @@ impl Histogram {
             let part = (bar.count as f32) / max_hits;
             expander.sub("bars")
                 .set("date", bar.date)
-                .set("hits", bar.count)
+                .set("hits", bar.count.to_formatted_string(&Locale::en))
                 .set("bytes-sent", file_size::fit_4(bar.sum_bytes_sent))
                 .set("bar", ProgressBar::new(part, 20));
         }
