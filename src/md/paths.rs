@@ -127,16 +127,16 @@ pub fn print_paths(
             0 => 5,
             l => l * 10,
         };
-        let treshold = (base.lines.len() / 10000).clamp(5, 30);
+        let threshold = (base.lines.len() / 10000).clamp(5, 30);
         let trendy_paths = groups
             .iter()
-            .filter(|g| g.hits() >= treshold && g.trend.value > 200)
+            .filter(|g| g.hits() >= threshold && g.trend.value > 200)
             .sorted_by_key(|g| Reverse(&g.trend))
             .take(n);
         print_table_with_trends("More popular paths", trendy_paths, printer);
         let trendy_paths = groups
             .iter()
-            .filter(|g| g.hits() >= treshold && g.trend.value < -200)
+            .filter(|g| g.hits() >= threshold && g.trend.value < -200)
             .sorted_by_key(|g| &g.trend)
             .take(n);
         print_table_with_trends("Less popular paths", trendy_paths, printer);
