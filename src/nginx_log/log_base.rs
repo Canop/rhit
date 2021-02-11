@@ -121,6 +121,9 @@ impl LogBase {
     pub fn day_count(&self) -> usize {
         self.dates.len()
     }
+    pub fn is_empty(&self) -> bool {
+        self.lines.is_empty()
+    }
 }
 
 fn find_files(path: PathBuf, files: &mut Vec<PathBuf>) -> Result<()> {

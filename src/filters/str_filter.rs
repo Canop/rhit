@@ -43,6 +43,7 @@ impl BoolOperator {
     }
 }
 
+/// a filter for strings
 #[derive(Debug)]
 pub struct StrFilter {
     expr: BeTree<BoolOperator, Regex>,

@@ -13,7 +13,7 @@ pub struct Printer {
 }
 
 impl Printer {
-    pub fn new(args: &Args) -> Self {
+    pub fn new(args: &args::Args) -> Self {
         let detail_level = args.length;
         let tables = args.tables.clone();
         let terminal_width = terminal_size().0 as usize;
@@ -38,6 +38,9 @@ pub fn print_analysis(
     printer: &Printer,
     trend_computer: Option<&TrendComputer>,
 ) {
+    if log_base.is_empty() {
+        return;
+    }
     let log_lines = &log_base.lines;
     let mut popular_paths = false;
     let mut trendy_paths = false;

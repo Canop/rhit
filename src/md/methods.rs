@@ -95,4 +95,3 @@ fn to_percent(count: usize, total: usize) -> String {
     format!("{:.2}%", percent)
 }
 
-

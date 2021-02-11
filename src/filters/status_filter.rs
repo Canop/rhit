@@ -12,6 +12,12 @@ pub enum StatusFilterParseError {
     ParseInt(#[from] ParseIntError),
 }
 
+/// A filter for status, allowing classes, ranges and exclusions
+/// Examples:
+///  `4xx`
+///  `4xx,503`
+///  `402-417,503`
+///  `4xx,!404`
 #[derive(Debug, Clone)]
 pub struct StatusFilter {
     include: Vec<(u16, u16)>,

@@ -2,6 +2,7 @@ use {
     crate::*,
 };
 
+/// A filter for HTTP methods
 #[derive(Debug, Clone, Copy)]
 pub struct MethodFilter {
     negative: bool,

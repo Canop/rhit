@@ -14,6 +14,7 @@ impl<'b> LineGroup<'b> {
         lines: Vec<&'b LogLine>,
         trend_computer: &TrendComputer,
     ) -> Self {
+        debug_assert!(!lines.is_empty());
         let trend = trend_computer.compute_trend(&lines);
         Self {
             lines,

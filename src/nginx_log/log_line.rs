@@ -25,6 +25,9 @@ pub enum LogParseError {
     IntExpected(#[from] ParseIntError),
 }
 
+/// A line in the access log, describing a hit.
+// perf note: parsing the remote adress as IP is costly
+// (app is about 3% faster if I replace this field with a string)
 #[derive(Debug, Clone)]
 pub struct LogLine {
     pub remote_addr: IpAddr,
@@ -99,11 +102,7 @@ mod log_line_parsing_tests {
 
     use {
         super::*,
-        std::{
-            net::{
-                Ipv4Addr,
-            },
-        },
+        std::net::Ipv4Addr,
     };
 
     static SIO_PULL_LINE: &str = r#"10.232.28.160 - - [22/Jan/2021:02:49:30 +0000] "GET /socket.io/?EIO=3&transport=polling&t=NSd_nu- HTTP/1.1" 200 99 "https://miaou.dystroy.org/3" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36""#;

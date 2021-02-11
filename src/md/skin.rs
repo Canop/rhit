@@ -18,6 +18,7 @@ fn make_color_skin() -> MadSkin {
     skin.headers[1].compound_style.remove_attr(Underlined);
     skin.italic.remove_attr(Italic);
     skin.bold.set_fg(Yellow);
+    skin.inline_code.set_fg(Yellow);
     skin.italic.set_fg(AnsiValue(204));
     skin.special_chars.insert(
         Compound::raw_str("U").code(),

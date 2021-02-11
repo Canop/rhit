@@ -63,6 +63,7 @@ pub struct Args {
 }
 
 
+/// An optional boolean for use in Argh
 #[derive(Debug, Clone, Copy, Default)]
 pub struct BoolArg(Option<bool>);
 
