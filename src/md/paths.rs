@@ -127,9 +127,7 @@ pub fn print_paths(
             0 => 5,
             l => l * 10,
         };
-        let treshold = (base.lines.len() / 10000)
-            .max(5)
-            .min(30);
+        let treshold = (base.lines.len() / 10000).clamp(5, 30);
         let trendy_paths = groups
             .iter()
             .filter(|g| g.hits() >= treshold && g.trend.value > 200)
