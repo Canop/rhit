@@ -1,4 +1,5 @@
 #[macro_use] extern crate log;
+#[macro_use] extern crate lazy_regex;
 #[macro_use] extern crate lazy_static;
 #[macro_use] extern crate minimad;
 #[macro_use] extern crate termimad;
@@ -9,12 +10,14 @@ mod date_idx;
 mod filters;
 mod histogram;
 mod histo_line;
-mod method;
+mod key;
 mod line_group;
+mod method;
 pub mod md;
 mod nginx_log;
 mod table;
 mod trend;
+mod trend_computer;
 
 pub use {
     cli::*,
@@ -23,9 +26,11 @@ pub use {
     filters::*,
     histogram::*,
     histo_line::*,
+    key::*,
     line_group::*,
+    method::*,
     nginx_log::*,
     table::*,
-    method::*,
     trend::*,
+    trend_computer::*,
 };

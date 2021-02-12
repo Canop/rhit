@@ -125,9 +125,9 @@ impl StrFilter {
             if !expr.is_empty() {
                 expr.push_operator(BoolOperator::And);
             }
-            if atom.starts_with('!') {
+            if let Some(atom) = atom.strip_prefix("!") {
                 expr.push_operator(BoolOperator::Not);
-                expr.push_atom(Regex::new(&atom[1..])?);
+                expr.push_atom(Regex::new(atom)?);
             } else {
                 expr.push_atom(Regex::new(atom)?);
             }

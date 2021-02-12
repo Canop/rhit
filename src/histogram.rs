@@ -1,63 +1,66 @@
 use {
     crate::*,
     minimad::OwningTemplateExpander,
-    num_format::{Locale, ToFormattedString},
     termimad::*,
 };
 
 static MD: &str = r#"
-|:-|-:|:-:|:-
+|:-:|:-:|:-:|:-
 |**date**|**hits**|**bytes**|**${scale}**
-|:-|-:|-:|:-
+|:-|:-:|-:|:-
 ${bars
-|${date}|*${hits}*|${bytes-sent}|*${bar}*
+|${date}|${hits}|${bytes}|*${bar}*
 }
 |-:
 "#;
 
 pub struct Bar {
     date: Date,
-    sum_bytes_sent: u64,
-    count: usize,
+    hits: u64,
+    bytes_sent: u64,
 }
 
 pub struct Histogram {
     pub bars: Vec<Bar>,
 }
+
 impl Histogram {
+
     pub fn from(base: &LogBase) -> Self {
         let mut bars: Vec<Bar> = base.dates.iter()
-            .map(|&date| Bar { date, sum_bytes_sent: 0, count: 0 })
+            .map(|&date| Bar { date, bytes_sent: 0, hits: 0 })
             .collect();
         for line in &base.lines {
-            bars[line.date_idx].count += 1;
-            bars[line.date_idx].sum_bytes_sent += line.bytes_sent;
+            bars[line.date_idx].hits += 1;
+            bars[line.date_idx].bytes_sent += line.bytes_sent;
         }
         Self { bars }
     }
-    /// compute the counts per day of lines
-    pub fn line_counts(base: &LogBase, lines: &[&LogLine]) -> Vec<usize> {
-        let mut counts = vec![0; base.dates.len()];
-        for line in lines {
-            counts[line.date_idx] += 1;
-        }
-        counts
-    }
-    pub fn print(&self, printer: &md::Printer) {
+
+    pub fn print(
+        &self,
+        printer: &md::Printer,
+    ) {
         let mut expander = OwningTemplateExpander::new();
-        let max_hits = self.bars.iter().map(|b| b.count).max().unwrap();
+        let max_bar = self.bars
+            .iter()
+            .map(|b| if printer.key==Key::Hits { b.hits } else { b.bytes_sent })
+            .max().unwrap();
         expander.set(
             "scale",
-            format!("0               {:>4}", file_size::fit_4(max_hits as u64)),
+            format!("0               {:>4}", file_size::fit_4(max_bar)),
         );
-        let max_hits = max_hits as f32;
+        let max_bar = max_bar as f32;
         for bar in &self.bars {
-            let part = (bar.count as f32) / max_hits;
-            expander.sub("bars")
-                .set("date", bar.date)
-                .set("hits", bar.count.to_formatted_string(&Locale::en))
-                .set("bytes-sent", file_size::fit_4(bar.sum_bytes_sent))
-                .set("bar", ProgressBar::new(part, 20));
+            if printer.date_filter.map_or(true, |f| f.contains(bar.date)) {
+                let value = if printer.key == Key::Hits { bar.hits } else { bar.bytes_sent };
+                let part = (value as f32) / max_bar;
+                expander.sub("bars")
+                    .set("date", bar.date)
+                    .set_md("hits", printer.md_hits(bar.hits as usize))
+                    .set_md("bytes", printer.md_bytes(bar.bytes_sent))
+                    .set("bar", ProgressBar::new(part, 20));
+            }
         }
         printer.print(expander, MD);
     }

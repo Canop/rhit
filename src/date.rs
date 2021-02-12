@@ -55,7 +55,7 @@ impl Date {
         }
         Ok(Self { year, month, day })
     }
-    /// a date in nginx logs looks like this: `10/Jan/2021:10:27:01 +0000`
+    /// a datetime in nginx logs looks like this: `10/Jan/2021:10:27:01 +0000`
     pub fn from_nginx(s: &str) -> Result<Self, DateParseError> {
         if s.len()<11 {
             return Err(DateParseError::UnexpectedEnd);

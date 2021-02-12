@@ -17,11 +17,15 @@ It lets you filter hits by dates, status, referers or paths, and does trend anal
 
 And it's fast enough (about one second per million lines) so you can iteratively try queries to build your insight.
 
-Here I'm especially looking at dates and trends on hits with status 2xx and 3xx, excluding all paths that are just a number:
+Here I'm especially looking at dates and trends on hits with status 2xx and 3xx, on a given period:
 
 ![intro](doc/intro.png)
 
 # Installation
+
+Rhit is only tested on linux.
+
+## From source
 
 You need the [Rust](https://rustup.rs) toolchain. Do
 
@@ -29,7 +33,9 @@ You need the [Rust](https://rustup.rs) toolchain. Do
 cargo install rhit
 ```
 
-Rhit is only tested on linux.
+## From binaries
+
+You may download linux binaries from [https://dystroy.org/rhit/download](https://dystroy.org/rhit/download).
 
 # Basic Usage
 
@@ -126,6 +132,8 @@ Symmetrically, you may omit the month if it's not ambiguous: `rhit -d 25`.
 
 ```bash
 rhit -d 2020/12/25-2021/01/03
+rhit -d 2020/12
+rhit -d 2020
 ```
 
 ## Filter by status
@@ -158,6 +166,9 @@ For example, to get all paths resulting in a `404` but not the `robots.txt` (whi
 
 # Choose what to show
 
+
+## Tables
+
 The displayed tables (all by default) can be chosen with the `-t` argument.
 
 For example to only show remote adresses and statuses, use:
@@ -170,6 +181,18 @@ rhit -t addr,status
 
 (use `rhit --help` for the complete list)
 
+## Detail Level
+
 Table *lengths* is decided with the `-l` argument. Use `rhit -l 0` to have just a few lines in the various tables, and `rhit -l 5` for huge tables. Default value is `1`.
+
+## Key
+
+The measure used for sorting, histograms, and trends is either `hits` (default) or `bytes` (bytes in the response).
+
+It's highlighted in pink in the report.
+
+You set it with the `--key` argument:
+
+![hits or bytes](doc/hits-or-bytes.png)
 
 

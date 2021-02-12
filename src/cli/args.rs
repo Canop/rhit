@@ -1,5 +1,8 @@
 use {
-    crate::Tables,
+    crate::{
+        Key,
+        Tables,
+    },
     argh::FromArgs,
     std::path::PathBuf,
 };
@@ -14,10 +17,13 @@ pub struct Args {
     /// print the version
     pub version: bool,
 
-    //#[argh(option, from_str_fn(read_bool))]
     #[argh(option, default = "Default::default()")]
     /// color and style: 'yes', 'no' or 'auto' (auto should be good in most cases)
     pub color: BoolArg,
+
+    #[argh(option, short = 'k', default = "Default::default()")]
+    /// key used in sorting and histogram, either 'hits' (default) or 'bytes'
+    pub key: Key,
 
     #[argh(option, short = 'l', default = "1")]
     /// detail level, from 0 to 6 (default 1), impacts the lengths of tables

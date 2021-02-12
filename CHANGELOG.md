@@ -1,4 +1,8 @@
-### next
+<a name="v1.2.0"></a>
+### v1.2.0 - 2021-02-12
+- the `--key` argument defines the key measure, either 'hits' (default) or 'bytes' (of the response) used for sorting and filtering, and highlighted in pink
+- you can filter on year or month (eg `rhit -d 2021/02`)
+- trends in all tables
 
 <a name="v1.1.1"></a>
 ### v1.1.1 - 2021-02-10
@@ -6,7 +10,7 @@
 
 <a name="v1.1.0"></a>
 ### v1.1.0 - 2021-02-09
-- add trends
+- trends
 
 <a name="v1.0.0"></a>
 ### v1.0.0 - 2021-01-29

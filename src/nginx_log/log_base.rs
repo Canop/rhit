@@ -23,7 +23,6 @@ pub use {
 };
 
 pub struct LogBase {
-    //pub histogram: Histogram,
     pub dates: Vec<Date>,
     pub lines: Vec<LogLine>,
 }
@@ -107,10 +106,13 @@ impl LogBase {
         Ok(())
     }
     pub fn retain_dates_matching(&mut self, pattern: &str) -> Result<()> {
-        let (default_year, default_month) = self.unique_year_month();
-        let filter = DateFilter::from_arg(pattern, default_year, default_month)?;
+        let filter = self.make_date_filter(pattern)?;
         self.lines.retain(|ll| filter.contains(ll.date));
         Ok(())
+    }
+    pub fn make_date_filter(&self, pattern: &str) -> Result<DateFilter> {
+        let (default_year, default_month) = self.unique_year_month();
+        Ok(DateFilter::from_arg(pattern, default_year, default_month)?)
     }
     pub fn start_time(&self) -> Date {
         self.lines[0].date

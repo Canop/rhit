@@ -44,10 +44,16 @@ impl DateIndexed for LogLine {
     fn date_idx(&self) -> usize {
         self.date_idx
     }
+    fn bytes(&self) -> u64 {
+        self.bytes_sent
+    }
 }
 impl DateIndexed for &LogLine {
     fn date_idx(&self) -> usize {
         self.date_idx
+    }
+    fn bytes(&self) -> u64 {
+        self.bytes_sent
     }
 }
 

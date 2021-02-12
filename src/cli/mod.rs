@@ -12,17 +12,17 @@ pub fn run() -> anyhow::Result<()> {
         println!("rhit {}", env!("CARGO_PKG_VERSION"));
         return Ok(());
     }
-    let printer = md::Printer::new(&args);
-    let path = args.file.unwrap_or_else(|| PathBuf::from("/var/log/nginx"));
+    let path = args.file.clone().unwrap_or_else(|| PathBuf::from("/var/log/nginx"));
     let mut log_base = LogBase::new(&path)?;
     if log_base.lines.is_empty() {
         eprintln!("no hit in logs");
         return Ok(());
     }
+    let printer = md::Printer::new(&args, &log_base);
     let base = &mut log_base;
     // the trend computer needs the whole unfiltered base for initialization
     // and thus needs to be built before filtering
-    let trend_computer = TrendComputer::new(base);
+    let trend_computer = TrendComputer::new(base, args.key);
     md::summary::print_summary(base, &printer);
     filter(
         "status", &args.status, LogBase::retain_status_matching,

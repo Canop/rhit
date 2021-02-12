@@ -286,6 +286,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dd25036021b0de88a0aff6b850051563c6516d0bf53f8638938edbb9de732736"
 
 [[package]]
+name = "lazy-regex"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "83a32b42cf4770f191a2899a4b565d124d888d3f7fdbdd30ad98cf2c1d2b470f"
+dependencies = [
+ "lazy_static",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -490,7 +499,7 @@ checksum = "b5eb417147ba9860a96cfe72a0b93bf88fee1744b5636ec99ab20c1aa9376581"
 
 [[package]]
 name = "rhit"
-version = "1.1.2-dev"
+version = "1.2.0"
 dependencies = [
  "anyhow",
  "argh",
@@ -501,6 +510,7 @@ dependencies = [
  "flate2",
  "have",
  "itertools",
+ "lazy-regex",
  "lazy_static",
  "libc",
  "log",

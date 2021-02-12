@@ -10,8 +10,8 @@ static V_CHARS: [char; 9] = [' ', '▁', '▂', '▃', '▄', '▅', '▆', '▇
 /// Use full height only if you don't need to keep a margin with
 /// le line above
 pub fn histo_line(
-    counts: &[usize],
-    max: usize,
+    counts: &[u64],
+    max: u64,
     full_height: bool,
 ) -> String {
     let mut h = String::new();

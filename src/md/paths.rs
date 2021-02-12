@@ -1,7 +1,6 @@
 use {
     super::*,
     crate::*,
-    file_size::fit_4,
     have::Fun,
     itertools::*,
     minimad::OwningTemplateExpander,
@@ -20,7 +19,7 @@ static MD_NO_TRENDS: &str = r#"
 |**#**|**path**|**hits**|**bytes**
 |-:|:-|-:|-:|
 ${paths
-|${idx}|${path}|${count}|${bytes}
+|${idx}|${path}|${hits}|${bytes}
 }
 |-:
 "#;
@@ -31,7 +30,7 @@ static MD_TRENDS_DEBUG: &str = r#"
 |**#**|**path**|**hits**|**bytes**|**days**|**previous ${ref_size} days**|**last ${tail_size} days**|**trend**
 |-:|:-|-:|-:|:-:|-:|-:|:-:|
 ${paths
-|${idx}|${path}|*${count}*|${bytes}|*${histo_line}*|${ref_count}|${tail_count}|${trend}
+|${idx}|${path}|${hits}|${bytes}|*${histo_line}*|${ref_count}|${tail_count}|${trend}
 }
 |-:
 "#;
@@ -42,7 +41,7 @@ static MD_TRENDS: &str = r#"
 |**#**|**path**|**hits**|**bytes**|**days**|**trend**
 |-:|:-|-:|-:|-:|:-:|
 ${paths
-|${idx}|${path}|*${count}*|${bytes}|*${histo_line}*|${trend}
+|${idx}|${path}|${hits}|${bytes}|*${histo_line}*|${trend}
 }
 |-:
 "#;
@@ -56,6 +55,12 @@ pub fn print_paths_no_trends(
         1 => 50,
         l => l * 50,
     };
+    struct Group<'b> {
+        path: &'b str,
+        lines: Vec<&'b LogLine>,
+        bytes: u64,
+        key_sum: u64,
+    }
     let mut expander = OwningTemplateExpander::new();
     base
         .lines
@@ -68,21 +73,27 @@ pub fn print_paths_no_trends(
             printer.print(expander, MD_TITLE);
         })
         .into_iter()
-        .sorted_by_key(|e| Reverse(e.1.len()))
-        .take(n)
-        .enumerate()
-        .for_each(|(idx, e)| {
-            let sum_bytes: u64 = e.1
+        .map(|(path, lines)| {
+            let bytes: u64 = lines
                 .iter()
                 .map(|ll| ll.bytes_sent)
                 .sum();
-            let bytes = fit_4(sum_bytes);
+            let key_sum = match printer.key {
+                Key::Hits  => lines.len() as u64,
+                Key::Bytes => bytes,
+            };
+            Group { path, lines, bytes, key_sum }
+        })
+        .sorted_by_key(|g| Reverse(g.key_sum))
+        .take(n)
+        .enumerate()
+        .for_each(|(idx, Group { path, lines, bytes, .. })| {
             let sub = expander.sub("paths");
             sub
                 .set("idx", idx+1)
-                .set("bytes", bytes)
-                .set("path", e.0)
-                .set("count", e.1.len().to_formatted_string(&Locale::en));
+                .set("path", path)
+                .set_md("hits", printer.md_hits(lines.len()))
+                .set_md("bytes", printer.md_bytes(bytes));
         });
     printer.print(expander, MD_NO_TRENDS);
 }
@@ -118,7 +129,7 @@ pub fn print_paths(
         };
         let popular_paths = groups
             .iter()
-            .sorted_by_key(|g| Reverse(g.hits()))
+            .sorted_by_key(|g| Reverse(g.key_sum))
             .take(n);
         print_table_with_trends("Most popular paths", popular_paths, printer);
     }
@@ -156,23 +167,13 @@ fn print_table_with_trends(
         .enumerate()
         .for_each(|(idx, g)| {
             rows_count += 1;
-            let sum_bytes: u64 = g.lines
-                .iter()
-                .map(|ll| ll.bytes_sent)
-                .sum();
-            let bytes = fit_4(sum_bytes);
             let sub = expander.sub("paths");
-            let histo_line = histo_line(
-                &g.trend.counts_per_day,
-                g.trend.max_day_count(),
-                false,
-            );
             sub
                 .set("idx", idx+1)
-                .set("bytes", bytes)
                 .set("path", &g.any().path)
-                .set("count", g.hits().to_formatted_string(&Locale::en))
-                .set("histo_line", histo_line)
+                .set_md("hits", printer.md_hits(g.hits()))
+                .set_md("bytes", printer.md_bytes(g.bytes))
+                .set("histo_line", g.histo_line())
                 .set("ref_count", g.trend.ref_count)
                 .set("tail_count", g.trend.tail_count);
             if g.hits() > 4 {
