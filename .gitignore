@@ -1,2 +1,6 @@
 /target
 /releases
+deploy.sh
+rhit_*.zip
+/build
+/trav
