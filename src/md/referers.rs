@@ -13,15 +13,12 @@ pub fn print_referers(
         1 => 10,
         l => l * 20,
     };
-    fn get_referer<'a, 'b>(l: &'a &'b LogLine) -> &'b str {
-        &l.referer
-    }
     printer.print_groups(
         "referers",
         "referer",
         log_lines,
-        &|line| line.referer.len() > 1,
-        &get_referer,
+        |line| line.referer.len() > 1,
+        |line| &line.referer,
         trend_computer,
         n,
         true,

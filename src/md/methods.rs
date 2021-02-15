@@ -12,8 +12,8 @@ pub fn print_methods(
         "methods",
         "method",
         log_lines,
-        &|_| true,
-        &|line| line.method,
+        |_| true,
+        |line| line.method,
         trend_computer,
         100, // there should not be more than 100 methods
         false,

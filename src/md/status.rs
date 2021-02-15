@@ -25,8 +25,8 @@ pub fn print_status_codes(
             "HTTP status codes",
             "status",
             log_lines,
-            &|_| true,
-            &|line| line.status,
+            |_| true,
+            |line| line.status,
             trend_computer,
             100, // there should not be more than 100 status
             false,
