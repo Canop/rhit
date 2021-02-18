@@ -1,7 +1,7 @@
 use {
     crate::{
         Key,
-        Tables,
+        Fields,
     },
     argh::FromArgs,
     std::path::PathBuf,
@@ -29,15 +29,20 @@ pub struct Args {
     /// detail level, from 0 to 6 (default 1), impacts the lengths of tables
     pub length: usize,
 
-    #[argh(option, short = 't', default = "Default::default()")]
-    /// tables to display: comma separated list of tables (default all but methods).
-    /// use `-t a` to get all tables.
-    /// Available tables: date,status,method,addr,ref,path,trend
-    pub tables: Tables,
+    #[argh(option, short = 'f', default = "Default::default()")]
+    /// comma separated list of hit fields to display.
+    /// use `-f a` to get all fields.
+    /// Available fields: date,method,status,ip,ref,path.
+    /// Default fields: date,status,ref,path.
+    pub fields: Fields,
+
+    #[argh(switch, short = 'c')]
+    /// add tables with more popular and less popular entries (ip, referers or paths)
+    pub changes: bool,
 
     #[argh(option, short = 's')]
-    /// comma separated list of statuses or status range.
-    /// (eg: `-s 514` or `-s 4xx,5xx`, or `-s 310-340,400-450` or `-s 5xx`)
+    /// comma separated list of statuses or status ranges.
+    /// (eg: `-s 514` or `-s 4xx,5xx`, or `-s 310-340,400-450` or `-s 5xx,!502`)
     pub status: Option<String>,
 
     #[argh(option, short = 'm')]
@@ -45,9 +50,9 @@ pub struct Args {
     /// (eg: `-m PUT` or `-m !DELETE` or `-m none` or `-m other`)
     pub method: Option<String>,
 
-    #[argh(option, short = 'a')]
+    #[argh(option, short = 'i')]
     /// ip address to filter by. May be negated with a `!`
-    pub addr: Option<String>,
+    pub ip: Option<String>,
 
     #[argh(option, short = 'd')]
     /// filter the dates, on a precise day or in an inclusive range

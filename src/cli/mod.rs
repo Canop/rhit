@@ -22,7 +22,7 @@ pub fn run() -> anyhow::Result<()> {
     let base = &mut log_base;
     // the trend computer needs the whole unfiltered base for initialization
     // and thus needs to be built before filtering
-    let trend_computer = TrendComputer::new(base, args.key);
+    let trend_computer = TrendComputer::new(base, &args)?;
     md::summary::print_summary(base, &printer);
     filter(
         "status", &args.status, LogBase::retain_status_matching,
@@ -37,7 +37,7 @@ pub fn run() -> anyhow::Result<()> {
         base, &printer,
     )?;
     filter(
-        "remote address", &args.addr, LogBase::retain_remote_addr_matching,
+        "remote IP address", &args.ip, LogBase::retain_remote_addr_matching,
         base, &printer,
     )?;
     filter(

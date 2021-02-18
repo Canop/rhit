@@ -15,7 +15,7 @@ mod line_group;
 mod method;
 pub mod md;
 mod nginx_log;
-mod table;
+mod fields;
 mod trend;
 mod trend_computer;
 
@@ -30,7 +30,7 @@ pub use {
     line_group::*,
     method::*,
     nginx_log::*,
-    table::*,
+    fields::*,
     trend::*,
     trend_computer::*,
 };

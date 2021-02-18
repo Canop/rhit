@@ -36,7 +36,7 @@ impl LogBase {
         if log_files.is_empty() {
             bail!("no log file found in {:?}", path);
         } else {
-            eprintln!("I've read {} files in {:?}", log_files.len(), path);
+            eprintln!("I've read {} files in {:?}:", log_files.len(), path);
         }
         log_files.sort_by_key(LogFile::start_time);
         let mut lines = Vec::new();

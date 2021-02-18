@@ -23,48 +23,50 @@ ${groups
 |-:
 "#;
 
-static MD_GROUPS_TRENDS: &str = r#"
-## ${groups-count} ${groups-name}. ${limited}
-|:-:|:-|:-:|:-:|:-:|:-:|:-:
-|**#**|**${group-key}**|**hits**|**%**|**bytes**|**days**|**trend**
-|-:|:-|-:|-:|-:|-:|:-:|
-${groups
-|${idx}|${group-value}|${hits}|${percent}|${bytes}|*${histo_line}*|${trend}
-}
-|-:
-"#;
-
 static MD_GROUPS_TRENDS_NO_ROW_IDX: &str = r#"
-## ${groups-count} ${groups-name}. ${limited}
+## ${title}
 |:-|:-:|:-:|:-:|:-:|:-:
 |**${group-key}**|**hits**|**%**|**bytes**|**days**|**trend**
 |:-:|-:|-:|-:|-:|:-:|
 ${groups
-|${group-value}|${hits}|${percent}|${bytes}|*${histo_line}*|${trend}
+|${group-value}|${hits}|${percent}|${bytes}|*${histo-line}*|${trend}
+}
+|-:
+"#;
+
+static MD_GROUPS_TRENDS: &str = r#"
+## ${title}
+|:-:|:-|:-:|:-:|:-:|:-:
+|**#**|**${group-key}**|**hits**|**bytes**|**days**|**trend**
+|-:|:-|-:|-:|-:|:-:|
+${groups
+|${idx}|${group-value}|${hits}|${bytes}|*${histo-line}*|${trend}
 }
 |-:
 "#;
 
 pub struct Printer {
     pub skin: MadSkin,
-    pub tables: Tables,
+    pub fields: Fields,
     pub terminal_width: usize,
     pub detail_level: usize,
     pub key: Key,
     pub date_filter: Option<DateFilter>,
+    pub changes: bool,
 }
 
 impl Printer {
     pub fn new(args: &args::Args, log_base: &LogBase) -> Self {
         let detail_level = args.length;
-        let tables = args.tables.clone();
+        let fields = args.fields.clone();
         let terminal_width = terminal_size().0 as usize;
         let color = args.color.value().unwrap_or(!is_output_piped());
         let skin = skin::make_skin(color);
         let key = args.key;
         let date_filter = args.date.as_ref()
             .and_then(|p| log_base.make_date_filter(p).ok());
-        Self { skin, tables, terminal_width, detail_level, key, date_filter }
+        let changes = args.changes;
+        Self { skin, fields, terminal_width, detail_level, key, date_filter, changes }
     }
     pub fn print(
         &self,
@@ -97,14 +99,11 @@ impl Printer {
 
     pub fn print_groups<'b, T, F, G>(
         &self,
-        groups_name: &str,
-        group_key: &str,
+        section: &Section,
         log_lines: &'b [LogLine],
         filter: F,
         grouper: G,
         trend_computer: Option<&TrendComputer>,
-        limit: usize,
-        row_idx: bool,
     ) where
         T: Display + Hash + Eq + 'b,
         F: Fn(&&LogLine) -> bool,
@@ -112,35 +111,28 @@ impl Printer {
     {
         if let Some(trend_computer) = trend_computer {
             self.print_groups_trends(
-                groups_name,
-                group_key,
+                section,
                 log_lines,
                 filter,
                 grouper,
                 trend_computer,
-                limit,
-                row_idx,
             );
         } else {
             self.print_groups_no_trends(
-                groups_name,
-                group_key,
+                section,
                 log_lines,
                 filter,
                 grouper,
-                limit,
             );
         }
     }
 
     pub fn print_groups_no_trends<'b, T, F, G>(
         &self,
-        groups_name: &str,
-        group_key: &str,
+        section: &Section,
         log_lines: &'b [LogLine],
         filter: F,
         grouper: G,
-        limit: usize,
     ) where
         T: Display + Hash + Eq + 'b,
         F: Fn(&&LogLine) -> bool,
@@ -154,15 +146,17 @@ impl Printer {
         let mut expander = OwningTemplateExpander::new();
         expander
             .set_default("")
-            .set("groups-name", groups_name)
-            .set("group-key", group_key);
+            .set("groups-name", section.groups_name)
+            .set("group-key", section.group_key);
         log_lines.iter()
             .filter(filter)
             .into_group_map_by(grouper)
             .fun(|g| {
                 expander.set("groups-count", g.len().to_formatted_string(&Locale::en));
-                if g.len() > limit {
-                    expander.set("limited", format!("{} most frequent:", limit));
+                if let View::Limited(limit) = section.view {
+                    if g.len() > limit {
+                        expander.set("limited", format!("{} most frequent:", limit));
+                    }
                 }
             })
             .into_iter()
@@ -178,7 +172,7 @@ impl Printer {
                 (value, Group { lines, bytes, key_sum })
             })
             .sorted_by_key(|(_, g)| Reverse(g.key_sum))
-            .take(limit)
+            .take(section.view.limit())
             .enumerate()
             .for_each(|(idx, (value, g))| {
                 let sub = expander.sub("groups");
@@ -194,59 +188,123 @@ impl Printer {
 
     pub fn print_groups_trends<'b, T, F, G>(
         &self,
-        groups_name: &str,
-        group_key: &str,
+        section: &Section,
         log_lines: &'b [LogLine],
         filter: F,
         grouper: G,
         trend_computer: &TrendComputer,
-        limit: usize,
-        row_idx: bool,
     ) where
         T: Display + Hash + Eq + 'b,
         F: Fn(&&LogLine) -> bool,
         G: for<'a> Fn(&'a &'b LogLine) -> T,
     {
+        let groups: Vec<LineGroup<T>> = log_lines
+            .iter()
+            .filter(filter)
+            .into_group_map_by(grouper)
+            .into_iter()
+            .map(|(value, lines)| {
+                LineGroup::new(value, lines, trend_computer)
+            })
+            .collect();
+        let title = match section.view {
+            View::Full => section.groups_name.to_owned(),
+            View::Limited(limit) => {
+                let mut title = format!(
+                    "{} {}",
+                    groups.len().to_formatted_string(&Locale::en),
+                    section.groups_name,
+                );
+                if groups.len() > limit {
+                    title.push_str(&format!(". {} most frequent:", limit));
+                }
+                title
+            }
+        };
+        let popular_groups = groups
+            .iter()
+            .sorted_by_key(|g| Reverse(g.key_sum))
+            .take(section.view.limit());
+        self.print_table_with_trends(
+            &title,
+            section,
+            popular_groups,
+            log_lines.len(),
+        );
+        if self.changes && section.changes && section.view.limit() < log_lines.len() {
+            let limit = match self.detail_level {
+                0 => 5,
+                l => l * 10,
+            };
+            let more_popular_groups = groups
+                .iter()
+                .filter(|g| g.lines.len() > 9)
+                .sorted_by_key(|g| Reverse(&g.trend))
+                .take(limit);
+            let title = format!("More popular {}", section.groups_name);
+            self.print_table_with_trends(
+                &title,
+                section,
+                more_popular_groups,
+                log_lines.len(),
+            );
+            let less_popular_groups = groups
+                .iter()
+                .filter(|g| g.lines.len() > 9)
+                .sorted_by_key(|g| &g.trend)
+                .take(limit);
+            let title = format!("Less popular {}", section.groups_name);
+            self.print_table_with_trends(
+                &title,
+                section,
+                less_popular_groups,
+                log_lines.len(),
+            );
+        }
+    }
+
+    pub fn print_table_with_trends<'b, T, I>(
+        &self,
+        title: &str,
+        section: &Section,
+        groups: I,
+        total_count: usize,
+    ) where
+        T: Display + Hash + Eq + 'b,
+        I: Iterator<Item = &'b LineGroup<'b, T>>,
+    {
+        let mut rows_count = 0;
         let mut expander = OwningTemplateExpander::new();
         expander
             .set_default("")
-            .set("groups-name", groups_name)
-            .set("group-key", group_key);
-        log_lines.iter()
-            .filter(filter)
-            .into_group_map_by(grouper)
-            .fun(|g| {
-                expander.set("groups-count", g.len().to_formatted_string(&Locale::en));
-                if g.len() > limit {
-                    expander.set("limited", format!("{} most frequent:", limit));
-                }
-            })
-            .into_iter()
-            .map(|(value, lines)| (value, LineGroup::new(lines, trend_computer)))
-            .sorted_by_key(|(_, g)| Reverse(g.key_sum))
-            .take(limit)
+            .set("group-key", section.group_key)
+            .set("title", title);
+        groups
             .enumerate()
-            .for_each(|(idx, (value, g))| {
+            .for_each(|(idx, g)| {
+                rows_count += 1;
                 let sub = expander.sub("groups");
                 sub
                     .set("idx", idx+1)
-                    .set("group-value", value)
-                    .set("histo_line", g.histo_line())
+                    .set("group-value", &g.value)
                     .set_md("hits", self.md_hits(g.hits()))
-                    .set("percent", to_percent(g.hits(), log_lines.len()))
-                    .set_md("bytes", self.md_bytes(g.bytes));
+                    .set_md("bytes", self.md_bytes(g.bytes))
+                    .set("histo-line", g.histo_line())
+                    .set("ref_count", g.trend.ref_count)
+                    .set("tail_count", g.trend.tail_count);
+                if matches!(section.view, View::Full) {
+                    sub.set("percent", to_percent(g.lines.len(), total_count));
+                }
                 if g.hits() > 9 {
                     sub.set_md("trend", g.trend.markdown());
                 }
             });
-        let template = if row_idx {
-            MD_GROUPS_TRENDS
-        } else {
-            MD_GROUPS_TRENDS_NO_ROW_IDX
+        let template = match section.view {
+            View::Full => MD_GROUPS_TRENDS_NO_ROW_IDX,
+            View::Limited(_) => MD_GROUPS_TRENDS,
         };
         self.print(expander, template);
     }
-
 }
 
 fn is_output_piped() -> bool {

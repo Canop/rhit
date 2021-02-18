@@ -1,3 +1,13 @@
+<a name="v1.3.0"></a>
+### v1.3.0 - 2021-02-18
+Many changes in the arguments you give to rhit:
+- `tables` have been renamed `fields`
+- `addr` (remote IP addresses) has been changed to `ip` both in fields list and as filter
+- instead of a `trends` table, there's a `--changes` argument (short: `-c`)
+- with `--changes`, you see more popular and less popular referers
+- with `--changes`, you see more popular and less popular remote ip adresses if the ip field is shown (eg with `rhit -f date,ip -c`)
+- date filters can be negative or inequalities (eg: `-d '>2021/02/10'`)
+
 <a name="v1.2.0"></a>
 ### v1.2.0 - 2021-02-12
 - the `--key` argument defines the key measure, either 'hits' (default) or 'bytes' (of the response) used for sorting and filtering, and highlighted in pink

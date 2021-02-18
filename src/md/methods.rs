@@ -8,15 +8,18 @@ pub fn print_methods(
     printer: &Printer,
     trend_computer: Option<&TrendComputer>,
 ){
+    let section = Section {
+        groups_name: "methods",
+        group_key: "method",
+        view: View::Full,
+        changes: false,
+    };
     printer.print_groups(
-        "methods",
-        "method",
+        &section,
         log_lines,
         |_| true,
         |line| line.method,
         trend_computer,
-        100, // there should not be more than 100 methods
-        false,
     );
 }
 

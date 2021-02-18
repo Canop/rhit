@@ -5,7 +5,7 @@ use {
 };
 
 static SUMMARY_MD: &str = r#"
-${hits} hits and ${bytes} from **${start}** to **${end}**
+ ${hits} hits and ${bytes} from **${start}** to **${end}**
 "#;
 
 pub fn print_summary(log_base: &LogBase, printer: &Printer) {

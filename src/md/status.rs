@@ -19,19 +19,22 @@ pub fn print_status_codes(
     trend_computer: Option<&TrendComputer>,
 ){
     if printer.detail_level == 0 {
-        print_status_summary(log_lines, printer)
-    } else {
-        printer.print_groups(
-            "HTTP status codes",
-            "status",
-            log_lines,
-            |_| true,
-            |line| line.status,
-            trend_computer,
-            100, // there should not be more than 100 status
-            false,
-        );
+        print_status_summary(log_lines, printer);
+        return;
     }
+    let section = Section {
+        groups_name: "HTTP status codes",
+        group_key: "status",
+        view: View::Full,
+        changes: false,
+    };
+    printer.print_groups(
+        &section,
+        log_lines,
+        |_| true,
+        |line| line.status,
+        trend_computer,
+    );
 }
 
 fn to_percent(count: usize, total: usize) -> String {

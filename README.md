@@ -23,7 +23,7 @@ Here I'm especially looking at dates and trends on hits with status 2xx and 3xx,
 
 # Installation
 
-Rhit is only tested on linux.
+Rhit is only tested on linux but is expected to work on Mac.
 
 ## From source
 
@@ -125,6 +125,7 @@ As for the path, you may use a complex expression.
 ```bash
 rhit -d 12/25
 ```
+This shows only Christmas hits, assuming all the hits are from the same year.
 If the log contains several years, you need to precise it, eg `rhit -d 2020/12/25`.
 Symmetrically, you may omit the month if it's not ambiguous: `rhit -d 25`.
 
@@ -134,6 +135,9 @@ Symmetrically, you may omit the month if it's not ambiguous: `rhit -d 25`.
 rhit -d 2020/12/25-2021/01/03
 rhit -d 2020/12
 rhit -d 2020
+rhit -d '>2020/12/25'
+rhit -d '!2020/12/25'
+rhit -d '<12/25'
 ```
 
 ## Filter by status
@@ -149,11 +153,11 @@ rhit -s '!404'
 rhit -s '4xx,!404'
 ```
 
-## Filter by remote address
+## Filter by remote IP address
 
 ```bash
-rhit -a 123.123.123.123
-rhit -a !123.123.123.123
+rhit -i 123.123.123.123
+rhit -i !123.123.123.123
 ```
 
 ## Combine filters
@@ -167,23 +171,27 @@ For example, to get all paths resulting in a `404` but not the `robots.txt` (whi
 # Choose what to show
 
 
-## Tables
+## Fields
 
-The displayed tables (all by default) can be chosen with the `-t` argument.
+The displayed fields can be chosen with the `-f` argument.
 
-For example to only show remote adresses and statuses, use:
+Default fields: `date,status,ref,path`
+
+Available fields: `date,method,status,ip,ref,path`
+
+For example to only show remote IP adresses, statuses, and referers:
 
 ```bash
-rhit -t addr,status
+rhit -f ip,status,ref
 ```
 
 ![status and addresses](doc/tables-choice.png)
 
-(use `rhit --help` for the complete list)
-
 ## Detail Level
 
-Table *lengths* is decided with the `-l` argument. Use `rhit -l 0` to have just a few lines in the various tables, and `rhit -l 5` for huge tables. Default value is `1`.
+Table *lengths* is decided with the `-l` argument.
+
+Use `rhit -l 0` to have just a few lines in the various tables, and `rhit -l 5` for huge tables. Default value is `1`.
 
 ## Key
 
@@ -195,4 +203,9 @@ You set it with the `--key` argument:
 
 ![hits or bytes](doc/hits-or-bytes.png)
 
+## Changes
+
+Use the `--changes` (short: `-c`) argument so that Rhit shows you the paths, referers or remote addresses which are notably more popular or less popular.
+
+Settings related to displayed fields and filtered values still apply.
 

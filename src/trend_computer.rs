@@ -15,14 +15,28 @@ pub struct TrendComputer {
 impl TrendComputer {
     pub fn new(
         base: &LogBase,
-        key: Key,
-    ) -> Option<Self> {
-        let dc = base.day_count();
+        args: &args::Args,
+    ) -> Result<Option<Self>> {
+        let dc = if let Some(pattern) = &args.date {
+            // if there's a date filtering, we don't want the
+            // histograms and trend computation to be based
+            // on an excluded tail, so we determine the end.
+            let date_filter = base.make_date_filter(pattern)?;
+            let mut dc = 0;
+            for (idx, date) in base.dates.iter().enumerate() {
+                if date_filter.contains(*date) {
+                    dc = idx + 1;
+                }
+            }
+            dc
+        } else {
+            base.day_count()
+        };
         if dc < 4 {
-            return None;
+            return Ok(None);
         }
         let histo_len = dc.min(MAX_HISTO_LEN);
-        let histo_offset = base.day_count() - histo_len;
+        let histo_offset = dc - histo_len;
         let tail_len = 2;
         let ref_len = histo_len - tail_len;
         let mut computer = Self {
@@ -31,12 +45,12 @@ impl TrendComputer {
             histo_len,
             histo_offset,
             normalization_factor: 1f32, // temporary value
-            key,
+            key: args.key,
         };
         let counts_per_day = computer.compute_histo_line(&base.lines);
         let (ref_count, tail_count) = computer.compute_ref_tail_counts(&counts_per_day);
         computer.normalization_factor = (ref_count as f32) / (tail_count as f32);
-        Some(computer)
+        Ok(Some(computer))
     }
     pub fn compute_histo_line<DI: DateIndexed>(&self, lines: &[DI]) -> Vec<u64> {
         let mut counts = vec![0; self.histo_len];
@@ -46,7 +60,11 @@ impl TrendComputer {
                     if line.date_idx() < self.histo_offset {
                         continue;
                     }
-                    counts[line.date_idx() - self.histo_offset] += 1;
+                    let idx = line.date_idx() - self.histo_offset;
+                    if idx >= self.histo_len {
+                        break;
+                    }
+                    counts[idx] += 1;
                 }
             }
             Key::Bytes => {
