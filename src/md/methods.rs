@@ -7,7 +7,7 @@ pub fn print_methods(
     log_lines: &[LogLine],
     printer: &Printer,
     trend_computer: Option<&TrendComputer>,
-){
+) {
     let section = Section {
         groups_name: "methods",
         group_key: "method",

@@ -43,7 +43,7 @@ fn parse_range(s: &str) -> Result<(u16, u16), StatusFilterParseError> {
             let mut tokens = s.split('-');
             (
                 tokens.next().unwrap().parse()?,
-                tokens.next().unwrap().parse()?
+                tokens.next().unwrap().parse()?,
             )
         }
         s => {

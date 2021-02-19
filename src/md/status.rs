@@ -17,7 +17,7 @@ pub fn print_status_codes(
     log_lines: &[LogLine],
     printer: &Printer,
     trend_computer: Option<&TrendComputer>,
-){
+) {
     if printer.detail_level == 0 {
         print_status_summary(log_lines, printer);
         return;
@@ -50,10 +50,10 @@ fn print_status_summary(
     let (mut s2, mut s3, mut s4, mut s5) = (0, 0, 0, 0);
     for ll in log_lines {
         match ll.status {
-            200..=299 => { s2 += 1 }
-            300..=399 => { s3 += 1 }
-            400..=499 => { s4 += 1 }
-            _        => { s5 += 1 }
+            200..=299 => s2 += 1,
+            300..=399 => s3 += 1,
+            400..=499 => s4 += 1,
+            _ => s5 += 1,
         }
     }
     expander

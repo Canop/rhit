@@ -20,5 +20,5 @@ pub struct Section {
     pub groups_name: &'static str,
     pub group_key: &'static str,
     pub view: View,
-    pub changes: bool,  // means it may sense to show changes tables
+    pub changes: bool, // means it may sense to show changes tables
 }

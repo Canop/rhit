@@ -10,7 +10,7 @@ pub use {
     ranger::*,
     std::{
         fs::File,
-        io::{Read, BufRead, BufReader},
+        io::{BufRead, BufReader, Read},
         path::Path,
         str::FromStr,
     },

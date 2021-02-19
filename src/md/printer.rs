@@ -66,7 +66,15 @@ impl Printer {
         let date_filter = args.date.as_ref()
             .and_then(|p| log_base.make_date_filter(p).ok());
         let changes = args.changes;
-        Self { skin, fields, terminal_width, detail_level, key, date_filter, changes }
+        Self {
+            skin,
+            fields,
+            terminal_width,
+            detail_level,
+            key,
+            date_filter,
+            changes,
+        }
     }
     pub fn print(
         &self,
@@ -148,7 +156,8 @@ impl Printer {
             .set_default("")
             .set("groups-name", section.groups_name)
             .set("group-key", section.group_key);
-        log_lines.iter()
+        log_lines
+            .iter()
             .filter(filter)
             .into_group_map_by(grouper)
             .fun(|g| {
@@ -203,9 +212,7 @@ impl Printer {
             .filter(filter)
             .into_group_map_by(grouper)
             .into_iter()
-            .map(|(value, lines)| {
-                LineGroup::new(value, lines, trend_computer)
-            })
+            .map(|(value, lines)| LineGroup::new(value, lines, trend_computer))
             .collect();
         let title = match section.view {
             View::Full => section.groups_name.to_owned(),
@@ -279,26 +286,23 @@ impl Printer {
             .set_default("")
             .set("group-key", section.group_key)
             .set("title", title);
-        groups
-            .enumerate()
-            .for_each(|(idx, g)| {
-                rows_count += 1;
-                let sub = expander.sub("groups");
-                sub
-                    .set("idx", idx+1)
-                    .set("group-value", &g.value)
-                    .set_md("hits", self.md_hits(g.hits()))
-                    .set_md("bytes", self.md_bytes(g.bytes))
-                    .set("histo-line", g.histo_line())
-                    .set("ref_count", g.trend.ref_count)
-                    .set("tail_count", g.trend.tail_count);
-                if matches!(section.view, View::Full) {
-                    sub.set("percent", to_percent(g.lines.len(), total_count));
-                }
-                if g.hits() > 9 {
-                    sub.set_md("trend", g.trend.markdown());
-                }
-            });
+        groups.enumerate().for_each(|(idx, g)| {
+            rows_count += 1;
+            let sub = expander.sub("groups");
+            sub.set("idx", idx + 1)
+                .set("group-value", &g.value)
+                .set_md("hits", self.md_hits(g.hits()))
+                .set_md("bytes", self.md_bytes(g.bytes))
+                .set("histo-line", g.histo_line())
+                .set("ref_count", g.trend.ref_count)
+                .set("tail_count", g.trend.tail_count);
+            if matches!(section.view, View::Full) {
+                sub.set("percent", to_percent(g.lines.len(), total_count));
+            }
+            if g.hits() > 9 {
+                sub.set_md("trend", g.trend.markdown());
+            }
+        });
         let template = match section.view {
             View::Full => MD_GROUPS_TRENDS_NO_ROW_IDX,
             View::Limited(_) => MD_GROUPS_TRENDS,
@@ -308,9 +312,7 @@ impl Printer {
 }
 
 fn is_output_piped() -> bool {
-    unsafe {
-        libc::isatty(libc::STDOUT_FILENO) == 0
-    }
+    unsafe { libc::isatty(libc::STDOUT_FILENO) == 0 }
 }
 
 fn to_percent(count: usize, total: usize) -> String {

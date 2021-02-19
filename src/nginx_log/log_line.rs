@@ -28,7 +28,7 @@ pub enum LogParseError {
 /// A line in the access log, describing a hit.
 // perf note: parsing the remote adress as IP is costly
 // (app is about 3% faster if I replace this field with a string)
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct LogLine {
     pub remote_addr: IpAddr,
     pub date: Date,

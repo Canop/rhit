@@ -1,6 +1,8 @@
-#[macro_use] extern crate log;
+
+#[macro_use] extern crate cli_log;
 #[macro_use] extern crate lazy_regex;
 #[macro_use] extern crate lazy_static;
+#[macro_use] extern crate log;
 #[macro_use] extern crate minimad;
 #[macro_use] extern crate termimad;
 
@@ -11,6 +13,7 @@ mod filters;
 mod histogram;
 mod histo_line;
 mod key;
+mod leak;
 mod line_group;
 mod method;
 pub mod md;
@@ -18,6 +21,12 @@ mod nginx_log;
 mod fields;
 mod trend;
 mod trend_computer;
+
+// #[global_allocator]
+// static ALLOC: rpmalloc::RpMalloc = rpmalloc::RpMalloc;
+
+#[global_allocator]
+static ALLOC: leak::LeakingAllocator = leak::LeakingAllocator::new();
 
 pub use {
     cli::*,

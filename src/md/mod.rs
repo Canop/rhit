@@ -18,30 +18,33 @@ use {
 };
 
 pub fn print_analysis(
-    log_base: &LogBase,
+    base: &LogBase,
     printer: &Printer,
     trend_computer: Option<&TrendComputer>,
 ) {
-    if log_base.is_empty() {
+    if base.is_empty() {
         return;
     }
-    let log_lines = &log_base.lines;
+    // note about times: the first markdown template expansion (whatever it is)
+    // costs a lot when there's a filtering. I don't know exactly why.
     if printer.fields.contains(Field::Dates) {
-        Histogram::from(&log_base).print(printer);
+        let histogram = Histogram::from(&base);
+        time!("histogram printing", histogram.print(printer));
     }
+    let lines = &base.lines;
     if printer.fields.contains(Field::Methods) {
-        methods::print_methods(log_lines, printer, trend_computer);
+        time!("print_methods", methods::print_methods(lines, printer, trend_computer));
     }
     if printer.fields.contains(Field::Status) {
-        status::print_status_codes(log_lines, printer, trend_computer);
+        time!("print_status_codes", status::print_status_codes(lines, printer, trend_computer));
     }
     if printer.fields.contains(Field::RemoteAddresses) {
-        addr::print_remote_addresses(log_lines, printer, trend_computer);
+        time!("print_remote_addresses", addr::print_remote_addresses(lines, printer, trend_computer));
     }
     if printer.fields.contains(Field::Referers) {
-        referers::print_referers(log_lines, printer, trend_computer);
+        time!("print_referers", referers::print_referers(lines, printer, trend_computer));
     }
     if printer.fields.contains(Field::Paths) {
-        paths::print_paths(log_lines, printer, trend_computer);
+        time!("print_paths", paths::print_paths(lines, printer, trend_computer));
     }
 }

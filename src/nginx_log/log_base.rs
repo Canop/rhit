@@ -15,7 +15,7 @@ pub use {
     regex::Regex,
     std::{
         fs::File,
-        io::{self, Read, BufRead, BufReader, Write},
+        io::{self, BufRead, BufReader, Read, Write},
         path::{Path, PathBuf},
         str::FromStr,
     },
@@ -30,8 +30,8 @@ pub struct LogBase {
 impl LogBase {
     pub fn new(path: &Path) -> Result<Self> {
         let mut files = Vec::new();
-        find_files(path.to_path_buf(), &mut files)?;
-        let mut log_files = read_files(files)?;
+        time!("find files", find_files(path.to_path_buf(), &mut files))?;
+        let mut log_files = time!(read_files(files))?;
         execute!(io::stderr(), Clear(ClearType::CurrentLine))?;
         if log_files.is_empty() {
             bail!("no log file found in {:?}", path);
@@ -39,10 +39,12 @@ impl LogBase {
             eprintln!("I've read {} files in {:?}:", log_files.len(), path);
         }
         log_files.sort_by_key(LogFile::start_time);
-        let mut lines = Vec::new();
-        for mut file in log_files {
-            lines.append(&mut file.lines);
-        }
+        let mut lines = Vec::with_capacity(log_files.iter().map(|f| f.lines.len()).sum());
+        time!("moving lines", {
+            for mut file in log_files {
+                lines.append(&mut file.lines);
+            }
+        });
         let mut dates = Vec::new();
         let mut cur_date: Option<Date> = None;
         for i in 0..lines.len() {
@@ -60,10 +62,7 @@ impl LogBase {
         if let Some(date) = cur_date {
             dates.push(date);
         }
-        Ok(Self {
-            dates,
-            lines,
-        })
+        Ok(Self { dates, lines })
     }
     pub fn unique_year_month(&self) -> (Option<u16>, Option<u8>) {
         let y1 = self.start_time().year;
@@ -118,7 +117,7 @@ impl LogBase {
         self.lines[0].date
     }
     pub fn end_time(&self) -> Date {
-        self.lines[self.lines.len()-1].date
+        self.lines[self.lines.len() - 1].date
     }
     pub fn day_count(&self) -> usize {
         self.dates.len()
@@ -157,7 +156,8 @@ fn read_files(mut files: Vec<PathBuf>) -> Result<Vec<LogFile>> {
     let total = files.len();
     let mut done = 0;
     print_progress(0, total)?;
-    files.drain(..)
+    files
+        .drain(..)
         .map(|path| {
             let lf = LogFile::new(path);
             done += 1;

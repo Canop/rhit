@@ -1,9 +1,9 @@
 use {
-    thiserror::Error,
     std::{
         net::{AddrParseError, IpAddr},
         str::FromStr,
     },
+    thiserror::Error,
 };
 
 #[derive(Debug, Error)]

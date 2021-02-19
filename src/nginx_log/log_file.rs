@@ -64,7 +64,7 @@ impl LogFile {
         self.lines[0].date
     }
     pub fn end_time(&self) -> Date {
-        self.lines[self.lines.len()-1].date
+        self.lines[self.lines.len() - 1].date
     }
 }
 

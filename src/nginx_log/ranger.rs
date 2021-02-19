@@ -46,7 +46,7 @@ impl<'s> Ranger<'s> {
                         return Ok(&self.s[pos..self.pos]);
                     }
                 }
-                return Err(LogParseError::CharNotFound(end))
+                return Err(LogParseError::CharNotFound(end));
             }
         }
         Err(LogParseError::CharNotFound(start))

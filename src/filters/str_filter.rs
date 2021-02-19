@@ -70,14 +70,14 @@ impl StrFilter {
         let chars: Vec<char> = pattern.chars().collect();
         for i in 0..chars.len() {
             match chars[i] {
-                '(' if chars.get(i+1)==Some(&' ') => {
+                '(' if chars.get(i + 1) == Some(&' ') => {
                     if expr.accept_opening_par() {
                         expr.open_par();
                     } else {
                         return invalid(pattern, "unexpected opening parenthesis");
                     }
                 }
-                ')' if i > 0 && chars.get(i-1)==Some(&' ') => {
+                ')' if i > 0 && chars.get(i - 1) == Some(&' ') => {
                     if expr.accept_closing_par() {
                         expr.close_par();
                     } else {
@@ -85,14 +85,14 @@ impl StrFilter {
                         return invalid(pattern, "unexpected closing parenthesis");
                     }
                 }
-                '&' if chars.get(i+1)==Some(&' ') => {
+                '&' if chars.get(i + 1) == Some(&' ') => {
                     if expr.accept_binary_operator() {
                         expr.push_operator(BoolOperator::And);
                     } else {
                         return invalid(pattern, "unexpected '&'");
                     }
                 }
-                '|' if chars.get(i+1)==Some(&' ') => {
+                '|' if chars.get(i + 1) == Some(&' ') => {
                     if expr.accept_binary_operator() {
                         expr.push_operator(BoolOperator::Or);
                     } else {
@@ -135,14 +135,16 @@ impl StrFilter {
         Ok(Self { expr })
     }
     pub fn accepts(&self, candidate: &str) -> bool {
-        self.expr.eval(
-            |r| r.is_match(candidate),
-            |op, a, b| op.eval(a, b),
-            |op, &a| op.short_circuit(a),
-        ).unwrap_or_else(|| {
-            println!("unexpected lack of expr result on {:?}", candidate);
-            false
-        })
+        self.expr
+            .eval(
+                |r| r.is_match(candidate),
+                |op, a, b| op.eval(a, b),
+                |op, &a| op.short_circuit(a),
+            )
+            .unwrap_or_else(|| {
+                println!("unexpected lack of expr result on {:?}", candidate);
+                false
+            })
     }
 }
 

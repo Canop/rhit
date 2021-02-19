@@ -7,7 +7,7 @@ pub fn print_paths(
     log_lines: &[LogLine],
     printer: &Printer,
     trend_computer: Option<&TrendComputer>,
-){
+) {
     let limit = match printer.detail_level {
         0 => 10,
         l => l * 50,
