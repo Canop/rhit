@@ -61,13 +61,13 @@ impl Date {
             return Err(DateParseError::UnexpectedEnd);
         }
         let day = s[0..2].parse()?;
-        let year = s[7..11].parse()?;
         let month = &s[3..6];
         let month = MONTHS_3_LETTERS
             .iter()
             .position(|&m| m == month)
             .ok_or_else(|| DateParseError::UnrecognizedMonth(s.to_string()))?;
         let month = (month + 1) as u8;
+        let year = s[7..11].parse()?;
         Self::new(year, month, day)
     }
     /// parse a numeric date with optionally implicit parts

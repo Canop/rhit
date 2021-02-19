@@ -21,6 +21,27 @@ Here I'm especially looking at dates and trends on hits with status 2xx and 3xx,
 
 ![intro](doc/intro.png)
 
+# Summary
+
+- [Installation](#installation)
+  * [From source](#from-source)
+  * [From binaries](#from-binaries)
+- [Basic Usage](#basic-usage)
+- [Filtering](#filtering)
+  * [Filter on paths](#filter-on-paths)
+  * [Filter on referer](#filter-on-referer)
+  * [Only show a specific day](#only-show-a-specific-day)
+  * [Only show a period:](#only-show-a-period-)
+  * [Filter by status](#filter-by-status)
+  * [Filter by remote IP address](#filter-by-remote-ip-address)
+  * [Combine filters](#combine-filters)
+- [Choose what to show](#choose-what-to-show)
+  * [Fields](#fields)
+  * [Detail Level](#detail-level)
+  * [Path filtering](#path-filtering)
+  * [Key](#key)
+  * [Changes](#changes)
+
 # Installation
 
 Rhit is only tested on linux but is expected to work on Mac.
