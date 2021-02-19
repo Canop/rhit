@@ -193,6 +193,14 @@ Table *lengths* is decided with the `-l` argument.
 
 Use `rhit -l 0` to have just a few lines in the various tables, and `rhit -l 5` for huge tables. Default value is `1`.
 
+## Path filtering
+
+By default the paths tables don't show "resources" like images, CSS, JS. If you don't want this filtering, use the `--all` argument:
+
+```bash
+rhit -a
+```
+
 ## Key
 
 The measure used for sorting, histograms, and trends is either `hits` (default) or `bytes` (bytes in the response).

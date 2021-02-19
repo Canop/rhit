@@ -64,6 +64,10 @@ pub struct Args {
     /// (eg: `-p broot` or `-p '^/\d+'` or `-p 'miaou | blog'`)
     pub path: Option<String>,
 
+    #[argh(switch, short = 'a')]
+    /// show all paths, including resources
+    pub all: bool,
+
     #[argh(option, short = 'r')]
     /// filter the referers with a pattern
     pub referer: Option<String>,

@@ -53,6 +53,7 @@ pub struct Printer {
     pub key: Key,
     pub date_filter: Option<DateFilter>,
     pub changes: bool,
+    pub all_paths: bool,
 }
 
 impl Printer {
@@ -66,6 +67,7 @@ impl Printer {
         let date_filter = args.date.as_ref()
             .and_then(|p| log_base.make_date_filter(p).ok());
         let changes = args.changes;
+        let all_paths = args.all;
         Self {
             skin,
             fields,
@@ -74,6 +76,7 @@ impl Printer {
             key,
             date_filter,
             changes,
+            all_paths,
         }
     }
     pub fn print(
@@ -303,11 +306,15 @@ impl Printer {
                 sub.set_md("trend", g.trend.markdown());
             }
         });
-        let template = match section.view {
-            View::Full => MD_GROUPS_TRENDS_NO_ROW_IDX,
-            View::Limited(_) => MD_GROUPS_TRENDS,
-        };
-        self.print(expander, template);
+        if rows_count == 0 {
+            println!("{} : none", title);
+        } else {
+            let template = match section.view {
+                View::Full => MD_GROUPS_TRENDS_NO_ROW_IDX,
+                View::Limited(_) => MD_GROUPS_TRENDS,
+            };
+            self.print(expander, template);
+        }
     }
 }
 

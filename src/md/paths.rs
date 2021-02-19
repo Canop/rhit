@@ -12,8 +12,13 @@ pub fn print_paths(
         0 => 10,
         l => l * 50,
     };
+    let groups_name = if printer.all_paths {
+        "paths"
+    } else {
+        "paths (excluding resources like images, css, etc.)"
+    };
     let section = Section {
-        groups_name: "paths (excluding resources like images, css, etc.)",
+        groups_name,
         group_key: "path",
         view: View::Limited(limit),
         changes: true,
@@ -21,7 +26,11 @@ pub fn print_paths(
     printer.print_groups(
         &section,
         log_lines,
-        |line| !line.is_resource(),
+        if printer.all_paths {
+            |_: &&LogLine| true
+        } else {
+            |line: &&LogLine| !line.is_resource()
+        },
         |line| &line.path,
         trend_computer,
     );

@@ -22,9 +22,6 @@ mod fields;
 mod trend;
 mod trend_computer;
 
-// #[global_allocator]
-// static ALLOC: rpmalloc::RpMalloc = rpmalloc::RpMalloc;
-
 #[global_allocator]
 static ALLOC: leak::LeakingAllocator = leak::LeakingAllocator::new();
 
