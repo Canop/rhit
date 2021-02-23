@@ -183,7 +183,7 @@ impl Printer {
                 };
                 (value, Group { lines, bytes, key_sum })
             })
-            .sorted_by_key(|(_, g)| Reverse(g.key_sum))
+            .sorted_unstable_by_key(|(_, g)| Reverse(g.key_sum))
             .take(section.view.limit())
             .enumerate()
             .for_each(|(idx, (value, g))| {
@@ -233,7 +233,7 @@ impl Printer {
         };
         let popular_groups = groups
             .iter()
-            .sorted_by_key(|g| Reverse(g.key_sum))
+            .sorted_unstable_by_key(|g| Reverse(g.key_sum))
             .take(section.view.limit());
         self.print_table_with_trends(
             &title,
@@ -249,7 +249,7 @@ impl Printer {
             let more_popular_groups = groups
                 .iter()
                 .filter(|g| g.lines.len() > 9)
-                .sorted_by_key(|g| Reverse(&g.trend))
+                .sorted_unstable_by_key(|g| Reverse(&g.trend))
                 .take(limit);
             let title = format!("More popular {}", section.groups_name);
             self.print_table_with_trends(
@@ -261,7 +261,7 @@ impl Printer {
             let less_popular_groups = groups
                 .iter()
                 .filter(|g| g.lines.len() > 9)
-                .sorted_by_key(|g| &g.trend)
+                .sorted_unstable_by_key(|g| &g.trend)
                 .take(limit);
             let title = format!("Less popular {}", section.groups_name);
             self.print_table_with_trends(

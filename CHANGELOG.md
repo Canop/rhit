@@ -1,3 +1,6 @@
+### next
+- fix wrong version number in log file
+
 <a name="v1.3.1"></a>
 ### v1.3.1 - 2021-02-19
 - `--all` argument to remove the filter excluding "resources" from the paths tables
