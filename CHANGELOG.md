@@ -1,5 +1,8 @@
 ### next
 - fix wrong version number in log file
+- any file whose name contains "access.log" is considered a probable log file
+- when a single file is given to rhit, its name isn't checked
+- no file name is checked with `--no-name-check`
 
 <a name="v1.3.1"></a>
 ### v1.3.1 - 2021-02-19

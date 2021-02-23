@@ -13,7 +13,7 @@ pub fn run() -> anyhow::Result<()> {
         return Ok(());
     }
     let path = args.file.clone().unwrap_or_else(|| PathBuf::from("/var/log/nginx"));
-    let mut log_base = time!(LogBase::new(&path))?;
+    let mut log_base = time!("LogBase::new", LogBase::new(&path, !args.no_name_check))?;
     if log_base.lines.is_empty() {
         eprintln!("no hit in logs");
         return Ok(());

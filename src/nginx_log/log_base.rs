@@ -28,10 +28,10 @@ pub struct LogBase {
 }
 
 impl LogBase {
-    pub fn new(path: &Path) -> Result<Self> {
+    pub fn new(path: &Path, check_names: bool) -> Result<Self> {
         let mut files = Vec::new();
-        time!("find files", find_files(path.to_path_buf(), &mut files))?;
-        let mut log_files = time!(read_files(files))?;
+        time!("finding files", find_files(path.to_path_buf(), &mut files, false, check_names))?;
+        let mut log_files = time!("reading files", read_files(files, check_names))?;
         execute!(io::stderr(), Clear(ClearType::CurrentLine))?;
         if log_files.is_empty() {
             bail!("no log file found in {:?}", path);
@@ -127,12 +127,17 @@ impl LogBase {
     }
 }
 
-fn find_files(path: PathBuf, files: &mut Vec<PathBuf>) -> Result<()> {
+fn find_files(
+    path: PathBuf,
+    files: &mut Vec<PathBuf>,
+    check_name: bool,
+    check_deeper_names: bool,
+) -> Result<()> {
     if path.is_dir() {
         for entry in path.read_dir()? {
-            find_files(entry?.path(), files)?;
+            find_files(entry?.path(), files, check_deeper_names, check_deeper_names)?;
         }
-    } else if LogFile::is_access_log_path(&path) {
+    } else if !check_name || LogFile::is_access_log_path(&path) {
         files.push(path);
     }
     Ok(())
@@ -152,17 +157,29 @@ fn print_progress(done: usize, total: usize) -> Result<()> {
     Ok(())
 }
 
-fn read_files(mut files: Vec<PathBuf>) -> Result<Vec<LogFile>> {
-    let total = files.len();
+fn read_files(
+    mut paths: Vec<PathBuf>,
+    stop_on_error: bool,
+) -> Result<Vec<LogFile>> {
+    let total =  paths.len();
     let mut done = 0;
     print_progress(0, total)?;
-    files
-        .drain(..)
-        .map(|path| {
-            let lf = LogFile::new(path);
-            done += 1;
-            print_progress(done, total)?;
-            lf
-        })
-        .collect()
+    let mut files = Vec::new();
+    for path in  paths.drain(..) {
+        match LogFile::new(path) {
+            Ok(f) => {
+                files.push(f);
+            }
+            Err(e) => {
+                if stop_on_error {
+                    return Err(e);
+                } else {
+                    warn!("Error while reading file: {}", e);
+                }
+            }
+        }
+        done += 1;
+        print_progress(done, total)?;
+    }
+    Ok(files)
 }

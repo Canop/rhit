@@ -27,9 +27,11 @@ impl LogFile {
         }
     }
     fn read<R: Read>(file: R, path: PathBuf) -> Result<LogFile> {
+        debug!("reading file {:?}", &path);
         let mut reader = BufReader::new(file);
         let mut lines = Vec::new();
         let mut line = String::new();
+        let mut errors = 0;
         loop {
             line.clear();
             if reader.read_line(&mut line)? == 0 {
@@ -40,9 +42,18 @@ impl LogFile {
                     lines.push(log_line);
                 }
                 Err(e) => {
-                    eprintln!("{} in {}", e, line);
+                    // we only log the first error
+                    match errors {
+                        0 => warn!("{} in {}", e, line),
+                        1 => warn!("not logging other errors in this file"),
+                        _ => {}
+                    }
+                    errors += 1;
                 }
             }
+        }
+        if errors > 0 {
+            warn!("{} errors in {:?}", errors, &path);
         }
         if lines.is_empty() {
             bail!("empty log file");
@@ -56,8 +67,7 @@ impl LogFile {
         path.file_name()
             .and_then(|n| n.to_str())
             .map_or(false, |name| {
-                let mut tokens = name.split('.');
-                tokens.next() == Some("access") && tokens.next() == Some("log")
+                name.contains("access.log")
             })
     }
     pub fn start_time(&self) -> Date {

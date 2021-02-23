@@ -72,6 +72,10 @@ pub struct Args {
     /// filter the referers with a pattern
     pub referer: Option<String>,
 
+    #[argh(switch)]
+    /// tries to open all files, whatever their names
+    pub no_name_check: bool,
+
     #[argh(positional)]
     /// the log file or folder to analyze
     pub file: Option<PathBuf>,
