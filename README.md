@@ -17,7 +17,7 @@ It lets you filter hits by dates, status, referers or paths, and does trend anal
 
 And it's fast enough (about one second per million lines) so you can iteratively try queries to build your insight.
 
-Here I'm especially looking at dates and trends on hits with status 2xx and 3xx, on a given period:
+Here's looking at dates and trends on January hits with status 2xx and 3xx:
 
 ![intro](doc/intro.png)
 
