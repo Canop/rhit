@@ -76,6 +76,10 @@ pub struct Args {
     /// tries to open all files, whatever their names
     pub no_name_check: bool,
 
+    #[argh(switch)]
+    /// print the original log lines, filtered and sorted
+    pub lines: bool,
+
     #[argh(positional)]
     /// the log file or folder to analyze
     pub file: Option<PathBuf>,

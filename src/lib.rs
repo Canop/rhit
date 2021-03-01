@@ -3,12 +3,11 @@
 #[macro_use] extern crate lazy_regex;
 #[macro_use] extern crate lazy_static;
 #[macro_use] extern crate log;
-#[macro_use] extern crate minimad;
-#[macro_use] extern crate termimad;
 
 mod cli;
 mod date;
 mod date_idx;
+mod export;
 mod filters;
 mod histogram;
 mod histo_line;
@@ -29,6 +28,7 @@ pub use {
     cli::*,
     date::*,
     date_idx::*,
+    export::*,
     filters::*,
     histogram::*,
     histo_line::*,

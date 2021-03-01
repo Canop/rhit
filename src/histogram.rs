@@ -14,12 +14,24 @@ ${bars
 |-:
 "#;
 
+#[derive(Clone)]
 pub struct Bar {
-    date: Date,
-    hits: u64,
-    bytes_sent: u64,
+    pub date: Date,
+    pub hits: u64,
+    pub bytes_sent: u64,
 }
 
+impl Bar {
+    pub fn new(date: Date) -> Self {
+        Self {
+            date,
+            hits: 0,
+            bytes_sent: 0,
+        }
+    }
+}
+
+#[derive(Clone, Default)]
 pub struct Histogram {
     pub bars: Vec<Bar>,
 }
@@ -63,5 +75,11 @@ impl Histogram {
             }
         }
         printer.print(expander, MD);
+    }
+    pub fn total_hits(&self) -> u64 {
+        self.bars.iter().map(|b| b.hits).sum()
+    }
+    pub fn total_bytes_sent(&self) -> u64 {
+        self.bars.iter().map(|b| b.bytes_sent).sum()
     }
 }

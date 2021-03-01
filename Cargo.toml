@@ -1,6 +1,6 @@
 [package]
 name = "rhit"
-version = "1.3.2"
+version = "1.4.0-dev"
 authors = ["dystroy <denys.seguret@gmail.com>"]
 repository = "https://github.com/Canop/rhit"
 description = "nginx log analyzer"

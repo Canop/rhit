@@ -1,123 +1,99 @@
-pub use {
+use {
     crate::*,
     anyhow::*,
-    crossterm::{
-        self,
-        cursor,
-        event::{DisableMouseCapture, EnableMouseCapture},
-        execute,
-        style::{style, Color, Print, PrintStyledContent},
-        terminal::{Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen},
-        queue,
-        QueueableCommand,
-    },
-    itertools::*,
-    regex::Regex,
     std::{
-        fs::File,
-        io::{self, BufRead, BufReader, Read, Write},
-        path::{Path, PathBuf},
-        str::FromStr,
+        path::Path,
     },
-    termimad::{MadSkin, ProgressBar},
 };
 
+/// the content for a base being built
+#[derive(Default)]
+struct BaseContent {
+    lines: Vec<LogLine>,
+    bar_idx: usize,
+    unfiltered_histogram: Histogram,
+    filtered_histogram: Histogram,
+}
+
+impl LineConsumer for BaseContent {
+    fn start_eating(
+        &mut self,
+        first_date: Date,
+    ) {
+        self.unfiltered_histogram.bars.push(Bar::new(first_date));
+        self.filtered_histogram.bars.push(Bar::new(first_date));
+    }
+    fn eat_line(
+        &mut self,
+        mut log_line: LogLine,
+        _raw_line: &str,
+        filtered_out: bool,
+    ) {
+        let ubars = &mut self.unfiltered_histogram.bars;
+        let fbars = &mut self.filtered_histogram.bars;
+        // both histograms are synchronized, we create
+        // bars even when there's no filtered hit
+        if log_line.date != ubars[self.bar_idx].date {
+            ubars.push(Bar::new(log_line.date));
+            fbars.push(Bar::new(log_line.date));
+            self.bar_idx += 1;
+        }
+        ubars[self.bar_idx].hits += 1;
+        ubars[self.bar_idx].bytes_sent += log_line.bytes_sent;
+        if !filtered_out {
+            fbars[self.bar_idx].hits += 1;
+            fbars[self.bar_idx].bytes_sent += log_line.bytes_sent;
+            log_line.date_idx = self.bar_idx;
+            self.lines.push(log_line);
+        }
+    }
+}
+
 pub struct LogBase {
-    pub dates: Vec<Date>,
+    pub dates: Vec<Date>, // keep this ?
+    pub filterer: Filterer,
     pub lines: Vec<LogLine>,
+    pub filtered_count: u64,
+    pub filtered_histogram: Histogram,
+    pub unfiltered_count: u64,
+    pub unfiltered_histogram: Histogram,
 }
 
 impl LogBase {
-    pub fn new(path: &Path, check_names: bool) -> Result<Self> {
-        let mut files = Vec::new();
-        time!("finding files", find_files(path.to_path_buf(), &mut files, false, check_names))?;
-        let mut log_files = time!("reading files", read_files(files, check_names))?;
-        execute!(io::stderr(), Clear(ClearType::CurrentLine))?;
-        if log_files.is_empty() {
+    pub fn new(
+        path: &Path,
+        args: &args::Args,
+    ) -> Result<Self> {
+        let mut base_content = BaseContent::default();
+        let mut file_reader = FileReader::new(path, args, &mut base_content)?;
+        time!("reading files", file_reader.read_all_files())?;
+        let filterer = file_reader.filterer();
+        let BaseContent {lines, unfiltered_histogram, filtered_histogram, ..} = base_content;
+        if lines.is_empty() {
             bail!("no log file found in {:?}", path);
-        } else {
-            eprintln!("I've read {} files in {:?}:", log_files.len(), path);
         }
-        log_files.sort_by_key(LogFile::start_time);
-        let mut lines = Vec::with_capacity(log_files.iter().map(|f| f.lines.len()).sum());
-        time!("moving lines", {
-            for mut file in log_files {
-                lines.append(&mut file.lines);
-            }
-        });
+        let mut unfiltered_count = 0;
         let mut dates = Vec::new();
-        let mut cur_date: Option<Date> = None;
-        for i in 0..lines.len() {
-            if let Some(date) = &mut cur_date {
-                if lines[i].date == *date {
-                    lines[i].date_idx = dates.len();
-                    continue;
-                } else {
-                    dates.push(cur_date.take().unwrap());
-                }
-            }
-            lines[i].date_idx = dates.len();
-            cur_date = Some(lines[i].date);
+        for bar in &unfiltered_histogram.bars {
+            unfiltered_count += bar.hits;
+            dates.push(bar.date);
         }
-        if let Some(date) = cur_date {
-            dates.push(date);
-        }
-        Ok(Self { dates, lines })
-    }
-    pub fn unique_year_month(&self) -> (Option<u16>, Option<u8>) {
-        let y1 = self.start_time().year;
-        let y2 = self.end_time().year;
-        if y1 == y2 {
-            let m1 = self.start_time().month;
-            let m2 = self.end_time().month;
-            if m1 == m2 {
-                (Some(y1), Some(m1))
-            } else {
-                (Some(y1), None)
-            }
-        } else {
-            (None, None)
-        }
-    }
-    pub fn retain_remote_addr_matching(&mut self, pattern: &str) -> Result<()> {
-        let filter = IpFilter::new(pattern)?;
-        self.lines.retain(|ll| filter.accepts(ll.remote_addr));
-        Ok(())
-    }
-    pub fn retain_methods_matching(&mut self, pattern: &str) -> Result<()> {
-        let filter = MethodFilter::from_str(pattern);
-        self.lines.retain(|ll| filter.contains(ll.method));
-        Ok(())
-    }
-    pub fn retain_status_matching(&mut self, pattern: &str) -> Result<()> {
-        let filter = StatusFilter::from_str(pattern)?;
-        self.lines.retain(|ll| filter.accepts(ll.status));
-        Ok(())
-    }
-    pub fn retain_paths_matching(&mut self, pattern: &str) -> Result<()> {
-        let filter = StrFilter::new(pattern)?;
-        self.lines.retain(|ll| filter.accepts(&ll.path));
-        Ok(())
-    }
-    pub fn retain_referers_matching(&mut self, pattern: &str) -> Result<()> {
-        let filter = StrFilter::new(pattern)?;
-        self.lines.retain(|ll| filter.accepts(&ll.referer));
-        Ok(())
-    }
-    pub fn retain_dates_matching(&mut self, pattern: &str) -> Result<()> {
-        let filter = self.make_date_filter(pattern)?;
-        self.lines.retain(|ll| filter.contains(ll.date));
-        Ok(())
-    }
-    pub fn make_date_filter(&self, pattern: &str) -> Result<DateFilter> {
-        let (default_year, default_month) = self.unique_year_month();
-        Ok(DateFilter::from_arg(pattern, default_year, default_month)?)
+        let filtered_count = filtered_histogram.total_hits();
+        Ok(Self {
+            dates,
+            filterer,
+            lines,
+            filtered_histogram,
+            filtered_count,
+            unfiltered_histogram,
+            unfiltered_count,
+        })
     }
     pub fn start_time(&self) -> Date {
-        self.lines[0].date
+        self.dates[0]
     }
     pub fn end_time(&self) -> Date {
-        self.lines[self.lines.len() - 1].date
+        self.dates[self.dates.len() - 1]
     }
     pub fn day_count(&self) -> usize {
         self.dates.len()
@@ -127,59 +103,3 @@ impl LogBase {
     }
 }
 
-fn find_files(
-    path: PathBuf,
-    files: &mut Vec<PathBuf>,
-    check_name: bool,
-    check_deeper_names: bool,
-) -> Result<()> {
-    if path.is_dir() {
-        for entry in path.read_dir()? {
-            find_files(entry?.path(), files, check_deeper_names, check_deeper_names)?;
-        }
-    } else if !check_name || LogFile::is_access_log_path(&path) {
-        files.push(path);
-    }
-    Ok(())
-}
-
-fn print_progress(done: usize, total: usize) -> Result<()> {
-    let width = 40;
-    let p = ProgressBar::new(done as f32 / (total as f32), width);
-    let s = format!("{:width$}", p, width=width);
-    let mut stderr = io::stderr();
-    queue!(stderr, cursor::SavePosition)?;
-    queue!(stderr, Clear(ClearType::CurrentLine))?;
-    queue!(stderr, Print(format!("{:>4} / {} ", done, total)))?;
-    queue!(stderr, PrintStyledContent(style(s).with(Color::Yellow).on(Color::DarkMagenta)))?;
-    queue!(stderr, cursor::RestorePosition)?;
-    stderr.flush()?;
-    Ok(())
-}
-
-fn read_files(
-    mut paths: Vec<PathBuf>,
-    stop_on_error: bool,
-) -> Result<Vec<LogFile>> {
-    let total =  paths.len();
-    let mut done = 0;
-    print_progress(0, total)?;
-    let mut files = Vec::new();
-    for path in  paths.drain(..) {
-        match LogFile::new(path) {
-            Ok(f) => {
-                files.push(f);
-            }
-            Err(e) => {
-                if stop_on_error {
-                    return Err(e);
-                } else {
-                    warn!("Error while reading file: {}", e);
-                }
-            }
-        }
-        done += 1;
-        print_progress(done, total)?;
-    }
-    Ok(files)
-}

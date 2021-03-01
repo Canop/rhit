@@ -1,5 +1,6 @@
 use {
     crate::*,
+    anyhow::*,
 };
 
 const MAX_HISTO_LEN: usize = 20;
@@ -17,11 +18,10 @@ impl TrendComputer {
         base: &LogBase,
         args: &args::Args,
     ) -> Result<Option<Self>> {
-        let dc = if let Some(pattern) = &args.date {
+        let dc = if let Some(date_filter) = base.filterer.date_filter() {
             // if there's a date filtering, we don't want the
             // histograms and trend computation to be based
             // on an excluded tail, so we determine the end.
-            let date_filter = base.make_date_filter(pattern)?;
             let mut dc = 0;
             for (idx, date) in base.dates.iter().enumerate() {
                 if date_filter.contains(*date) {
@@ -47,7 +47,12 @@ impl TrendComputer {
             normalization_factor: 1f32, // temporary value
             key: args.key,
         };
-        let counts_per_day = computer.compute_histo_line(&base.lines);
+        let counts_per_day: Vec<u64> = base
+            .unfiltered_histogram
+            .bars
+            .iter()
+            .map(|b| b.hits)
+            .collect();
         let (ref_count, tail_count) = computer.compute_ref_tail_counts(&counts_per_day);
         computer.normalization_factor = (ref_count as f32) / (tail_count as f32);
         Ok(Some(computer))

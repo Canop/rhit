@@ -13,72 +13,134 @@ pub use {
     method_filter::*,
 };
 
-use crate::*;
+use {
+    crate::*,
+    anyhow::*,
+    std::{
+        str::FromStr,
+    },
+};
 
-/// apply all filters found in args and print info about
-/// the operations
-pub fn apply(
-    base: &mut LogBase,
-    args: &args::Args,
-    printer: &md::Printer,
-) -> Result<()> {
-    filter(
-        "status", &args.status, LogBase::retain_status_matching,
-        base, &printer,
-    )?;
-    filter(
-        "method", &args.method, LogBase::retain_methods_matching,
-        base, &printer,
-    )?;
-    filter(
-        "date", &args.date, LogBase::retain_dates_matching,
-        base, &printer,
-    )?;
-    filter(
-        "remote IP address", &args.ip, LogBase::retain_remote_addr_matching,
-        base, &printer,
-    )?;
-    filter(
-        "path", &args.path, LogBase::retain_paths_matching,
-        base, &printer,
-    )?;
-    filter(
-        "referer", &args.referer, LogBase::retain_referers_matching,
-        base, &printer,
-    )?;
-    Ok(())
+pub enum Filter {
+    Date(DateFilter),
+    Ip(IpFilter),
+    Method(MethodFilter),
+    Path(StrFilter),
+    Referer(StrFilter),
+    Status(StatusFilter),
 }
 
-fn filter<F>(
-    field_name: &str,
-    pattern: &Option<String>,
-    retain: F,
-    log_base: &mut LogBase,
-    printer: &md::Printer,
-) -> Result<()>
-where
-    F: Fn(&mut LogBase, &str) -> Result<()>,
-{
-    let before = log_base.lines.len();
-    if before > 0 {
-        if let Some(pattern) = pattern {
-            retain(log_base, pattern)?;
-            let after = log_base.lines.len();
-            let percent = 100f32 * (after as f32) / (before as f32);
-            let percent = format!("{:.2}%", percent);
-            mad_print_inline!(
-                &printer.skin,
-                "Filtering by $0 on pattern `$1` kept **$2** of previous lines:\n",
-                field_name,
-                &pattern,
-                &percent,
-            );
-            if log_base.lines.is_empty() {
-                println!("nothing to display");
-            } else {
-                md::summary::print_summary(&log_base, &printer);
-            }
+impl Filter {
+    pub fn accepts(&self, line: &LogLine) -> bool {
+        match self {
+            Self::Date(f) => f.contains(line.date),
+            Self::Ip(f) => f.accepts(line.remote_addr),
+            Self::Method(f) => f.contains(line.method),
+            Self::Path(f) => f.accepts(&line.path),
+            Self::Referer(f) => f.accepts(&line.referer),
+            Self::Status(f) => f.accepts(line.status),
         }
     }
-    Ok(())
+    pub fn field_name(&self) -> &'static str {
+        match self {
+            Self::Date(_) => "date",
+            Self::Ip(_) => "remote address",
+            Self::Method(_) => "method",
+            Self::Path(_) => "path",
+            Self::Referer(_) => "referer", // it looks like it's the usual orthograph
+            Self::Status(_) => "status",
+        }
+    }
+}
+
+pub struct Filtering {
+    pub pattern: String,
+    pub filter: Filter,
+    pub removed_count: usize,
+}
+
+impl Filtering {
+    pub fn new(pattern: &str, filter: Filter) -> Self {
+        Self {
+            pattern: pattern.to_string(),
+            filter,
+            removed_count: 0,
+        }
+    }
+}
+
+pub struct Filterer {
+    pub first_date: Date,
+    pub filterings: Vec<Filtering>,
+}
+
+impl Filterer {
+    pub fn new(
+        args: &args::Args,
+        first_date: Date,
+        last_date: Date,
+    ) -> Result<Self> {
+        let (default_year, default_month) = unique_year_month(first_date, last_date);
+        let mut filterings = Vec::new();
+        if let Some(s) = &args.date {
+            filterings.push(Filtering::new(
+                s,
+                Filter::Date(DateFilter::new(s, default_year, default_month)?),
+            ));
+        }
+        if let Some(s) = &args.ip {
+            filterings.push(Filtering::new(
+                s,
+                Filter::Ip(IpFilter::new(s)?),
+            ));
+        }
+        if let Some(s) = &args.method {
+            filterings.push(Filtering::new(
+                s,
+                Filter::Method(MethodFilter::from_str(s)),
+            ));
+        }
+        if let Some(s) = &args.path {
+            filterings.push(Filtering::new(
+                s,
+                Filter::Path(StrFilter::new(s)?),
+            ));
+        }
+        if let Some(s) = &args.referer {
+            filterings.push(Filtering::new(
+                s,
+                Filter::Referer(StrFilter::new(s)?),
+            ));
+        }
+        if let Some(s) = &args.status {
+            filterings.push(Filtering::new(
+                s,
+                Filter::Status(StatusFilter::from_str(s)?),
+            ));
+        }
+        Ok(Self { first_date, filterings })
+    }
+    pub fn date_filter(&self) -> Option<&DateFilter> {
+        for i in 0..self.filterings.len() {
+            match &self.filterings[i].filter {
+                Filter::Date(f) => {
+                    return Some(&f);
+                }
+                _ => {},
+            }
+        }
+        None
+    }
+    pub fn accepts(&mut self, line: &LogLine) -> bool {
+        for filtering in &mut self.filterings {
+            if !filtering.filter.accepts(line) {
+                filtering.removed_count += 1;
+                return false;
+            }
+        }
+        true
+    }
+    pub fn has_filters(&self) -> bool {
+        !self.filterings.is_empty()
+    }
 }

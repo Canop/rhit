@@ -1,3 +1,6 @@
+###
+- `--lines` option to output log lines to stdout
+
 <a name="v1.3.2"></a>
 ### v1.3.2 - 2021-02-23
 - fix wrong version number in rhit.log file

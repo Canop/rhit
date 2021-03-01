@@ -1,11 +1,13 @@
+mod file_finder;
+mod file_reader;
 mod log_base;
-mod log_file;
 mod log_line;
 mod ranger;
 
 pub use {
+    file_finder::*,
+    file_reader::*,
     log_base::*,
-    log_file::*,
     log_line::*,
     ranger::*,
     std::{

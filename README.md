@@ -23,6 +23,7 @@ Here's looking at dates and trends on January hits with status 2xx and 3xx:
 
 # Summary
 
+- [Summary](#summary)
 - [Installation](#installation)
   * [From source](#from-source)
   * [From binaries](#from-binaries)
@@ -41,6 +42,7 @@ Here's looking at dates and trends on January hits with status 2xx and 3xx:
   * [Path filtering](#path-filtering)
   * [Key](#key)
   * [Changes](#changes)
+- [Printing the original log lines](#printing-the-original-log-lines)
 
 # Installation
 
@@ -237,4 +239,18 @@ You set it with the `--key` argument:
 Use the `--changes` (short: `-c`) argument so that Rhit shows you the paths, referers or remote addresses which are notably more popular or less popular.
 
 Settings related to displayed fields and filtered values still apply.
+
+# Printing the original log lines
+
+It's possible to extract the original log lines matching your filters, either to screen or to a file, by adding `--lines` to your command.
+
+For example to write to a file:
+
+```bash
+rhit -p 'exe$' -s '!4xx' --lines > lines.txt
+```
+
+When you dump lines, some arguments are ignored (`--fields`, `--changes`), you don't have to remove them.
+
+The lines are printed in chronological order, whatever the naming of the source files.
 
