@@ -11,6 +11,8 @@
 [l3]: https://miaou.dystroy.org/3768?rust
 
 
+![logo](doc/logo-rhit.png)
+
 **Rhit** reads your nginx log files in their standard location(even gzipped), does some analysis and tells you about it in pretty tables in your console, storing and polluting nothing.
 
 It lets you filter hits by dates, status, referers or paths, and does trend analysis.
