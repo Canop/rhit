@@ -1,4 +1,5 @@
-### next
+<a name="v1.4.0"></a>
+### v1.4.0 - 2021-03-03
 - `--lines` option to output log lines to stdout
 - accept date in ISO 8601 format (previously, only the "common log format" was accepted) - Fix #3
 
