@@ -1,5 +1,6 @@
-###
+### next
 - `--lines` option to output log lines to stdout
+- accept date in ISO 8601 format (previously, only the "common log format" was accepted) - Fix #3
 
 <a name="v1.3.2"></a>
 ### v1.3.2 - 2021-02-23

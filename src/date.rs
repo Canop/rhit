@@ -55,20 +55,32 @@ impl Date {
         }
         Ok(Self { year, month, day })
     }
-    /// a datetime in nginx logs looks like this: `10/Jan/2021:10:27:01 +0000`
+    /// parse the date part of a nginx datetime.
+    ///
+    /// a datetime in nginx is either in
+    /// - "common log format", eg `10/Jan/2021:10:27:01 +0000`
+    /// - ISO 8601, eg `1977-04-22T01:00:00-05:00`
     pub fn from_nginx(s: &str) -> Result<Self, DateParseError> {
         if s.len()<11 {
             return Err(DateParseError::UnexpectedEnd);
         }
-        let day = s[0..2].parse()?;
-        let month = &s[3..6];
-        let month = MONTHS_3_LETTERS
-            .iter()
-            .position(|&m| m == month)
-            .ok_or_else(|| DateParseError::UnrecognizedMonth(s.to_string()))?;
-        let month = (month + 1) as u8;
-        let year = s[7..11].parse()?;
-        Self::new(year, month, day)
+        if let Ok(year) = s[0..4].parse() {
+            // let's go with ISO 8601
+            let month = s[5..7].parse()?;
+            let day = s[8..10].parse()?;
+            Self::new(year, month, day)
+        } else {
+            // maybe common log format ?
+            let day = s[0..2].parse()?;
+            let month = &s[3..6];
+            let month = MONTHS_3_LETTERS
+                .iter()
+                .position(|&m| m == month)
+                .ok_or_else(|| DateParseError::UnrecognizedMonth(s.to_string()))?;
+            let month = (month + 1) as u8;
+            let year = s[7..11].parse()?;
+            Self::new(year, month, day)
+        }
     }
     /// parse a numeric date with optionally implicit parts
     /// The part separator is the '/'
@@ -113,10 +125,17 @@ mod date_parsing_tests {
     use super::*;
 
     #[test]
-    fn parse_nginx_date() {
+    fn parse_nginx_date_common_log_format() {
         assert_eq!(
             Date::from_nginx("10/Jan/2021:10:27:01 +0000").unwrap(),
             Date::new(2021, 1, 10).unwrap(),
+        );
+    }
+    #[test]
+    fn parse_nginx_date_iso_8601() {
+        assert_eq!(
+            Date::from_nginx("1977-04-22T01:00:00-05:00").unwrap(),
+            Date::new(1977, 4, 22).unwrap(),
         );
     }
 }
