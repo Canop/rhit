@@ -37,6 +37,7 @@ pub fn run() -> anyhow::Result<()> {
     } else {
         print_analysis(&path, &args)?;
     }
+    cli_log::log_mem(log::Level::Info);
     Ok(())
 }
 

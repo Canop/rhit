@@ -104,12 +104,14 @@ dependencies = [
 
 [[package]]
 name = "cli-log"
-version = "1.1.0"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bb79efde0c2e06b3577eff89b0788967051aaad4bf3bcc74a9638223d57ea321"
+checksum = "690194554a14b440fed58d86ca02f6fc45f3726e0cbb73e15168652eeae61a0a"
 dependencies = [
  "chrono",
+ "file-size",
  "log",
+ "proc-status 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -466,6 +468,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "proc-status"
+version = "0.1.0"
+dependencies = [
+ "thiserror",
+]
+
+[[package]]
+name = "proc-status"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93bbc7b9b0b689e8b450817689f02f4f2ca89599629d9347a4b6a3e40fccc8eb"
+dependencies = [
+ "thiserror",
+]
+
+[[package]]
 name = "quote"
 version = "1.0.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -520,6 +538,7 @@ dependencies = [
  "log",
  "minimad",
  "num-format",
+ "proc-status 0.1.0",
  "regex",
  "termimad",
  "thiserror",
