@@ -111,7 +111,7 @@ dependencies = [
  "chrono",
  "file-size",
  "log",
- "proc-status 0.1.0",
+ "proc-status",
 ]
 
 [[package]]
@@ -477,13 +477,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "proc-status"
-version = "0.1.1"
-dependencies = [
- "thiserror",
-]
-
-[[package]]
 name = "quote"
 version = "1.0.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -538,7 +531,6 @@ dependencies = [
  "log",
  "minimad",
  "num-format",
- "proc-status 0.1.1",
  "regex",
  "termimad",
  "thiserror",

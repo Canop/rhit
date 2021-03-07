@@ -72,6 +72,9 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
         let check_names = !args.no_name_check;
         let ff = FileFinder::new(path.to_path_buf(), check_names);
         let mut dated_files = time!(ff.dated_files())?;
+        if dated_files.is_empty() {
+            bail!("no log file found");
+        }
         let first_date = dated_files[0].0;
         let last_date = dated_files[dated_files.len()-1].0; // last first date
         let filterer = Filterer::new(args, first_date, last_date)?;

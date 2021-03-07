@@ -25,7 +25,6 @@ libc = "0.2"
 log = "0.4"
 minimad = "0.7.0"
 num-format = "0.4"
-proc-status = { path = "../proc-status" }
 regex = "1.4"
 thiserror = "1.0"
 
