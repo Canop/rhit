@@ -10,7 +10,7 @@ ${filterings
 Filtering by ${field} on pattern `${pattern}` removed **${removed_percent}** of total lines
 }
 ${filtered-stats
- **==>** ${hits} hits and ${bytes}
+ **==>** hits: ${hits}, bytes sent: ${bytes}
 }
 "#;
 

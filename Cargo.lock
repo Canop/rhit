@@ -111,7 +111,7 @@ dependencies = [
  "chrono",
  "file-size",
  "log",
- "proc-status 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-status 0.1.0",
 ]
 
 [[package]]
@@ -470,15 +470,15 @@ dependencies = [
 [[package]]
 name = "proc-status"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93bbc7b9b0b689e8b450817689f02f4f2ca89599629d9347a4b6a3e40fccc8eb"
 dependencies = [
  "thiserror",
 ]
 
 [[package]]
 name = "proc-status"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "93bbc7b9b0b689e8b450817689f02f4f2ca89599629d9347a4b6a3e40fccc8eb"
+version = "0.1.1"
 dependencies = [
  "thiserror",
 ]
@@ -521,7 +521,7 @@ checksum = "b5eb417147ba9860a96cfe72a0b93bf88fee1744b5636ec99ab20c1aa9376581"
 
 [[package]]
 name = "rhit"
-version = "1.4.0"
+version = "1.4.1"
 dependencies = [
  "anyhow",
  "argh",
@@ -538,7 +538,7 @@ dependencies = [
  "log",
  "minimad",
  "num-format",
- "proc-status 0.1.0",
+ "proc-status 0.1.1",
  "regex",
  "termimad",
  "thiserror",

@@ -1,0 +1,36 @@
+site_name: Rhit
+site_description: 'Rhit, a nginx log explorer'
+site_url: https://dystroy.org/rhit
+repo_url: https://github.com/Canop/rhit
+edit_uri: ''
+
+nav:
+        - Why: index.md
+        - Install: install.md
+        - Usage:
+                - Overview: usage-overview.md
+                - Displayed Fields: usage-fields.md
+                - Filters: usage-filters.md
+                - Key: usage-key.md
+                - Recent changes: usage-changes.md
+                - Export: export.md
+        - Community: community.md
+
+extra_css:
+        - css/extra.css
+
+theme:
+        name: mkdocs
+        nav_style: dark
+        custom_dir: custom_theme
+        highlightjs: true
+        hljs_style: Dracula
+        hljs_languages:
+                - yaml
+                - ini
+                - css
+                - rust
+
+markdown_extensions:
+        - admonition
+        - def_list

@@ -1,3 +1,7 @@
+<a name="v1.4.1"></a>
+### v1.4.1 - 2021-03-07
+- small details, like the order of arguments in help
+
 <a name="v1.4.0"></a>
 ### v1.4.0 - 2021-03-03
 - `--lines` option to output log lines to stdout

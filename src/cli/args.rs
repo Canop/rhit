@@ -40,37 +40,37 @@ pub struct Args {
     /// add tables with more popular and less popular entries (ip, referers or paths)
     pub changes: bool,
 
-    #[argh(option, short = 's')]
-    /// comma separated list of statuses or status ranges.
-    /// (eg: `-s 514` or `-s 4xx,5xx`, or `-s 310-340,400-450` or `-s 5xx,!502`)
-    pub status: Option<String>,
+    #[argh(option, short = 'd')]
+    /// filter the dates, on a precise day or in an inclusive range
+    /// (eg: `-r 12/24` or `-r '2021/12/24-2022/01/21'`)
+    pub date: Option<String>,
+
+    #[argh(option, short = 'i')]
+    /// ip address to filter by. May be negated with a `!`
+    pub ip: Option<String>,
 
     #[argh(option, short = 'm')]
     /// http method to filter by. Make it negative with a `!`.
     /// (eg: `-m PUT` or `-m !DELETE` or `-m none` or `-m other`)
     pub method: Option<String>,
 
-    #[argh(option, short = 'i')]
-    /// ip address to filter by. May be negated with a `!`
-    pub ip: Option<String>,
-
-    #[argh(option, short = 'd')]
-    /// filter the dates, on a precise day or in an inclusive range
-    /// (eg: `-r 12/24` or `-r '2021/12/24-2022/01/21'`)
-    pub date: Option<String>,
-
     #[argh(option, short = 'p')]
     /// filter the paths with a pattern
     /// (eg: `-p broot` or `-p '^/\d+'` or `-p 'miaou | blog'`)
     pub path: Option<String>,
 
-    #[argh(switch, short = 'a')]
-    /// show all paths, including resources
-    pub all: bool,
-
     #[argh(option, short = 'r')]
     /// filter the referers with a pattern
     pub referer: Option<String>,
+
+    #[argh(option, short = 's')]
+    /// comma separated list of statuses or status ranges.
+    /// (eg: `-s 514` or `-s 4xx,5xx`, or `-s 310-340,400-450` or `-s 5xx,!502`)
+    pub status: Option<String>,
+
+    #[argh(switch, short = 'a')]
+    /// show all paths, including resources
+    pub all: bool,
 
     #[argh(switch)]
     /// tries to open all files, whatever their names
