@@ -37,6 +37,10 @@ h2 {
 }
 h3 {
 	font-size: 16px;
+	color: #fc0;
+}
+h4 {
+	color: #fc0;
 }
 
 .navbar {
@@ -181,7 +185,9 @@ body ul.dropdown-menu li a:hover {
 	/**background: #111;
 	color: #ff5f87;**/
 }
-
+body .nav>li>a:hover, body .nav>li>a:focus {
+	background: #222;
+}
 body .toc-header {
 	font-weight: bold;
 	font-size: 18px;
@@ -197,6 +203,10 @@ body .toc-header {
 
 td code {
 	white-space: nowrap;
+}
+
+.modal-content {
+	background: #222;
 }
 
 /******************/

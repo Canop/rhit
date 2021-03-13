@@ -15,11 +15,11 @@ rhit my/archived/logs
 
 The arguments you'll most often use enable
 
-* to [filter](../usage-filters) the hits to focus on a specific set: `--date`, `--ip`, `--method`, `--path`, `--referer`, `--status`
-* to [choose the displayed fields](../usage-fields): `--fields`
-* to [choose the sorting key](../usage-key), either *hits* (default) or *bytes*: `--key`
-* to specify the detail level, the length of tables: `--length`, from `0` (short) to `6` (long), `1` being the default
-* to see the [recent changes](../usage-changes): `--changes`
-* to [export](../export) the filtered lines, either to screen or to a file
+* [filtering](../usage-filters) hits to focus on a specific subset: `--date`, `--ip`, `--method`, `--path`, `--referer`, `--status`
+* [choosing the displayed fields](../usage-fields): `--fields`
+* [choosing the sorting key](../usage-key), either *hits* (default) or *bytes*: `--key`
+* specifying the detail level, the length of tables: `--length`, from `0` (short) to `6` (long), `1` being the default
+* seeing the [recent changes](../usage-changes): `--changes`
+* [exporting](../export) the filtered lines, either to screen or to a file
 
 
