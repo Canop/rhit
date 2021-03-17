@@ -42,40 +42,6 @@ jobs:
           name: wheels
           path: dist
 
-  windows:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        platform: [
-          { python-architecture: "x64", target: "x86_64-pc-windows-msvc" },
-          { python-architecture: "x86", target: "i686-pc-windows-msvc" },
-        ]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-          architecture: ${{ matrix.platform.python-architecture }}
-      - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: ${{ matrix.platform.target }}
-          profile: minimal
-          default: true
-      - name: Install maturin
-        run: pip install maturin
-      - name: Build wheels
-        run: |
-          maturin build --release --out dist --no-sdist --target ${{ matrix.platform.target }}
-          pip install rhit --no-index --find-links dist --force-reinstall
-          rhit --help
-      - name: Upload wheels
-        uses: actions/upload-artifact@v2
-        with:
-          name: wheels
-          path: dist
-
   linux:
     runs-on: ubuntu-latest
     strategy:
