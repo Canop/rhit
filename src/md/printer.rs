@@ -1,6 +1,7 @@
 use {
     super::*,
     crate::*,
+    crossterm::tty::IsTty,
     have::Fun,
     itertools::*,
     minimad::{OwningTemplateExpander, TextTemplate},
@@ -319,7 +320,7 @@ impl Printer {
 }
 
 fn is_output_piped() -> bool {
-    unsafe { libc::isatty(libc::STDOUT_FILENO) == 0 }
+    !std::io::stdout().is_tty()
 }
 
 fn to_percent(count: usize, total: usize) -> String {

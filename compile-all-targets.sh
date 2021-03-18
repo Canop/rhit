@@ -25,3 +25,10 @@ echo -e "${H2}Compiling the MUSL version${EH}"
 cross build --release --target x86_64-unknown-linux-musl
 mkdir build/x86_64-unknown-linux-musl
 cp target/x86_64-unknown-linux-musl/release/rhit build/x86_64-unknown-linux-musl
+
+# build the windows version
+# use cargo cross
+echo -e "${H2}Compiling the Windows version${EH}"
+cross build --target x86_64-pc-windows-gnu --release
+mkdir build/x86_64-pc-windows-gnu
+cp target/x86_64-pc-windows-gnu/release/rhit.exe build/x86_64-pc-windows-gnu/

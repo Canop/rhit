@@ -1,3 +1,6 @@
+### next
+- compiles on windows (but doesn't know where the log files are) - I need testers to confirm it works
+
 <a name="v1.4.1"></a>
 ### v1.4.1 - 2021-03-07
 - small details, like the order of arguments in help
