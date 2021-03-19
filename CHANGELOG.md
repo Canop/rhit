@@ -1,4 +1,5 @@
-### next
+<a name="v1.5.0"></a>
+### v1.5.0 - 2021-03-19
 - new syntax to specify fields, allow adding from default, removing from all, etc. (the old syntax still works)
 - compiles on windows (but doesn't know where the log files are) - I need testers to confirm it works
 - change error message "no log found" into a more appropriate one when there was an error reading (usually lack of permission)

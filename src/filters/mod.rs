@@ -16,6 +16,7 @@ pub use {
 use {
     crate::*,
     anyhow::*,
+    smallvec::*,
     std::{
         str::FromStr,
     },
@@ -71,7 +72,7 @@ impl Filtering {
 
 pub struct Filterer {
     pub first_date: Date,
-    pub filterings: Vec<Filtering>,
+    pub filterings: SmallVec<[Filtering; 5]>,
 }
 
 impl Filterer {
@@ -81,7 +82,7 @@ impl Filterer {
         last_date: Date,
     ) -> Result<Self> {
         let (default_year, default_month) = unique_year_month(first_date, last_date);
-        let mut filterings = Vec::new();
+        let mut filterings = SmallVec::new();
         if let Some(s) = &args.date {
             filterings.push(Filtering::new(
                 s,

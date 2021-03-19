@@ -1,4 +1,5 @@
 use {
+    smallvec::*,
     std::{
         num::ParseIntError,
         str::FromStr,
@@ -20,8 +21,8 @@ pub enum StatusFilterParseError {
 ///  `4xx,!404`
 #[derive(Debug, Clone)]
 pub struct StatusFilter {
-    include: Vec<(u16, u16)>,
-    exclude: Vec<(u16, u16)>,
+    include: SmallVec<[(u16, u16); 4]>,
+    exclude: SmallVec<[(u16, u16); 4]>,
 }
 
 fn ranges_contains(ranges: &[(u16, u16)], status: u16) -> bool {
@@ -68,8 +69,8 @@ impl StatusFilter {
 impl FromStr for StatusFilter {
     type Err= StatusFilterParseError;
     fn from_str(value: &str) -> Result<Self, StatusFilterParseError> {
-        let mut include = Vec::new();
-        let mut exclude = Vec::new();
+        let mut include = SmallVec::new();
+        let mut exclude = SmallVec::new();
         for s in value.split(',') {
             if let Some(s) = s.strip_prefix('!') {
                 exclude.push(parse_range(s)?);
