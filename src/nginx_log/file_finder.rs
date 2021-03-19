@@ -47,9 +47,10 @@ impl FileFinder {
         find_files(self.root, &mut files, false, self.check_names)?;
         let mut dated_files = Vec::new();
         for path in files.drain(..) {
-            debug!("date: {:#?}", get_file_first_date(&path));
-            if let Ok(date) = get_file_first_date(&path) {
+            if let Some(date) = get_file_first_date(&path)? {
                 dated_files.push((date, path));
+            } else {
+                debug!("no date found in {:?}", path);
             }
         }
         dated_files.sort_unstable_by_key(|t| t.0);

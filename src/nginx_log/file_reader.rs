@@ -19,7 +19,7 @@ use {
     termimad::ProgressBar,
 };
 
-pub fn get_file_first_date(path: &Path) -> Result<Date> {
+pub fn get_file_first_date(path: &Path) -> Result<Option<Date>> {
     debug!("reading date in file {:?}", &path);
     let file = File::open(path)?;
     if path.extension().and_then(|e| e.to_str()) == Some("gz") {
@@ -29,14 +29,18 @@ pub fn get_file_first_date(path: &Path) -> Result<Date> {
         read_first_date(file)
     }
 }
-fn read_first_date<R: Read>(file: R) -> Result<Date> {
+fn read_first_date<R: Read>(file: R) -> Result<Option<Date>> {
     let mut reader = BufReader::new(file);
     let mut line = String::new();
     if reader.read_line(&mut line)? < 20 {
-        bail!("File too short");
+        debug!("file too short"); // doesn't contain a log
+        return Ok(None);
     }
-    let log_line = LogLine::from_str(&line)?;
-    Ok(log_line.date)
+    Ok(
+        LogLine::from_str(&line)
+        .ok()
+        .map(|l| l.date)
+    )
 }
 
 pub struct FileReader<'c, C>
