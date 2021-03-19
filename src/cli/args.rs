@@ -10,7 +10,7 @@ use {
 #[derive(Debug, FromArgs)]
 /// Rhit gives you a report of the hits found in your nginx logs.
 ///
-/// Source at https://github.com/Canop/rhit
+/// Complete documentation at https://dystroy.org/rhit
 pub struct Args {
 
     #[argh(switch)]
@@ -31,7 +31,8 @@ pub struct Args {
 
     #[argh(option, short = 'f', default = "Default::default()")]
     /// comma separated list of hit fields to display.
-    /// use `-f a` to get all fields.
+    /// Use `-f a` to get all fields.
+    /// Use `-f +i` to add i(p).
     /// Available fields: date,method,status,ip,ref,path.
     /// Default fields: date,status,ref,path.
     pub fields: Fields,
@@ -84,7 +85,6 @@ pub struct Args {
     /// the log file or folder to analyze
     pub file: Option<PathBuf>,
 }
-
 
 /// An optional boolean for use in Argh
 #[derive(Debug, Clone, Copy, Default)]

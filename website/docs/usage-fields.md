@@ -3,18 +3,37 @@
 
 Here's a typical access log line:
 
-```
+```no-wrap
 178.133.125.122 - - [21/Jan/2021:05:49:52 +0000] "HEAD /broot/download/x86_64-pc-windows-gnu/broot.exe HTTP/1.1" 200 0 "-" "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)"
 ```
-It's made of several fields: date, remote IP adress, path, bytes sent, etc.
+Rhit can show tables on the following fields:
+
+* date,
+* method
+* status
+* (remote) IP
+* referer
+* path
 
 You can specify the list of fields on which you want sorted tables.
 
 If you specify nothing, the default is to show dates, status, referers and paths.
 
-To specify several fields, separate them with commas, for example `-f date,status`.
+Fields are refered either by their name (eg `ip`) or by their initial (eg `i`).
 
-To show all fields, use `-f all`.
+The syntax is best explained with a few examples
+
+Goal | Argument
+-|-
+Only the paths | `--field path` or `-f path` or `-f p`
+IP and paths | `-f path+ip` or `-f p+i`
+The default fields *and* the IP | `-f +ip` or `-f +i`
+The default fields *and* IP and status | `-f +ip+status` or `-f +i+s`
+The default fields minus dates | `-f -d`
+The default fields with IP but not dates | `-f +i-d`
+Default fields but paths moved to the end | `-f +p`
+All fields except the paths | `-f all-paths` or `-f a-p`
+All the fields, with dates moved to the end | `f all+dates` or `-f a+d`
 
 # Date
 
@@ -30,7 +49,8 @@ By default the length of the bars is based on the hit counts (in pink). You may 
 
 The remote adresses table isn't displayed by default.
 
-To see it use `rhit -f ip` (or combine it with other fields, for example `rhit -f path,ip,ref`:
+To see it alone use `rhit -f i`.
+To see it with default fields, use `rhit -f +i`
 
 ![ip](img/fields-ip.png)
 
@@ -42,7 +62,7 @@ If you want more frequent adresses, use the `--length` field, for example `rhit 
 
 The HTTP method table isn't displayed by default.
 
-To see it use `rhit -f method`:
+To see it use `rhit -f +m`:
 
 ![method](img/fields-method.png)
 
@@ -52,7 +72,7 @@ As you'd see by [exporting the lines](../export) with `rhit -m other --lines`, t
 
 The path is displayed by default.
 
-If you want to see only the path, use `rhit -f path`:
+If you want to see only the path, use `rhit -f p`:
 
 ![path](img/fields-path.png)
 

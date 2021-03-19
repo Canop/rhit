@@ -209,6 +209,10 @@ td code {
 	background: #222;
 }
 
+code.no-wrap {
+	white-space: normal;
+}
+
 /******************/
 /* custom classes */
 

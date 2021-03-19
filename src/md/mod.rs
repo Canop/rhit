@@ -27,24 +27,46 @@ pub fn print_analysis(
     }
     // note about times: the first markdown template expansion (whatever it is)
     // costs a lot when there's a filtering. I don't know exactly why.
-    if printer.fields.contains(Field::Dates) {
-        let histogram = Histogram::from(&base);
-        time!("histogram printing", histogram.print(printer));
-    }
     let lines = &base.lines;
-    if printer.fields.contains(Field::Methods) {
-        time!("print_methods", methods::print_methods(lines, printer, trend_computer));
-    }
-    if printer.fields.contains(Field::Status) {
-        time!("print_status_codes", status::print_status_codes(lines, printer, trend_computer));
-    }
-    if printer.fields.contains(Field::RemoteAddresses) {
-        time!("print_remote_addresses", addr::print_remote_addresses(lines, printer, trend_computer));
-    }
-    if printer.fields.contains(Field::Referers) {
-        time!("print_referers", referers::print_referers(lines, printer, trend_computer));
-    }
-    if printer.fields.contains(Field::Paths) {
-        time!("print_paths", paths::print_paths(lines, printer, trend_computer));
+    for field in &printer.fields.0 {
+        match field {
+            Field::Dates => {
+                let histogram = Histogram::from(&base);
+                time!(
+                    "histogram printing",
+                    histogram.print(printer),
+                );
+            }
+            Field::Methods => {
+                time!(
+                    "print_methods",
+                    methods::print_methods(lines, printer, trend_computer),
+                );
+            }
+            Field::Status => {
+                time!(
+                    "print_status_codes",
+                    status::print_status_codes(lines, printer, trend_computer),
+                );
+            }
+            Field::Ip => {
+                time!(
+                    "print_remote_addresses",
+                    addr::print_remote_addresses(lines, printer, trend_computer),
+                );
+            }
+            Field::Referers => {
+                time!(
+                    "print_referers",
+                    referers::print_referers(lines, printer, trend_computer),
+                );
+            }
+            Field::Paths => {
+                time!(
+                    "print_paths",
+                    paths::print_paths(lines, printer, trend_computer),
+                );
+            }
+        }
     }
 }
