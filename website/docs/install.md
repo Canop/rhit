@@ -12,6 +12,7 @@ Target|Files
 -|-
 Linux | [x86_64-linux](https://dystroy.org/rhit/download/x86_64-linux/rhit)
 Linux/musl | [x86_64-unknown-linux-musl](https://dystroy.org/rhit/download/x86_64-unknown-linux-musl/rhit)
+Windows (experimental) | [x86_64-pc-windows-gnu](https://dystroy.org/rhit/download/x86_64-pc-windows-gnu/rhit.exe)
 
 When you download executable files, you'll have to ensure the shell can find them. An easy solution is to put them in `/usr/local/bin`. You may also have to set them executable using `chmod +x rhit`.
 
