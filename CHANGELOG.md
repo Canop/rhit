@@ -1,3 +1,6 @@
+### next
+- look up to 3 lines of a file for a log line when checking whether it's a log file - Fix #8
+
 <a name="v1.5.0"></a>
 ### v1.5.0 - 2021-03-19
 - new syntax to specify fields, allow adding from default, removing from all, etc. (the old syntax still works)

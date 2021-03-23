@@ -32,15 +32,30 @@ pub fn get_file_first_date(path: &Path) -> Result<Option<Date>> {
 fn read_first_date<R: Read>(file: R) -> Result<Option<Date>> {
     let mut reader = BufReader::new(file);
     let mut line = String::new();
-    if reader.read_line(&mut line)? < 20 {
-        debug!("file too short"); // doesn't contain a log
-        return Ok(None);
+    // a log file may contain non log lines, for example when
+    // logrotate added its own traces.
+    // See https://github.com/Canop/rhit/issues/8
+    // We'll try up to 3 lines
+    for _ in 0..3 {
+        let len = reader.read_line(&mut line)?;
+        if len < 20 {
+            if len == 0 { // EOF
+                return Ok(None);
+            }
+            debug!("line too short"); // doesn't contain a log
+            continue;
+        }
+        match LogLine::from_str(&line) {
+            Ok(l) => {
+                return Ok(Some(l.date));
+            }
+            _ => {
+                debug!("skipping line {:?}", &line);
+            }
+        }
+        line.clear();
     }
-    Ok(
-        LogLine::from_str(&line)
-        .ok()
-        .map(|l| l.date)
-    )
+    Ok(None)
 }
 
 pub struct FileReader<'c, C>
