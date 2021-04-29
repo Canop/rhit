@@ -161,8 +161,13 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
                     // we only log the first error
                     match errors {
                         0 => warn!("{} in {}", e, line),
-                        1 => warn!("not logging other errors in this file"),
-                        _ => {}
+                        1 => {
+                            warn!("logging other errors in this file as debug only");
+                            debug!("{} in {}", e, line);
+                        }
+                        _ => {
+                            debug!("{} in {}", e, line);
+                        }
                     }
                     errors += 1;
                 }

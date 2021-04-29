@@ -7,7 +7,7 @@ description = "nginx log analyzer"
 edition = "2018"
 keywords = ["log", "nginx", "analyzer"]
 license = "MIT"
-categories = []
+categories = ["command-line-utilities"]
 
 [dependencies]
 anyhow = "1.0"
