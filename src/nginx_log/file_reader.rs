@@ -67,6 +67,7 @@ where
     consumer: &'c mut C,
     paths: Vec<PathBuf>,
     stop_on_error: bool,
+    silent: bool,
 }
 
 pub trait LineConsumer {
@@ -106,6 +107,7 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
             consumer,
             paths,
             stop_on_error,
+            silent: args.silent_load,
         })
     }
     pub fn filterer(self) -> Filterer {
@@ -116,7 +118,9 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
     ) -> Result<()> {
         let total =  self.paths.len();
         let mut done = 0;
-        print_progress(0, total)?;
+        if !self.silent {
+            print_progress(0, total)?;
+        }
         let paths = std::mem::take(&mut self.paths);
         for path in paths {
             if let Err(e) = self.read_file_lines(&path) {
@@ -127,10 +131,14 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
                 }
             }
             done += 1;
-            print_progress(done, total)?;
+            if !self.silent {
+                print_progress(done, total)?;
+            }
         }
         execute!(io::stderr(), Clear(ClearType::CurrentLine))?;
-        eprintln!("I've read {} files in {:?}", total, self.root);
+        if !self.silent {
+            eprintln!("I've read {} files in {:?}", total, self.root);
+        }
         Ok(())
     }
     fn read_file_lines(&mut self, path: &Path) -> Result<()> {

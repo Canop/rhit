@@ -4,3 +4,6 @@ deploy.sh
 rhit_*.zip
 /build
 /trav
+!*.log
+rhit.log
+glassbench_v1.db

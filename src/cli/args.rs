@@ -7,7 +7,7 @@ use {
     std::path::PathBuf,
 };
 
-#[derive(Debug, FromArgs)]
+#[derive(Debug, Default, FromArgs)]
 /// Rhit gives you a report of the hits found in your nginx logs.
 ///
 /// Complete documentation at https://dystroy.org/rhit
@@ -80,6 +80,10 @@ pub struct Args {
     #[argh(switch)]
     /// print the original log lines, filtered and sorted
     pub lines: bool,
+
+    #[argh(switch)]
+    /// don't print anything during load, no progress bar or file list
+    pub silent_load: bool,
 
     #[argh(positional)]
     /// the log file or folder to analyze
