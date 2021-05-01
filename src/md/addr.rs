@@ -23,7 +23,7 @@ pub fn print_remote_addresses(
         &section,
         log_lines,
         |_| true,
-        |line| line.remote_addr,
+        |line| &line.remote_addr,
         trend_computer,
     );
 }

@@ -1,10 +1,6 @@
 use {
     crate::*,
     std::{
-        net::{
-            IpAddr,
-            AddrParseError,
-        },
         num::ParseIntError,
         str::FromStr,
     },
@@ -13,8 +9,6 @@ use {
 
 #[derive(Debug, Error)]
 pub enum LogParseError {
-    #[error("invalid remote addr")]
-    InvalidRemoteAddr(#[from] AddrParseError),
     #[error("invalid log line {0:?}")]
     InvalidLogLine(String),
     #[error("character not found {0:?}")]
@@ -30,7 +24,7 @@ pub enum LogParseError {
 // (app is about 3% faster if I replace this field with a string)
 #[derive(Debug)]
 pub struct LogLine {
-    pub remote_addr: IpAddr,
+    pub remote_addr: String,
     pub date: Date,
     pub date_idx: usize,
     pub method: Method,
@@ -78,7 +72,7 @@ impl FromStr for LogLine {
     type Err = LogParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut ranger = Ranger::new(s);
-        let remote_addr = IpAddr::from_str(ranger.until(' ')?)?;
+        let remote_addr = ranger.until(' ')?.to_string();
         let date = Date::from_nginx(ranger.between('[', ']')?)?;
         let mut request = ranger.between('"', '"')?.split(' ');
         let (method, path) = match (request.next(), request.next()) {
@@ -106,16 +100,13 @@ impl FromStr for LogLine {
 #[cfg(test)]
 mod log_line_parsing_tests {
 
-    use {
-        super::*,
-        std::net::Ipv4Addr,
-    };
+    use super::*;
 
     static SIO_PULL_LINE: &str = r#"10.232.28.160 - - [22/Jan/2021:02:49:30 +0000] "GET /socket.io/?EIO=3&transport=polling&t=NSd_nu- HTTP/1.1" 200 99 "https://miaou.dystroy.org/3" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36""#;
     #[test]
     fn parse_sio_line() {
         let ll = LogLine::from_str(SIO_PULL_LINE).unwrap();
-        assert_eq!(ll.remote_addr, IpAddr::V4(Ipv4Addr::new(10, 232, 28, 160)));
+        assert_eq!(ll.remote_addr, "10.232.28.160");
         assert_eq!(ll.method, Method::Get);
         assert_eq!(ll.path, "/socket.io/");
         assert_eq!(ll.status, 200);
@@ -137,7 +128,7 @@ mod log_line_parsing_tests {
     #[test]
     fn parse_issue_3_line() {
         let ll = LogLine::from_str(ISSUE_3_LINE).unwrap();
-        assert_eq!(ll.remote_addr, IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)));
+        assert_eq!(ll.remote_addr, "0.0.0.0");
         assert_eq!(ll.method, Method::Get);
         assert_eq!(ll.status, 200);
     }

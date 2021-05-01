@@ -1,13 +1,11 @@
 
 mod date_filter;
-mod ip_filter;
 mod status_filter;
 mod str_filter;
 mod method_filter;
 
 pub use {
     date_filter::*,
-    ip_filter::*,
     status_filter::*,
     str_filter::*,
     method_filter::*,
@@ -24,7 +22,7 @@ use {
 
 pub enum Filter {
     Date(DateFilter),
-    Ip(IpFilter),
+    Ip(StrFilter),
     Method(MethodFilter),
     Path(StrFilter),
     Referer(StrFilter),
@@ -35,7 +33,7 @@ impl Filter {
     pub fn accepts(&self, line: &LogLine) -> bool {
         match self {
             Self::Date(f) => f.contains(line.date),
-            Self::Ip(f) => f.accepts(line.remote_addr),
+            Self::Ip(f) => f.accepts(&line.remote_addr),
             Self::Method(f) => f.contains(line.method),
             Self::Path(f) => f.accepts(&line.path),
             Self::Referer(f) => f.accepts(&line.referer),
@@ -92,7 +90,7 @@ impl Filterer {
         if let Some(s) = &args.ip {
             filterings.push(Filtering::new(
                 s,
-                Filter::Ip(IpFilter::new(s)?),
+                Filter::Ip(StrFilter::new(s)?),
             ));
         }
         if let Some(s) = &args.method {

@@ -39,12 +39,13 @@ Shorcuts are sometimes possible. For example if all the log files are from the s
 
 Remote IP filters are defined with `--ip`, shortened in `-i`.
 
-You may either filter to show the hits of a specific IP or the other ones.
+You may filter to show the hits of a specific IP or the other ones, or do a string based filtering.
 
 Purpose|Example
 -|-
 Show the hits of a specific IP | `-i 35.180.167.230`
 Show all hits but the ones of a specific IP | `-i '!35.180.167.230'`
+Show all hits from IP starting with '192' | `-i '^192'`
 
 # Filter by Method
 
