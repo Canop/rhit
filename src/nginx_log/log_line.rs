@@ -24,14 +24,14 @@ pub enum LogParseError {
 // (app is about 3% faster if I replace this field with a string)
 #[derive(Debug)]
 pub struct LogLine {
-    pub remote_addr: String,
+    pub remote_addr: Box<str>,
     pub date: Date,
     pub date_idx: usize,
     pub method: Method,
-    pub path: String,
+    pub path: Box<str>,
     pub status: u16,
     pub bytes_sent: u64,
-    pub referer: String,
+    pub referer: Box<str>,
 }
 
 impl DateIndexed for LogLine {
@@ -72,7 +72,7 @@ impl FromStr for LogLine {
     type Err = LogParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut ranger = Ranger::new(s);
-        let remote_addr = ranger.until(' ')?.to_string();
+        let remote_addr = ranger.until(' ')?.into();
         let date = Date::from_nginx(ranger.between('[', ']')?)?;
         let mut request = ranger.between('"', '"')?.split(' ');
         let (method, path) = match (request.next(), request.next()) {
@@ -80,10 +80,10 @@ impl FromStr for LogLine {
             (Some(path), None) => (Method::None, path),
             _ => unreachable!(),
         };
-        let path = path.split('?').next().unwrap().to_string();
+        let path = path.split('?').next().unwrap().into();
         let status = ranger.between(' ', ' ')?.parse()?;
         let bytes_sent = ranger.between(' ', ' ')?.parse()?;
-        let referer = ranger.between('"', '"')?.to_string();
+        let referer = ranger.between('"', '"')?.into();
         Ok(LogLine {
             remote_addr,
             date,
@@ -106,12 +106,12 @@ mod log_line_parsing_tests {
     #[test]
     fn parse_sio_line() {
         let ll = LogLine::from_str(SIO_PULL_LINE).unwrap();
-        assert_eq!(ll.remote_addr, "10.232.28.160");
+        assert_eq!(&*ll.remote_addr, "10.232.28.160");
         assert_eq!(ll.method, Method::Get);
-        assert_eq!(ll.path, "/socket.io/");
+        assert_eq!(&*ll.path, "/socket.io/");
         assert_eq!(ll.status, 200);
         assert_eq!(ll.bytes_sent, 99);
-        assert_eq!(ll.referer, "https://miaou.dystroy.org/3".to_string());
+        assert_eq!(&*ll.referer, "https://miaou.dystroy.org/3");
     }
 
     static NO_VERB_LINE: &str = r#"119.142.145.250 - - [10/Jan/2021:10:27:01 +0000] "\x16\x03\x01\x00u\x01\x00\x00q\x03\x039a\xDF\xCA\x90\xB1\xB4\xC2SB\x96\xF0\xB7\x96CJD\xE1\xBF\x0E\xE1Y\xA2\x87v\x1D\xED\xBDo\x05A\x9D\x00\x00\x1A\xC0/\xC0+\xC0\x11\xC0\x07\xC0\x13\xC0\x09\xC0\x14\xC0" 400 173 "-" "-""#;
@@ -128,7 +128,7 @@ mod log_line_parsing_tests {
     #[test]
     fn parse_issue_3_line() {
         let ll = LogLine::from_str(ISSUE_3_LINE).unwrap();
-        assert_eq!(ll.remote_addr, "0.0.0.0");
+        assert_eq!(&*ll.remote_addr, "0.0.0.0");
         assert_eq!(ll.method, Method::Get);
         assert_eq!(ll.status, 200);
     }
