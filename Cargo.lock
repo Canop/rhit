@@ -871,7 +871,7 @@ dependencies = [
 
 [[package]]
 name = "rhit"
-version = "1.5.1-dev"
+version = "1.5.1"
 dependencies = [
  "anyhow",
  "argh",

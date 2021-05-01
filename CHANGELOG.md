@@ -1,7 +1,8 @@
-### next
+<a name="v1.5.1"></a>
+### v1.5.1 - 2021-05-01
 - look up to 3 lines of a file for a log line when checking whether it's a log file - Fix #8
 - faster log parsing (about 7%)
-- IP filtering allow regex or any string based filtering
+- IP filtering allow regexes or any string based filtering
 
 <a name="v1.5.0"></a>
 ### v1.5.0 - 2021-03-19
