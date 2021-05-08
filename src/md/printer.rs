@@ -66,7 +66,7 @@ impl Printer {
         let color = args.color.value().unwrap_or(!is_output_piped());
         let skin = skin::make_skin(color);
         let key = args.key;
-        let date_filter = log_base.filterer.date_filter().map(|f| f.clone());
+        let date_filter = log_base.filterer.date_filter().copied();
         let changes = args.changes;
         let all_paths = args.all;
         Self {

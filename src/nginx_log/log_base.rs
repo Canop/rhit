@@ -53,10 +53,10 @@ pub struct LogBase {
     pub dates: Vec<Date>, // keep this ?
     pub filterer: Filterer,
     pub lines: Vec<LogLine>,
-    pub filtered_count: u64,
     pub filtered_histogram: Histogram,
-    pub unfiltered_count: u64,
+    pub filtered_count: u64,
     pub unfiltered_histogram: Histogram,
+    pub unfiltered_count: u64,
 }
 
 impl LogBase {

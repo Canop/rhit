@@ -1,5 +1,6 @@
 use {
     crate::*,
+    lazy_regex::regex,
 };
 
 #[derive(Debug, Clone, Copy)]
