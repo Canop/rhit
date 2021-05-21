@@ -1,6 +1,6 @@
 use {
     crate::*,
-    lazy_regex::regex,
+    lazy_regex::{regex, regex_is_match},
 };
 
 #[derive(Debug, Clone, Copy)]
@@ -40,7 +40,7 @@ impl DateFilter {
                 Date::with_implicit(b, default_year, default_month)?,
             ),
             (Some(a), None) => {
-                if regex!(r#"^(\d{4})$"#).is_match(a) {
+                if regex_is_match!(r#"^(\d{4})$"#, a) {
                     let year = a.parse()?;
                     Self::Range(
                         Date::new(year, 1, 1)?,

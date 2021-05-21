@@ -148,9 +148,9 @@ dependencies = [
 
 [[package]]
 name = "cli-log"
-version = "1.2.0"
+version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "690194554a14b440fed58d86ca02f6fc45f3726e0cbb73e15168652eeae61a0a"
+checksum = "3d2ab00dc4c82ec28af25ac085aecc11ffeabf353755715a3113a7aa044ca5cc"
 dependencies = [
  "chrono",
  "file-size",
@@ -496,12 +496,25 @@ dependencies = [
 
 [[package]]
 name = "lazy-regex"
-version = "1.1.0"
+version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "927b2672eaeee74af46448cd6ce01a53125a4959261dca834bc28115e3b24e00"
+checksum = "9d66650136ad5bc9b7cf8fbe269e2551a2b12d9f9bfcc71df9c302a3d8549dc4"
 dependencies = [
+ "lazy-regex-proc_macros",
  "once_cell",
  "regex",
+]
+
+[[package]]
+name = "lazy-regex-proc_macros"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "21872e53e06e32cab84df65581291cf20d7feb804993363d3bf8089476cfb551"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "regex",
+ "syn",
 ]
 
 [[package]]
@@ -862,7 +875,7 @@ dependencies = [
  "anyhow",
  "argh",
  "bet",
- "cli-log 1.2.0",
+ "cli-log 2.0.0",
  "crossterm",
  "file-size",
  "flate2",
@@ -870,7 +883,6 @@ dependencies = [
  "have",
  "itertools",
  "lazy-regex",
- "log",
  "minimad",
  "num-format",
  "regex",

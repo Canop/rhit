@@ -1,6 +1,5 @@
 
 #[macro_use] extern crate cli_log;
-#[macro_use] extern crate log;
 
 mod cli;
 mod date;

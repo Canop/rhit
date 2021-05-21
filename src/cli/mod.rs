@@ -4,11 +4,11 @@ use {
     crate::*,
     anyhow::*,
     argh,
+    cli_log::*,
     std::{
         path::{Path, PathBuf},
     },
 };
-
 
 fn print_analysis(path: &Path, args: &args::Args) -> Result<()> {
     let mut log_base = time!("LogBase::new", LogBase::new(&path, &args))?;
@@ -37,7 +37,7 @@ pub fn run() -> anyhow::Result<()> {
     } else {
         print_analysis(&path, &args)?;
     }
-    cli_log::log_mem(log::Level::Info);
+    log_mem(Level::Info);
     Ok(())
 }
 

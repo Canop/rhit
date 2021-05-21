@@ -1,4 +1,3 @@
-#[macro_use] extern crate log;
 #[macro_use] extern crate cli_log;
 
 fn main() -> anyhow::Result<()> {
