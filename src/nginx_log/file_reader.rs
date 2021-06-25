@@ -5,7 +5,7 @@ use {
         self,
         cursor,
         execute,
-        style::{style, Color, Print, PrintStyledContent},
+        style::{style, Color, Print, PrintStyledContent, Stylize},
         terminal::{Clear, ClearType},
         queue,
     },
