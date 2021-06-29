@@ -1,3 +1,7 @@
+<a name="v1.5.2"></a>
+### v1.5.2 - 2021-06-29
+- fix inability to render on narrow terminals
+
 <a name="v1.5.1"></a>
 ### v1.5.1 - 2021-05-01
 - look up to 3 lines of a file for a log line when checking whether it's a log file - Fix #8
