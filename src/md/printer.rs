@@ -63,7 +63,7 @@ impl Printer {
         let detail_level = args.length;
         let fields = args.fields.clone();
         let terminal_width = terminal_size().0 as usize;
-        let color = args.color.value().unwrap_or(!is_output_piped());
+        let color = args.color.value().unwrap_or_else(|| std::io::stdout().is_tty());
         let skin = skin::make_skin(color);
         let key = args.key;
         let date_filter = log_base.filterer.date_filter().copied();
@@ -317,10 +317,6 @@ impl Printer {
             self.print(expander, template);
         }
     }
-}
-
-fn is_output_piped() -> bool {
-    !std::io::stdout().is_tty()
 }
 
 fn to_percent(count: usize, total: usize) -> String {
