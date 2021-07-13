@@ -1,3 +1,7 @@
+<a name="v1.5.3"></a>
+### v1.5.3 - 2021-07-13
+- nothing new visible, small internal upgrades
+
 <a name="v1.5.2"></a>
 ### v1.5.2 - 2021-06-29
 - fix inability to render on narrow terminals

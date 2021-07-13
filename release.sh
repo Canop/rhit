@@ -7,9 +7,10 @@ echo "Building release $version"
 # make the build directory and compile for all targets
 ./compile-all-targets.sh
 
-# add the readme and changelog in the build directory
+# add the readme, changelog and license in the build directory
 echo "This is rhit. More info and installation instructions on https://github.com/Canop/rhit" > build/README.md
 cp CHANGELOG.md build
+cp LICENSE build
 
 # publish version number
 echo "$version" > build/version
