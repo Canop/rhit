@@ -41,4 +41,6 @@ cargo install --path .
 ```bash
 brew install rhit
 ```
+## APT / Deb
 
+Ubuntu and Debian users may use this apt repository: [https://packages.azlux.fr/](https://packages.azlux.fr/)
