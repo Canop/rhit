@@ -34,3 +34,11 @@ Fetch the [Canop/rhit](https://github.com/Canop/rhit) repository, move to the rh
 cargo install --path .
 ```
 
+# From third party repositories
+
+## Homebrew
+
+```bash
+brew install rhit
+```
+
