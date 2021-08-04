@@ -10,14 +10,14 @@ use {
 };
 
 fn print_analysis(path: &Path, args: &args::Args) -> Result<()> {
-    let mut log_base = time!("LogBase::new", LogBase::new(&path, &args))?;
+    let mut log_base = time!("LogBase::new", LogBase::new(path, args))?;
     if log_base.lines.is_empty() {
         eprintln!("no hit in logs");
         return Ok(());
     }
-    let printer = md::Printer::new(&args, &log_base);
+    let printer = md::Printer::new(args, &log_base);
     let base = &mut log_base;
-    let trend_computer = time!("Trend computer initialization", TrendComputer::new(base, &args))?;
+    let trend_computer = time!("Trend computer initialization", TrendComputer::new(base, args))?;
     md::summary::print_summary(base, &printer);
     time!("Analysis & Printing", md::print_analysis(&log_base, &printer, trend_computer.as_ref()));
     Ok(())

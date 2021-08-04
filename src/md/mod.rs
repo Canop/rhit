@@ -31,7 +31,7 @@ pub fn print_analysis(
     for field in &printer.fields.0 {
         match field {
             Field::Dates => {
-                let histogram = Histogram::from(&base);
+                let histogram = Histogram::from(base);
                 time!(
                     "histogram printing",
                     histogram.print(printer),

@@ -121,11 +121,8 @@ impl Filterer {
     }
     pub fn date_filter(&self) -> Option<&DateFilter> {
         for i in 0..self.filterings.len() {
-            match &self.filterings[i].filter {
-                Filter::Date(f) => {
-                    return Some(&f);
-                }
-                _ => {},
+            if let Filter::Date(f) = &self.filterings[i].filter {
+                return Some(f);
             }
         }
         None

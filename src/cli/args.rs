@@ -32,7 +32,7 @@ pub struct Args {
     #[argh(option, short = 'f', default = "Default::default()")]
     /// comma separated list of hit fields to display.
     /// Use `-f a` to get all fields.
-    /// Use `-f +i` to add i(p).
+    /// Use `-f +i` to add ip.
     /// Available fields: date,method,status,ip,ref,path.
     /// Default fields: date,status,ref,path.
     pub fields: Fields,

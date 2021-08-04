@@ -44,7 +44,7 @@ where
         }
     }
     pub fn any(&self) -> &LogLine {
-        &self.lines[0]
+        self.lines[0]
     }
     pub fn hits(&self) -> usize {
         self.lines.len()
