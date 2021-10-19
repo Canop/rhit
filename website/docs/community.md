@@ -21,10 +21,3 @@ When something looks like a bug, we need both to know the exact configuration (O
 1. execute rhit with `RHIT_LOG=debug rhit`
 1. go to the chat (or the GitHub issue if you already made one) and paste the content of the `rhit.log` file
 
-
-# Ask for new features
-
-**Rhit** is quite new and its feature set is based on the needs of one user.
-
-If you think about an improvement, whatever its size, please come to the chat.
-

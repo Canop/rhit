@@ -18,6 +18,10 @@ nav:
 
 extra_css:
         - css/extra.css
+        - css/link-to-dystroy.css
+
+extra_javascript:
+        - js/link-to-dystroy.js
 
 theme:
         name: mkdocs
