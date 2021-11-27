@@ -44,3 +44,11 @@ brew install rhit
 ## APT / Deb
 
 Ubuntu and Debian users may use this apt repository: [https://packages.azlux.fr/](https://packages.azlux.fr/)
+
+## Arch Linux
+
+Arch Linux users may use `pacman` to install [rhit](https://archlinux.org/packages/community/x86_64/rhit/) from the community repository:
+
+```bash
+pacman -S rhit
+```
