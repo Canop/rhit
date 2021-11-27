@@ -1,6 +1,6 @@
 [package]
 name = "rhit"
-version = "1.5.3"
+version = "1.5.4"
 authors = ["dystroy <denys.seguret@gmail.com>"]
 repository = "https://github.com/Canop/rhit"
 description = "nginx log analyzer"
@@ -10,7 +10,7 @@ license = "MIT"
 categories = ["command-line-utilities"]
 
 [dependencies]
-anyhow = "1.0"
+anyhow = "1.0.49"
 argh = "0.1.3"
 bet = "0.4.0"
 crossterm = "0.20.0"
@@ -28,7 +28,7 @@ termimad = { version = "0.14.0", default-features = false, features = ["special-
 thiserror = "1.0"
 
 [dev-dependencies]
-glassbench = "0.3"
+glassbench = "0.3.1"
 
 [profile.release]
 debug = false

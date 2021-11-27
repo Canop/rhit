@@ -1,3 +1,7 @@
+<a name="v1.5.4"></a>
+### v1.5.4 - 2021-11-27
+- fix compilation broken by patch release 1.0.49 of anyhow
+
 <a name="v1.5.3"></a>
 ### v1.5.3 - 2021-07-13
 - nothing new visible, small internal upgrades

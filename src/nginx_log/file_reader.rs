@@ -1,6 +1,6 @@
 use {
     crate::*,
-    anyhow::*,
+    anyhow::{bail, Result},
     crossterm::{
         self,
         cursor,

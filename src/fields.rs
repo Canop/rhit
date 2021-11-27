@@ -1,5 +1,5 @@
 use {
-    anyhow::*,
+    anyhow::Result,
     argh::FromArgValue,
 };
 

@@ -25,9 +25,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.42"
+version = "1.0.49"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "595d3cfa7a60d4555cb5067b99f07142a08ea778de5cf993f7b75c7d8fabc486"
+checksum = "0a03e93e97a28fbc9f42fbc5ba0886a3c67eb637b476dbee711f80a6ffe8223d"
 
 [[package]]
 name = "argh"
@@ -305,14 +305,15 @@ dependencies = [
 
 [[package]]
 name = "csv2svg"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1b29b8c39dc8a008d498bed2fa5a8ba779eee1d3f2c25fa25380fa109912ca3"
+checksum = "a8e2619b51a7edc3570447c19b821b4f8e17b4e0ddab688582f6ceb2a83acf07"
 dependencies = [
  "anyhow",
  "argh",
  "chrono",
  "cli-log 0.1.0",
+ "crossterm 0.19.0",
  "csv",
  "directories-next",
  "libc",
@@ -416,9 +417,9 @@ dependencies = [
 
 [[package]]
 name = "glassbench"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "03f4871371c7f0624fc191afef849664776c4906614eee6a435a9abd89bd871f"
+checksum = "18232f8d0a65b776d32b887f2aa3ab0230a761ea2c82e4739ae824ec5f2a27a9"
 dependencies = [
  "base64",
  "chrono",
@@ -896,7 +897,7 @@ dependencies = [
 
 [[package]]
 name = "rhit"
-version = "1.5.3"
+version = "1.5.4"
 dependencies = [
  "anyhow",
  "argh",
