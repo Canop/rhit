@@ -58,13 +58,17 @@ impl LogLine {
             || s.ends_with(".css")
             || s.ends_with(".svg")
             || s.ends_with(".jpg")
-            || s.ends_with(".jpg")
             || s.ends_with(".jpeg")
             || s.ends_with(".gif")
             || s.ends_with(".ico")
             || s.ends_with(".js")
             || s.ends_with(".woff2")
             || s.ends_with(".webp")
+        // verified to be much much slower:
+        // lazy_regex::regex_is_match!(
+        //     "\\.(png|css|svg|jpe?g|gif|ico|js|woff2|webp)$",
+        //     &self.path,
+        // )
     }
 }
 

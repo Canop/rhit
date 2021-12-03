@@ -38,6 +38,9 @@ codegen-units = 1
 [[bench]]
 name = "load_base"
 harness = false
+[[bench]]
+name = "filter_resources"
+harness = false
 
 [patch.crates-io]
 # bet = { path = "../bet" }
