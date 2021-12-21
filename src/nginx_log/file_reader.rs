@@ -137,7 +137,12 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
         }
         execute!(io::stderr(), Clear(ClearType::CurrentLine))?;
         if !self.silent {
-            eprintln!("I've read {} files in {:?}", total, self.root);
+            eprintln!(
+                "I've read {} file{} in {:?}",
+                total,
+                if total > 1 { "s" } else { "" },
+                self.root,
+            );
         }
         Ok(())
     }

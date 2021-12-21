@@ -69,14 +69,14 @@ impl LogBase {
         time!("reading files", file_reader.read_all_files())?;
         let filterer = file_reader.filterer();
         let BaseContent {lines, unfiltered_histogram, filtered_histogram, ..} = base_content;
-        if lines.is_empty() {
-            bail!("no log file found in {:?}", path);
-        }
         let mut unfiltered_count = 0;
         let mut dates = Vec::new();
         for bar in &unfiltered_histogram.bars {
             unfiltered_count += bar.hits;
             dates.push(bar.date);
+        }
+        if unfiltered_count == 0 {
+            bail!("no hit found in {:?}", path);
         }
         let filtered_count = filtered_histogram.total_hits();
         Ok(Self {

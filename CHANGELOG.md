@@ -1,3 +1,7 @@
+<a name="v1.5.5"></a>
+### v1.5.5 - 2021-12-21
+- don't write an error when no log line matches the query
+
 <a name="v1.5.4"></a>
 ### v1.5.4 - 2021-11-27
 - fix compilation broken by patch release 1.0.49 of anyhow
