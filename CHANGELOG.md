@@ -1,3 +1,7 @@
+<a name="v1.6.0"></a>
+### v1.6.0 - 2021-12-25
+- better table fitting algorithm, less frequently breaking the histogram columns
+
 <a name="v1.5.5"></a>
 ### v1.5.5 - 2021-12-21
 - don't write an error when no log line matches the query

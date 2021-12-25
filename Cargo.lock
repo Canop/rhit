@@ -24,6 +24,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "ansi_colours"
+version = "1.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "60e2fb6138a49ad9f1cb3c6d8f8ccbdd5e62b4dab317c1b435a47ecd7da1d28f"
+dependencies = [
+ "cc",
+]
+
+[[package]]
 name = "anyhow"
 version = "1.0.49"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -87,9 +96,9 @@ checksum = "5edd00b661a92a0db2263a455ee2c9ae80942dbc804401bbb5a4598c4968af2e"
 
 [[package]]
 name = "bitflags"
-version = "1.2.1"
+version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf1de2fe8c75bc145a2f577add951f8134889b4795d47466a54a5c846d691693"
+checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
 name = "bstr"
@@ -152,6 +161,16 @@ dependencies = [
  "file-size",
  "log",
  "proc-status",
+]
+
+[[package]]
+name = "coolor"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b78645ef095d812eecfa830f67e35394314e31be71fdba59543274542c950013"
+dependencies = [
+ "ansi_colours",
+ "crossterm 0.22.1",
 ]
 
 [[package]]
@@ -249,12 +268,12 @@ dependencies = [
 
 [[package]]
 name = "crossterm"
-version = "0.20.0"
+version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0ebde6a9dd5e331cd6c6f48253254d117642c31653baa475e394657c59c1f7d"
+checksum = "c85525306c4291d1b73ce93c8acf9c339f9b213aef6c1d85c3830cbf1c16325c"
 dependencies = [
  "bitflags",
- "crossterm_winapi 0.8.0",
+ "crossterm_winapi 0.9.0",
  "libc",
  "mio",
  "parking_lot",
@@ -274,9 +293,9 @@ dependencies = [
 
 [[package]]
 name = "crossterm_winapi"
-version = "0.8.0"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3a6966607622438301997d3dac0d2f6e9a90c68bb6bc1785ea98456ab93c0507"
+checksum = "2ae1b35a484aa10e07fe0638d02301c5ad24de82d310ccbd2f3693da5f09bf1c"
 dependencies = [
  "winapi",
 ]
@@ -635,9 +654,9 @@ dependencies = [
 
 [[package]]
 name = "minimad"
-version = "0.8.0"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8957f240ecb82a4e699bcf4db189fe8a7f5aa68b9e6d5abf829c62a9ee4630ed"
+checksum = "cd37b2e65fbd459544194d8f52ed84027e031684335a062c708774c09d172b0b"
 dependencies = [
  "once_cell",
 ]
@@ -897,24 +916,23 @@ dependencies = [
 
 [[package]]
 name = "rhit"
-version = "1.5.5"
+version = "1.6.0"
 dependencies = [
  "anyhow",
  "argh",
  "bet",
  "cli-log 2.0.0",
- "crossterm 0.20.0",
+ "crossterm 0.22.1",
  "file-size",
  "flate2",
  "glassbench",
  "have",
  "itertools",
  "lazy-regex",
- "minimad 0.8.0",
  "num-format",
  "regex",
  "smallvec",
- "termimad 0.14.0",
+ "termimad 0.20.0",
  "thiserror",
 ]
 
@@ -1070,13 +1088,14 @@ dependencies = [
 
 [[package]]
 name = "termimad"
-version = "0.14.0"
+version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72cc07d71829847df3a04fe2341f0598676b1faf377d0965c48cb922241273d7"
+checksum = "06968d34307feb19a7ab8e5678d5b318c9021c16b0a913d76dbdef943391cf0b"
 dependencies = [
+ "coolor",
  "crossbeam",
- "crossterm 0.20.0",
- "minimad 0.8.0",
+ "crossterm 0.22.1",
+ "minimad 0.9.0",
  "thiserror",
  "unicode-width",
 ]

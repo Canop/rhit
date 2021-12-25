@@ -1,7 +1,7 @@
 use {
     super::*,
     crate::*,
-    minimad::OwningTemplateExpander,
+    termimad::minimad::OwningTemplateExpander,
 };
 
 static MD_SHORT: &str = r#"
