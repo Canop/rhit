@@ -2,7 +2,7 @@ use {
     crate::*,
     anyhow::*,
     std::{
-        path::Path,
+        path::PathBuf,
     },
 };
 
@@ -61,11 +61,11 @@ pub struct LogBase {
 
 impl LogBase {
     pub fn new(
-        path: &Path,
+        paths: &[PathBuf],
         args: &args::Args,
     ) -> Result<Self> {
         let mut base_content = BaseContent::default();
-        let mut file_reader = FileReader::new(path, args, &mut base_content)?;
+        let mut file_reader = FileReader::new(paths, args, &mut base_content)?;
         time!("reading files", file_reader.read_all_files())?;
         let filterer = file_reader.filterer();
         let BaseContent {lines, unfiltered_histogram, filtered_histogram, ..} = base_content;
@@ -76,7 +76,7 @@ impl LogBase {
             dates.push(bar.date);
         }
         if unfiltered_count == 0 {
-            bail!("no hit found in {:?}", path);
+            bail!("no hit found in {:?}", paths);
         }
         let filtered_count = filtered_histogram.total_hits();
         Ok(Self {

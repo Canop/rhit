@@ -62,7 +62,7 @@ pub struct FileReader<'c, C>
 where
     C: LineConsumer
 {
-    root: PathBuf,
+    roots: Box<[PathBuf]>,
     filterer: Filterer,
     consumer: &'c mut C,
     paths: Vec<PathBuf>,
@@ -85,12 +85,13 @@ pub trait LineConsumer {
 
 impl<'c, C: LineConsumer> FileReader<'c, C> {
     pub fn new(
-        path: &Path,
+        paths: &[PathBuf],
         args: &args::Args,
         consumer: &'c mut C,
     ) -> Result<Self> {
         let check_names = !args.no_name_check;
-        let ff = FileFinder::new(path.to_path_buf(), check_names);
+        let roots = paths.to_vec().into_boxed_slice();
+        let ff = FileFinder::new(&roots, check_names);
         let mut dated_files = time!(ff.dated_files())?;
         if dated_files.is_empty() {
             bail!("no log file found");
@@ -102,7 +103,7 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
         let stop_on_error = check_names;
         consumer.start_eating(first_date);
         Ok(Self {
-            root: path.into(),
+            roots,
             filterer,
             consumer,
             paths,
@@ -137,11 +138,17 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
         }
         execute!(io::stderr(), Clear(ClearType::CurrentLine))?;
         if !self.silent {
+            // if we're here, total, which is the count of log files, is at least 1
+            let roots_string = if self.roots.len() == 1 {
+                format!("{:?}", self.roots[0])
+            } else {
+                format!("{:?}", self.roots)
+            };
             eprintln!(
-                "I've read {} file{} in {:?}",
+                "I've read {} file{} in {}",
                 total,
                 if total > 1 { "s" } else { "" },
-                self.root,
+                roots_string,
             );
         }
         Ok(())

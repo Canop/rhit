@@ -2,7 +2,7 @@ use {
     crate::*,
     anyhow::*,
     std::{
-        path::Path,
+        path::PathBuf,
     },
 };
 
@@ -30,7 +30,7 @@ impl LineConsumer for LinePrinter {
 }
 
 pub fn print_lines(
-    path: &Path,
+    path: &[PathBuf],
     args: &args::Args,
 ) -> Result<()> {
     let mut printer = LinePrinter{};

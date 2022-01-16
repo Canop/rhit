@@ -87,7 +87,7 @@ pub struct Args {
 
     #[argh(positional)]
     /// the log file or folder to analyze
-    pub file: Option<PathBuf>,
+    pub files: Vec<PathBuf>,
 }
 
 /// An optional boolean for use in Argh

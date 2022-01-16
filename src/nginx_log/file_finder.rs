@@ -25,18 +25,18 @@ fn find_files(
 }
 
 
-pub struct FileFinder {
-    root: PathBuf,
+pub struct FileFinder<'p> {
+    roots: &'p [PathBuf],
     check_names: bool,
 }
 
-impl FileFinder {
+impl<'p> FileFinder<'p> {
     pub fn new(
-        root: PathBuf,
+        roots: &'p [PathBuf],
         check_names: bool,
     ) -> Self {
         Self {
-            root,
+            roots,
             check_names,
         }
     }
@@ -44,7 +44,9 @@ impl FileFinder {
     /// the one of the first line in file
     pub fn dated_files(self) -> Result<Vec<(Date, PathBuf)>> {
         let mut files = Vec::new();
-        find_files(self.root, &mut files, false, self.check_names)?;
+        for root in &*self.roots {
+            find_files(root.clone(), &mut files, false, self.check_names)?;
+        }
         let mut dated_files = Vec::new();
         for path in files.drain(..) {
             if let Some(date) = get_file_first_date(&path)? {

@@ -1,3 +1,7 @@
+<a name="v1.7.0"></a>
+### v1.7.0 - 2022-01-16
+- allow passing several paths as arguments - Fix #14
+
 <a name="v1.6.0"></a>
 ### v1.6.0 - 2021-12-25
 - better table fitting algorithm, less frequently breaking the histogram columns
