@@ -7,3 +7,4 @@ rhit_*.zip
 !*.log
 rhit.log
 glassbench_v1.db
+.bacon-locations
