@@ -1,3 +1,7 @@
+<a name="v1.7.1"></a>
+### v1.7.1 - 2022-06-05
+- mostly dependency updates and compilation fixes
+
 <a name="v1.7.0"></a>
 ### v1.7.0 - 2022-01-16
 - allow passing several paths as arguments - Fix #14
