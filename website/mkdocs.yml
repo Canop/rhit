@@ -8,7 +8,7 @@ nav:
         - Why: index.md
         - Install: install.md
         - Usage:
-                - Overview: usage-overview.md
+                - Launch: usage-overview.md
                 - Displayed Fields: usage-fields.md
                 - Filters: usage-filters.md
                 - Key: usage-key.md

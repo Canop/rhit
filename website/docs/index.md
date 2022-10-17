@@ -24,7 +24,7 @@ and from there you'll refine your query to get a more precise insight:
 With Rhit, you'll notice unexpected things in your logs. And you'll easily know more.
 
 Here's an example:
-Let's suppose you notice a `413` HTTP code in the status table.
+Let's suppose you notice a [`413` HTTP code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/413) in the status table.
 
 You just have to type `rhit -s 413` to know why:
 

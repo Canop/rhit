@@ -1,5 +1,5 @@
 
-# Launch
+# Log files
 
 `rhit` (or `sudo rhit` depending on your configuration) will open the access logs if they're at their standard location.
 
