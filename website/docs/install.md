@@ -1,5 +1,22 @@
 
-The current version of Rhit works on linux and mac.
+**Rhit** works on linux and mac.
+
+Current version: **<a id=current-version href=../download>download</a>**
+<script>
+console.log("in script");
+fetch("../download/version")
+    .then(response => response.text())
+    .then(version => {
+        version = version.trim();
+        if (!/^\d+(\.\d+)*(-\w+)?$/.test(version)) {
+            console.warn("invalid version in download/version");
+            return;
+        }
+        document.getElementById("current-version").textContent = version;
+    })
+</script>
+
+[CHANGELOG](https://github.com/Canop/rhit/blob/main/CHANGELOG.md)
 
 
 # From precompiled binaries

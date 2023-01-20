@@ -15,7 +15,7 @@ body {
 	body {
 		background-image:
 			linear-gradient(to right, rgba(255,255,255,0.1) 0%, #162020 10%, #162020 90%, rgba(255,255,255,0.1) 100%),
-			url("whiskey.jpg");
+			url("../img/whiskey.jpg");
 		background-position: repeat;
 		background-size: initial;
         background-attachment: fixed;
@@ -40,6 +40,14 @@ body {
 p img.logo {
 	background: transparent;
 	width: 180px;
+}
+@media (max-width: 700px) {
+	p.logo {
+		display: none;
+	}
+	.navbar-default .navbar-brand {
+		margin-left: 25px;
+	}
 }
 
 h1 {

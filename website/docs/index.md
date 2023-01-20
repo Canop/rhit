@@ -1,6 +1,6 @@
 
 
-<p align=center style="width:600px">
+<p class=logo align=center style="width:600px">
 <img class=logo src="img/logo-rhit.svg">
 </p>
 
