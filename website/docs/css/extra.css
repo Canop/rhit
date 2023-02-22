@@ -22,6 +22,15 @@ body {
 	}
 }
 
+.sponsorship {
+	margin-top: 20px;
+	display: flex;
+	flex-direction: row;
+
+}
+.sponsorship a {
+	margin-right: 10px;
+}
 
 .pink {
 	color: #ff5f87;

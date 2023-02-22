@@ -9,6 +9,10 @@ You may open a specific file, or a specific directory, by giving the path as arg
 rhit my/archived/logs
 ```
 
+!!! Note
+    Only the default log format is currently supported. Custom logs aren't understood by Rhit.
+
+
 # Launch parameters
 
 `rhit --help` will display all available launch arguments.
