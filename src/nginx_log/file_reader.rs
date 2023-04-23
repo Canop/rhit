@@ -1,14 +1,6 @@
 use {
     crate::*,
     anyhow::{bail, Result},
-    crossterm::{
-        self,
-        cursor,
-        execute,
-        style::{style, Color, Print, PrintStyledContent, Stylize},
-        terminal::{Clear, ClearType},
-        queue,
-    },
     flate2::bufread::GzDecoder,
     std::{
         fs::File,
@@ -16,7 +8,16 @@ use {
         path::{Path, PathBuf},
         str::FromStr,
     },
-    termimad::ProgressBar,
+    termimad::{
+        crossterm::{
+            cursor,
+            execute,
+            style::{style, Color, Print, PrintStyledContent, Stylize},
+            terminal::{Clear, ClearType},
+            queue,
+        },
+        ProgressBar,
+    },
 };
 
 pub fn get_file_first_date(path: &Path) -> Result<Option<Date>> {

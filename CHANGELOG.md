@@ -1,3 +1,7 @@
+<a name="v1.7.2"></a>
+### v1.7.2 - 2023-04-23
+- dependency managment - Fix #22
+
 <a name="v1.7.1"></a>
 ### v1.7.1 - 2022-06-05
 - mostly dependency updates and compilation fixes

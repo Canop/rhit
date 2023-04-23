@@ -74,90 +74,97 @@ impl DateFilter {
 }
 
 #[cfg(test)]
+#[allow(clippy::zero_prefixed_literal)]
 mod date_filter_tests {
 
     use super::*;
 
+    macro_rules! date {
+        ($year:literal, $month:literal, $day:literal) => {
+            Date::new($year, $month, $day).unwrap()
+        }
+    }
+
     #[test]
     fn test_date_filter_fully_defined_range() {
         let df = DateFilter::new("2021/01/03-2021/02/15", None, None).unwrap();
-        assert_eq!(df.contains(Date::new(2021, 01, 28).unwrap()), true);
-        assert_eq!(df.contains(Date::new(2021, 02, 01).unwrap()), true);
-        assert_eq!(df.contains(Date::new(2021, 02, 15).unwrap()), true);
-        assert_eq!(df.contains(Date::new(2021, 02, 16).unwrap()), false);
+        assert_eq!(df.contains(date!(2021, 01, 28)), true);
+        assert_eq!(df.contains(date!(2021, 02, 01)), true);
+        assert_eq!(df.contains(date!(2021, 02, 15)), true);
+        assert_eq!(df.contains(date!(2021, 02, 16)), false);
     }
 
     #[test]
     fn test_date_filter_precise_date() {
         let df = DateFilter::new("2021/02/15", Some(2021), None).unwrap();
-        assert_eq!(df.contains(Date::new(2021, 01, 28).unwrap()), false);
-        assert_eq!(df.contains(Date::new(2021, 02, 15).unwrap()), true);
-        assert_eq!(df.contains(Date::new(2021, 02, 16).unwrap()), false);
+        assert_eq!(df.contains(date!(2021, 01, 28)), false);
+        assert_eq!(df.contains(date!(2021, 02, 15)), true);
+        assert_eq!(df.contains(date!(2021, 02, 16)), false);
     }
 
     #[test]
     fn test_date_filter_not_date() {
         let df = DateFilter::new("!2021/02/15", Some(2021), None).unwrap();
-        assert_eq!(df.contains(Date::new(2021, 01, 28).unwrap()), true);
-        assert_eq!(df.contains(Date::new(2021, 02, 15).unwrap()), false);
-        assert_eq!(df.contains(Date::new(2021, 02, 16).unwrap()), true);
+        assert_eq!(df.contains(date!(2021, 01, 28)), true);
+        assert_eq!(df.contains(date!(2021, 02, 15)), false);
+        assert_eq!(df.contains(date!(2021, 02, 16)), true);
     }
 
     #[test]
     fn test_date_filter_after_date_implicit_year() {
         let df = DateFilter::new(">02/15", Some(2021), None).unwrap();
-        assert_eq!(df.contains(Date::new(2020, 11, 12).unwrap()), false);
-        assert_eq!(df.contains(Date::new(2021, 01, 28).unwrap()), false);
-        assert_eq!(df.contains(Date::new(2021, 02, 15).unwrap()), false);
-        assert_eq!(df.contains(Date::new(2021, 02, 16).unwrap()), true);
+        assert_eq!(df.contains(date!(2020, 11, 12)), false);
+        assert_eq!(df.contains(date!(2021, 01, 28)), false);
+        assert_eq!(df.contains(date!(2021, 02, 15)), false);
+        assert_eq!(df.contains(date!(2021, 02, 16)), true);
     }
 
     #[test]
     fn test_date_filter_after_date() {
         let df = DateFilter::new(">2021/02/15", Some(2021), None).unwrap();
-        assert_eq!(df.contains(Date::new(2021, 01, 28).unwrap()), false);
-        assert_eq!(df.contains(Date::new(2021, 02, 15).unwrap()), false);
-        assert_eq!(df.contains(Date::new(2021, 02, 16).unwrap()), true);
+        assert_eq!(df.contains(date!(2021, 01, 28)), false);
+        assert_eq!(df.contains(date!(2021, 02, 15)), false);
+        assert_eq!(df.contains(date!(2021, 02, 16)), true);
     }
 
     #[test]
     fn test_date_filter_before_date() {
         let df = DateFilter::new("<2021/02/15", Some(2021), None).unwrap();
-        assert_eq!(df.contains(Date::new(2021, 01, 28).unwrap()), true);
-        assert_eq!(df.contains(Date::new(2021, 02, 15).unwrap()), false);
-        assert_eq!(df.contains(Date::new(2021, 02, 16).unwrap()), false);
+        assert_eq!(df.contains(date!(2021, 01, 28)), true);
+        assert_eq!(df.contains(date!(2021, 02, 15)), false);
+        assert_eq!(df.contains(date!(2021, 02, 16)), false);
     }
 
     #[test]
     fn test_date_filter_default_year() {
         let df = DateFilter::new("02/15", Some(2021), Some(02)).unwrap();
-        assert_eq!(df.contains(Date::new(2021, 01, 28).unwrap()), false);
-        assert_eq!(df.contains(Date::new(2021, 02, 15).unwrap()), true);
-        assert_eq!(df.contains(Date::new(2021, 02, 16).unwrap()), false);
+        assert_eq!(df.contains(date!(2021, 01, 28)), false);
+        assert_eq!(df.contains(date!(2021, 02, 15)), true);
+        assert_eq!(df.contains(date!(2021, 02, 16)), false);
     }
 
     #[test]
     fn test_date_filter_default_month_year() {
         let df = DateFilter::new("15", Some(2021), Some(02)).unwrap();
-        assert_eq!(df.contains(Date::new(2021, 01, 28).unwrap()), false);
-        assert_eq!(df.contains(Date::new(2021, 02, 15).unwrap()), true);
-        assert_eq!(df.contains(Date::new(2021, 02, 16).unwrap()), false);
+        assert_eq!(df.contains(date!(2021, 01, 28)), false);
+        assert_eq!(df.contains(date!(2021, 02, 15)), true);
+        assert_eq!(df.contains(date!(2021, 02, 16)), false);
     }
 
     #[test]
     fn test_date_filter_month() {
         let df = DateFilter::new("2021/02", Some(2021), Some(02)).unwrap();
-        assert_eq!(df.contains(Date::new(2021, 01, 28).unwrap()), false);
-        assert_eq!(df.contains(Date::new(2021, 02, 15).unwrap()), true);
-        assert_eq!(df.contains(Date::new(2021, 03, 01).unwrap()), false);
+        assert_eq!(df.contains(date!(2021, 01, 28)), false);
+        assert_eq!(df.contains(date!(2021, 02, 15)), true);
+        assert_eq!(df.contains(date!(2021, 03, 01)), false);
     }
 
     #[test]
     fn test_date_filter_year() {
         let df = DateFilter::new("2021", Some(2021), Some(02)).unwrap();
-        assert_eq!(df.contains(Date::new(2020, 12, 28).unwrap()), false);
-        assert_eq!(df.contains(Date::new(2021, 01, 28).unwrap()), true);
-        assert_eq!(df.contains(Date::new(2021, 02, 15).unwrap()), true);
-        assert_eq!(df.contains(Date::new(2022, 03, 01).unwrap()), false);
+        assert_eq!(df.contains(date!(2020, 12, 28)), false);
+        assert_eq!(df.contains(date!(2021, 01, 28)), true);
+        assert_eq!(df.contains(date!(2021, 02, 15)), true);
+        assert_eq!(df.contains(date!(2022, 03, 01)), false);
     }
 }
