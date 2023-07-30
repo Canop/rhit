@@ -18,7 +18,8 @@ fn print_analysis(paths: &[PathBuf], args: &args::Args) -> Result<()> {
 }
 
 pub fn run() -> anyhow::Result<()> {
-    let args: args::Args = argh::from_env();
+    let mut args: args::Args = argh::from_env();
+    args.fix();
     debug!("args: {:#?}", &args);
     if args.version {
         println!("rhit {}", env!("CARGO_PKG_VERSION"));
@@ -28,10 +29,11 @@ pub fn run() -> anyhow::Result<()> {
     if paths.is_empty() {
         paths.push(PathBuf::from("/var/log/nginx"));
     }
-    if args.lines {
-        print_lines(&paths, &args)?;
-    } else {
-        print_analysis(&paths, &args)?;
+    match args.output {
+        Output::Raw => print_raw_lines(&paths, &args)?,
+        Output::Tables => print_analysis(&paths, &args)?,
+        Output::Csv => print_csv_lines(&paths, &args)?,
+        Output::Json => print_json_lines(&paths, &args)?,
     }
     log_mem(Level::Info);
     Ok(())

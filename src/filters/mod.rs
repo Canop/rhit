@@ -96,7 +96,7 @@ impl Filterer {
         if let Some(s) = &args.method {
             filterings.push(Filtering::new(
                 s,
-                Filter::Method(MethodFilter::from_str(s)),
+                Filter::Method(MethodFilter::from_string(s)),
             ));
         }
         if let Some(s) = &args.path {

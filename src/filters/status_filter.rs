@@ -83,6 +83,7 @@ impl FromStr for StatusFilter {
 }
 
 #[cfg(test)]
+#[allow(clippy::bool_assert_comparison)]
 mod status_filter_tests {
 
     use super::*;

@@ -1,5 +1,6 @@
 mod file_finder;
 mod file_reader;
+mod line_consumer;
 mod log_base;
 mod log_line;
 mod ranger;
@@ -7,6 +8,7 @@ mod ranger;
 pub use {
     file_finder::*,
     file_reader::*,
+    line_consumer::*,
     log_base::*,
     log_line::*,
     ranger::*,

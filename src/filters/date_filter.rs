@@ -75,6 +75,7 @@ impl DateFilter {
 
 #[cfg(test)]
 #[allow(clippy::zero_prefixed_literal)]
+#[allow(clippy::bool_assert_comparison)]
 mod date_filter_tests {
 
     use super::*;

@@ -149,6 +149,7 @@ impl StrFilter {
 }
 
 #[cfg(test)]
+#[allow(clippy::bool_assert_comparison)]
 mod str_filter_tests {
 
     use super::*;

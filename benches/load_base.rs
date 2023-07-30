@@ -10,8 +10,10 @@ fn bench_base_loading(bench: &mut Bench) {
     bench.task("read access.log", |task| {
         let package_dir = std::env::var_os("CARGO_MANIFEST_DIR").expect("manifest dir not set");
         let paths = vec![PathBuf::from(package_dir).join("test-data/")];
-        let mut args = Args::default();
-        args.silent_load = true;
+        let args = Args {
+            silent_load: true,
+            ..Default::default()
+        };
         task.iter(|| {
             let base = LogBase::new(&paths, &args).unwrap();
             assert_eq!(base.lines.len(), 33468);
