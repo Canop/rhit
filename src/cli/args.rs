@@ -43,7 +43,7 @@ pub struct Args {
 
     #[argh(option, short = 'd')]
     /// filter the dates, on a precise day or in an inclusive range
-    /// (eg: `-r 12/24` or `-r '2021/12/24-2022/01/21'`)
+    /// (eg: `-d 12/24` or `-d '2021/12/24-2022/01/21'`)
     pub date: Option<String>,
 
     #[argh(option, short = 'i')]
