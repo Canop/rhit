@@ -71,18 +71,6 @@ where
     silent: bool,
 }
 
-pub trait LineConsumer {
-    fn start_eating(
-        &mut self,
-        first_date: Date,
-    );
-    fn eat_line(
-        &mut self,
-        log_line: LogLine,
-        raw_line: &str,
-        filtered_out: bool,
-    );
-}
 
 impl<'c, C: LineConsumer> FileReader<'c, C> {
     pub fn new(
@@ -138,6 +126,7 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
             }
         }
         execute!(io::stderr(), Clear(ClearType::CurrentLine))?;
+        self.consumer.end_eating();
         if !self.silent {
             // if we're here, total, which is the count of log files, is at least 1
             let roots_string = if self.roots.len() == 1 {
@@ -155,7 +144,7 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
         Ok(())
     }
     fn read_file_lines(&mut self, path: &Path) -> Result<()> {
-        let file = File::open(&path)?;
+        let file = File::open(path)?;
         if path.extension().and_then(|e| e.to_str()) == Some("gz") {
             let file = BufReader::new(file);
             self.read_lines(GzDecoder::new(file), path)

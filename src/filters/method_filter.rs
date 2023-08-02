@@ -10,7 +10,7 @@ pub struct MethodFilter {
 }
 
 impl MethodFilter {
-    pub fn from_str(mut pattern: &str) -> Self {
+    pub fn from_string(mut pattern: &str) -> Self {
         let negative = pattern.starts_with('!');
         if negative {
             pattern = &pattern[1..];

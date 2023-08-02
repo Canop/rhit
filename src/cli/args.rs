@@ -2,6 +2,7 @@ use {
     crate::{
         Key,
         Fields,
+        Output,
     },
     argh::FromArgs,
     std::path::PathBuf,
@@ -79,7 +80,13 @@ pub struct Args {
 
     #[argh(switch)]
     /// print the original log lines, filtered and sorted
+    /// Obsolete, use `--output raw` or `-o r` instead
     pub lines: bool,
+
+    #[argh(option, short = 'o', default = "Default::default()")]
+    /// output: by default pretty summary tables but you can also
+    /// output log lines as `csv` or `raw` (as they appear in the log files)
+    pub output: Output,
 
     #[argh(switch)]
     /// don't print anything during load, no progress bar or file list
@@ -107,6 +114,14 @@ impl argh::FromArgValue for BoolArg {
             "yes" => Ok(BoolArg(Some(true))),
             "no" => Ok(BoolArg(Some(false))),
             _ => Err(format!("Illegal value: {:?}", value)),
+        }
+    }
+}
+
+impl Args {
+    pub fn fix(&mut self) {
+        if self.lines {
+            self.output = Output::Raw;
         }
     }
 }

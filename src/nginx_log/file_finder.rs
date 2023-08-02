@@ -44,7 +44,7 @@ impl<'p> FileFinder<'p> {
     /// the one of the first line in file
     pub fn dated_files(self) -> Result<Vec<(Date, PathBuf)>> {
         let mut files = Vec::new();
-        for root in &*self.roots {
+        for root in self.roots {
             find_files(root.clone(), &mut files, false, self.check_names)?;
         }
         let mut dated_files = Vec::new();
