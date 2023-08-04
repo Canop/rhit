@@ -39,6 +39,7 @@ cross_build "Windows" "x86_64-pc-windows-gnu"
 cross_build "MUSL" "x86_64-unknown-linux-musl"
 cross_build "Linux GLIBC" "x86_64-unknown-linux-gnu"
 cross_build "ARM 32" "armv7-unknown-linux-gnueabihf"
+cross_build "ARM 32 MUSL" "armv7-unknown-linux-musleabi"
 cross_build "ARM 64" "aarch64-unknown-linux-gnu"
 cross_build "ARM 64 MUSL" "aarch64-unknown-linux-musl"
 
