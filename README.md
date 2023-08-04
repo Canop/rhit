@@ -10,8 +10,8 @@
 [s3]: https://miaou.dystroy.org/static/shields/room.svg
 [l3]: https://miaou.dystroy.org/3768?rust
 
-[srep]: https://repology.org/badge/tiny-repos/dysk.svg
-[lrep]: https://repology.org/project/dysk/versions
+[srep]: https://repology.org/badge/tiny-repos/rhit.svg
+[lrep]: https://repology.org/project/rhit/versions
 
 ![logo](doc/logo-rhit.png)
 
