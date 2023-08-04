@@ -1,5 +1,5 @@
 
-[![Latest Version][s1]][l1] [![MIT][s2]][l2] [![Chat on Miaou][s3]][l3]
+[![Latest Version][s1]][l1] [![MIT][s2]][l2] [![Chat on Miaou][s3]][l3] [![Packaging status][srep]][lrep]
 
 [s1]: https://img.shields.io/crates/v/rhit.svg
 [l1]: https://crates.io/crates/rhit
@@ -10,6 +10,8 @@
 [s3]: https://miaou.dystroy.org/static/shields/room.svg
 [l3]: https://miaou.dystroy.org/3768?rust
 
+[srep]: https://repology.org/badge/tiny-repos/dysk.svg
+[lrep]: https://repology.org/project/dysk/versions
 
 ![logo](doc/logo-rhit.png)
 
