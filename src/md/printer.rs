@@ -53,7 +53,7 @@ pub struct Printer {
     pub terminal_width: usize,
     pub detail_level: usize,
     pub key: Key,
-    pub date_filter: Option<DateFilter>,
+    pub date_filter: Option<DateTimeFilter>,
     pub changes: bool,
     pub all_paths: bool,
 }
@@ -93,7 +93,7 @@ impl Printer {
     pub fn md_hits(&self, hits: usize) -> String {
         match self.key {
             Key::Hits => {
-                let mut s = "*".to_string();
+                let mut s = "*".to_owned();
                 s.write_formatted(&hits, &Locale::en).unwrap();
                 s.push('*');
                 s

@@ -34,7 +34,7 @@ pub struct Args {
     /// comma separated list of hit fields to display.
     /// Use `-f a` to get all fields.
     /// Use `-f +i` to add ip.
-    /// Available fields: date,method,status,ip,ref,path.
+    /// Available fields: date,time,method,status,ip,ref,path.
     /// Default fields: date,status,ref,path.
     pub fields: Fields,
 
@@ -69,6 +69,11 @@ pub struct Args {
     /// comma separated list of statuses or status ranges.
     /// (eg: `-s 514` or `-s 4xx,5xx`, or `-s 310-340,400-450` or `-s 5xx,!502`)
     pub status: Option<String>,
+
+    #[argh(option, short = 't')]
+    /// filter the time of the day, in the logs' timezone
+    /// (eg: `-t '>19:30'` to get evening hits)
+    pub time: Option<String>,
 
     #[argh(switch, short = 'a')]
     /// show all paths, including resources

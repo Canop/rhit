@@ -4,11 +4,12 @@
 mod cli;
 mod csv;
 mod date;
+mod date_histogram;
 mod date_idx;
+mod date_time;
 mod fields;
 mod filters;
 mod histo_line;
-mod histogram;
 mod json;
 mod key;
 mod leak;
@@ -16,6 +17,8 @@ mod line_group;
 mod method;
 mod nginx_log;
 mod raw;
+mod time;
+mod time_histogram;
 mod trend;
 mod trend_computer;
 pub mod md;
@@ -28,11 +31,12 @@ pub use {
     cli::*,
     csv::*,
     date::*,
+    date_histogram::*,
     date_idx::*,
+    date_time::*,
     fields::*,
     filters::*,
     histo_line::*,
-    histogram::*,
     json::*,
     key::*,
     line_group::*,
@@ -40,6 +44,8 @@ pub use {
     nginx_log::*,
     output::*,
     raw::*,
+    time::*,
+    time_histogram::*,
     trend::*,
     trend_computer::*,
 };
