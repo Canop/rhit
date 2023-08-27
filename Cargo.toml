@@ -16,22 +16,21 @@ argh = "0.1.10"
 bet = "1.0"
 cli-log = "2.0"
 file-size = "1.0.3"
-flate2 = "1.0.25"
+flate2 = "1.0.27"
 have = "0.1.1"
-itertools = "0.10"
-lazy-regex = "2.5"
+itertools = "0.11"
+lazy-regex = "3.0.1"
 num-format = "0.4"
-regex = "1.7"
-smallvec = "1.10"
-termimad = { version = "0.22.0", default-features = false, features = ["special-renders"] }
+smallvec = "1.11"
+termimad = { version = "0.25.0", default-features = false, features = ["special-renders"] }
 thiserror = "1.0"
 
 [dev-dependencies]
-glassbench = "0.3.3"
+glassbench = "0.3.5"
 
 [profile.release]
 debug = false
-lto = "fat"
+lto = true
 codegen-units = 1
 strip = true
 

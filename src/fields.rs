@@ -7,6 +7,7 @@ use {
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Field {
     Dates,
+    Times,
     Methods,
     Status,
     Ip,
@@ -23,6 +24,7 @@ pub static DEFAULT_FIELDS: &[Field] = &[
 
 pub static ALL_FIELDS: &[Field] = &[
     Field::Dates,
+    Field::Times,
     Field::Methods,
     Field::Status,
     Field::Ip,
@@ -102,6 +104,7 @@ impl FromArgValue for Fields {
                 c if !skip_alpha => {
                     let field = match c {
                         'd' => Field::Dates,
+                        't' => Field::Times,
                         's' => Field::Status,
                         'a'|'i' => Field::Ip,
                         'r' => Field::Referers,
@@ -224,11 +227,11 @@ mod fields_parsing_tests {
     fn parse_fields_algebric_no_default() {
         assert_eq!(
             Fields::from_arg_value("all+ref+i").unwrap(),
-            Fields(vec![Dates, Methods, Status, Paths, Referers, Ip]),
+            Fields(vec![Dates, Times, Methods, Status, Paths, Referers, Ip]),
         );
         assert_eq!(
             Fields::from_arg_value("all-ref-i").unwrap(),
-            Fields(vec![Dates, Methods, Status, Paths]),
+            Fields(vec![Dates, Times, Methods, Status, Paths]),
         );
         assert_eq!(
             Fields::from_arg_value("s-m").unwrap(),
@@ -236,11 +239,11 @@ mod fields_parsing_tests {
         );
         assert_eq!(
             Fields::from_arg_value("all-i,").unwrap(),
-            Fields(vec![Dates, Methods, Status, Referers, Paths]),
+            Fields(vec![Dates, Times, Methods, Status, Referers, Paths]),
         );
         assert_eq!(
             Fields::from_arg_value("all-date-p").unwrap(),
-            Fields(vec![Methods, Status, Ip, Referers]),
+            Fields(vec![Times, Methods, Status, Ip, Referers]),
         );
     }
 

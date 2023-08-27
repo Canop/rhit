@@ -1,6 +1,6 @@
 use {
     bet::BeTree,
-    regex::{self, Regex},
+    lazy_regex::regex::{self, Regex},
     thiserror::Error,
 };
 
@@ -50,7 +50,7 @@ pub struct StrFilter {
 }
 
 fn invalid(pattern: &str, reason: &str) -> Result<StrFilter, StrFilterParseError> {
-    Err(StrFilterParseError::InvalidPattern(pattern.to_string(), reason.to_string()))
+    Err(StrFilterParseError::InvalidPattern(pattern.to_owned(), reason.to_owned()))
 }
 
 impl StrFilter {

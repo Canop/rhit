@@ -15,13 +15,13 @@ ${bars
 "#;
 
 #[derive(Clone)]
-pub struct Bar {
+pub struct DateBar {
     pub date: Date,
     pub hits: u64,
     pub bytes_sent: u64,
 }
 
-impl Bar {
+impl DateBar {
     pub fn new(date: Date) -> Self {
         Self {
             date,
@@ -32,15 +32,15 @@ impl Bar {
 }
 
 #[derive(Clone, Default)]
-pub struct Histogram {
-    pub bars: Vec<Bar>,
+pub struct DateHistogram {
+    pub bars: Vec<DateBar>,
 }
 
-impl Histogram {
+impl DateHistogram {
 
     pub fn from(base: &LogBase) -> Self {
-        let mut bars: Vec<Bar> = base.dates.iter()
-            .map(|&date| Bar { date, bytes_sent: 0, hits: 0 })
+        let mut bars: Vec<DateBar> = base.dates.iter()
+            .map(|&date| DateBar { date, bytes_sent: 0, hits: 0 })
             .collect();
         for line in &base.lines {
             bars[line.date_idx].hits += 1;
@@ -64,7 +64,7 @@ impl Histogram {
         );
         let max_bar = max_bar as f32;
         for bar in &self.bars {
-            if printer.date_filter.map_or(true, |f| f.contains(bar.date)) {
+            if printer.date_filter.map_or(true, |f| f.overlaps(bar.date)) {
                 let value = if printer.key == Key::Hits { bar.hits } else { bar.bytes_sent };
                 let part = (value as f32) / max_bar;
                 expander.sub("bars")
