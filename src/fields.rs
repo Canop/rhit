@@ -1,6 +1,5 @@
 use {
     anyhow::Result,
-    argh::FromArgValue,
 };
 
 /// one of the tables that can be displayed
@@ -69,12 +68,19 @@ impl IntoIterator for Fields {
     }
 }
 
-impl FromArgValue for Fields {
-    fn from_arg_value(value: &str) -> Result<Self, String> {
+#[derive(Debug, Error)]
+pub enum ParseFieldError {
+
+    #[error("unrecognized field start {0:?}")]
+    UnrecognizedFieldStart(char),
+}
+
+impl FromStr for Fields {
+    type Err = ParseFieldError;
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
         //let additive = value.contains('+') || value.contains('-');
         let mut fields = if value.starts_with('+') || value.starts_with('-') {
-            // if it starts with an addition or removal, the
-            // default set is implied
+            // if it starts with an addition or removal, the default set is implied
             Fields::default()
         } else {
             Fields::empty()
@@ -108,7 +114,7 @@ impl FromArgValue for Fields {
                         'p' => Field::Paths,
                         'm' => Field::Methods,
                         _ => {
-                            return Err(format!("Unrecognized field start: {}", c));
+                            return Err(ParseFieldError::UnrecognizedFieldStart(c));
                         }
                     };
                     if negative {
