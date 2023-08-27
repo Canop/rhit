@@ -8,7 +8,7 @@ use {
 };
 
 #[derive(Debug, Error)]
-pub enum StatusFilterParseError {
+pub enum ParseStatusFilterError {
     #[error("invalid int")]
     ParseInt(#[from] ParseIntError),
 }
@@ -34,7 +34,7 @@ fn ranges_contains(ranges: &[(u16, u16)], status: u16) -> bool {
     false
 }
 
-fn parse_range(s: &str) -> Result<(u16, u16), StatusFilterParseError> {
+fn parse_range(s: &str) -> Result<(u16, u16), ParseStatusFilterError> {
     Ok(match s {
         "2xx" => (200, 299),
         "3xx" => (300, 399),
@@ -67,8 +67,8 @@ impl StatusFilter {
 }
 
 impl FromStr for StatusFilter {
-    type Err= StatusFilterParseError;
-    fn from_str(value: &str) -> Result<Self, StatusFilterParseError> {
+    type Err= ParseStatusFilterError;
+    fn from_str(value: &str) -> Result<Self, ParseStatusFilterError> {
         let mut include = SmallVec::new();
         let mut exclude = SmallVec::new();
         for s in value.split(',') {

@@ -24,7 +24,7 @@ impl TrendComputer {
             // on an excluded tail, so we determine the end.
             let mut dc = 0;
             for (idx, date) in base.dates.iter().enumerate() {
-                if date_filter.contains(*date) {
+                if date_filter.overlaps(*date) {
                     dc = idx + 1;
                 }
             }

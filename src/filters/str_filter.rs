@@ -1,11 +1,11 @@
 use {
     bet::BeTree,
-    regex::{self, Regex},
+    lazy_regex::regex::{self, Regex},
     thiserror::Error,
 };
 
 #[derive(Debug, Error)]
-pub enum StrFilterParseError {
+pub enum ParseStrFilterError {
 
     #[error("invalid pattern {0:?} : {1}")]
     InvalidPattern(String, String),
@@ -49,12 +49,12 @@ pub struct StrFilter {
     expr: BeTree<BoolOperator, Regex>,
 }
 
-fn invalid(pattern: &str, reason: &str) -> Result<StrFilter, StrFilterParseError> {
-    Err(StrFilterParseError::InvalidPattern(pattern.to_string(), reason.to_string()))
+fn invalid(pattern: &str, reason: &str) -> Result<StrFilter, ParseStrFilterError> {
+    Err(ParseStrFilterError::InvalidPattern(pattern.to_owned(), reason.to_owned()))
 }
 
 impl StrFilter {
-    pub fn new(pattern: &str) -> Result<Self, StrFilterParseError> {
+    pub fn new(pattern: &str) -> Result<Self, ParseStrFilterError> {
         if pattern.contains(',') {
             Self::with_comma_syntax(pattern)
         } else {
@@ -65,7 +65,7 @@ impl StrFilter {
     /// a sequence of patterns, each one with an optional NOT before.
     ///
     /// Example: ̀ dystroy & !miaou`
-    pub fn with_be_syntax(pattern: &str) -> Result<Self, StrFilterParseError> {
+    pub fn with_be_syntax(pattern: &str) -> Result<Self, ParseStrFilterError> {
         let mut expr = BeTree::new();
         let chars: Vec<char> = pattern.chars().collect();
         for i in 0..chars.len() {
@@ -115,7 +115,7 @@ impl StrFilter {
     /// a sequence of patterns, each one with an optional NOT before.
     ///
     /// Example: ̀ dystroy,!miaou`
-    pub fn with_comma_syntax(pattern: &str) -> Result<Self, StrFilterParseError> {
+    pub fn with_comma_syntax(pattern: &str) -> Result<Self, ParseStrFilterError> {
         let mut expr = BeTree::new();
         let atoms = pattern.split(',').map(|s| s.trim());
         for atom in atoms {
@@ -164,7 +164,7 @@ mod str_filter_tests {
 
     #[test]
     fn test_comma_regex() {
-        let f = StrFilter::new(r#"dystroy,!m\w{3}u"#).unwrap();
+        let f = StrFilter::new(r"dystroy,!m\w{3}u").unwrap();
         assert_eq!(f.accepts("a/dystroy/b"), true);
         assert_eq!(f.accepts("a/miaou/b"), false);
         assert_eq!(f.accepts("a/miaou/dystroy"), false);
@@ -181,7 +181,7 @@ mod str_filter_tests {
 
     #[test]
     fn test_be_regex() {
-        let f = StrFilter::new(r#"^/dystroy & !( m\w{3}u | blog )"#).unwrap();
+        let f = StrFilter::new(r"^/dystroy & !( m\w{3}u | blog )").unwrap();
         assert_eq!(f.accepts("/a/dystroy/b"), false);
         assert_eq!(f.accepts("/dystroy/b"), true);
         assert_eq!(f.accepts("/dystroy/mieou/b"), false);

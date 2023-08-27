@@ -8,13 +8,13 @@ use {
 };
 
 #[derive(Debug, Error)]
-pub enum LogParseError {
+pub enum ParseLogError {
     #[error("invalid log line {0:?}")]
     InvalidLogLine(String),
     #[error("character not found {0:?}")]
     CharNotFound(char),
     #[error("date parse error")]
-    InvalidDate(#[from] DateParseError),
+    InvalidDateTime(#[from] ParseDateTimeError),
     #[error("expected int")]
     IntExpected(#[from] ParseIntError),
 }
@@ -25,7 +25,7 @@ pub enum LogParseError {
 #[derive(Debug)]
 pub struct LogLine {
     pub remote_addr: Box<str>,
-    pub date: Date,
+    pub date_time: DateTime,
     pub date_idx: usize,
     pub method: Method,
     pub path: Box<str>,
@@ -70,14 +70,20 @@ impl LogLine {
         //     &self.path,
         // )
     }
+    pub fn date(&self) -> Date {
+        self.date_time.date
+    }
+    pub fn time(&self) -> Time {
+        self.date_time.time
+    }
 }
 
 impl FromStr for LogLine {
-    type Err = LogParseError;
+    type Err = ParseLogError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut ranger = Ranger::new(s);
         let remote_addr = ranger.until(' ')?.into();
-        let date = Date::from_nginx(ranger.between('[', ']')?)?;
+        let date_time = DateTime::from_nginx(ranger.between('[', ']')?)?;
         let mut request = ranger.between('"', '"')?.split(' ');
         let (method, path) = match (request.next(), request.next()) {
             (Some(method), Some(path)) => (Method::from(method), path),
@@ -90,7 +96,7 @@ impl FromStr for LogLine {
         let referer = ranger.between('"', '"')?.into();
         Ok(LogLine {
             remote_addr,
-            date,
+            date_time,
             date_idx: 0,
             method,
             path,

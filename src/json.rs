@@ -27,6 +27,7 @@ impl LineConsumer for JsonPrinter {
         }
         print!(r#"  {{
     "date": "{}",
+    "time": "{}",
     "remote_addr": "{}",
     "method": "{}",
     "path": "{}",
@@ -34,7 +35,8 @@ impl LineConsumer for JsonPrinter {
     "bytes_sent": {},
     "referer": "{}"
   }}"#,
-            line.date,
+            line.date(),
+            line.time(),
             line.remote_addr,
             line.method,
             line.path,

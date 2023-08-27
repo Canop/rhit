@@ -48,7 +48,7 @@ fn read_first_date<R: Read>(file: R) -> Result<Option<Date>> {
         }
         match LogLine::from_str(&line) {
             Ok(l) => {
-                return Ok(Some(l.date));
+                return Ok(Some(l.date()));
             }
             _ => {
                 debug!("skipping line {:?}", &line);

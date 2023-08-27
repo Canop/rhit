@@ -11,8 +11,8 @@ use {
 struct BaseContent {
     lines: Vec<LogLine>,
     bar_idx: usize,
-    unfiltered_histogram: Histogram,
-    filtered_histogram: Histogram,
+    unfiltered_histogram: DateHistogram,
+    filtered_histogram: DateHistogram,
 }
 
 impl LineConsumer for BaseContent {
@@ -20,8 +20,8 @@ impl LineConsumer for BaseContent {
         &mut self,
         first_date: Date,
     ) {
-        self.unfiltered_histogram.bars.push(Bar::new(first_date));
-        self.filtered_histogram.bars.push(Bar::new(first_date));
+        self.unfiltered_histogram.bars.push(DateBar::new(first_date));
+        self.filtered_histogram.bars.push(DateBar::new(first_date));
     }
     fn eat_line(
         &mut self,
@@ -33,9 +33,9 @@ impl LineConsumer for BaseContent {
         let fbars = &mut self.filtered_histogram.bars;
         // both histograms are synchronized, we create
         // bars even when there's no filtered hit
-        if log_line.date != ubars[self.bar_idx].date {
-            ubars.push(Bar::new(log_line.date));
-            fbars.push(Bar::new(log_line.date));
+        if log_line.date() != ubars[self.bar_idx].date {
+            ubars.push(DateBar::new(log_line.date()));
+            fbars.push(DateBar::new(log_line.date()));
             self.bar_idx += 1;
         }
         ubars[self.bar_idx].hits += 1;
@@ -50,12 +50,12 @@ impl LineConsumer for BaseContent {
 }
 
 pub struct LogBase {
-    pub dates: Vec<Date>, // keep this ?
+    pub dates: Vec<Date>, // all the days covering the observed period
     pub filterer: Filterer,
     pub lines: Vec<LogLine>,
-    pub filtered_histogram: Histogram,
+    pub filtered_histogram: DateHistogram,
     pub filtered_count: u64,
-    pub unfiltered_histogram: Histogram,
+    pub unfiltered_histogram: DateHistogram,
     pub unfiltered_count: u64,
 }
 

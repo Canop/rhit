@@ -1,34 +1,9 @@
 use {
-    std::{
-        fmt,
-        num::ParseIntError,
-    },
-    thiserror::Error,
+    crate::ParseDateTimeError,
+    std::fmt,
 };
 
-#[derive(Debug, Error)]
-pub enum DateParseError {
-
-    #[error("unexpected end")]
-    UnexpectedEnd,
-
-    #[error("invalid day {0:?}")]
-    InvalidDay(u8),
-
-    #[error("date is ambiguous in context {0:?}")]
-    AmbiguousDate(String),
-
-    #[error("invalid month {0:?}")]
-    InvalidMonth(u8),
-
-    #[error("unrecognized month {0:?}")]
-    UnrecognizedMonth(String),
-
-    #[error("expected int")]
-    IntExpected(#[from] ParseIntError),
-}
-
-static MONTHS_3_LETTERS: &[&str] = &[
+pub static MONTHS_3_LETTERS: &[&str] = &[
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
 
@@ -46,12 +21,12 @@ pub struct Date {
 }
 
 impl Date {
-    pub fn new(year: u16, month: u8, day: u8) -> Result<Self, DateParseError> {
+    pub fn new(year: u16, month: u8, day: u8) -> Result<Self, ParseDateTimeError> {
         if day < 1 || day > 31 {
-            return Err(DateParseError::InvalidDay(day));
+            return Err(ParseDateTimeError::InvalidDay(day));
         }
         if month < 1 || month > 12 {
-            return Err(DateParseError::InvalidMonth(month));
+            return Err(ParseDateTimeError::InvalidMonth(month));
         }
         Ok(Self { year, month, day })
     }
@@ -60,9 +35,9 @@ impl Date {
     /// a datetime in nginx is either in
     /// - "common log format", eg `10/Jan/2021:10:27:01 +0000`
     /// - ISO 8601, eg `1977-04-22T01:00:00-05:00`
-    pub fn from_nginx(s: &str) -> Result<Self, DateParseError> {
+    pub fn from_nginx(s: &str) -> Result<Self, ParseDateTimeError> {
         if s.len()<11 {
-            return Err(DateParseError::UnexpectedEnd);
+            return Err(ParseDateTimeError::UnexpectedEnd);
         }
         if let Ok(year) = s[0..4].parse() {
             // let's go with ISO 8601
@@ -76,7 +51,7 @@ impl Date {
             let month = MONTHS_3_LETTERS
                 .iter()
                 .position(|&m| m == month)
-                .ok_or_else(|| DateParseError::UnrecognizedMonth(s.to_string()))?;
+                .ok_or_else(|| ParseDateTimeError::UnrecognizedMonth(s.to_owned()))?;
             let month = (month + 1) as u8;
             let year = s[7..11].parse()?;
             Self::new(year, month, day)
@@ -88,7 +63,7 @@ impl Date {
         s: &str,
         default_year: Option<u16>,
         default_month: Option<u8>,
-    ) -> Result<Self, DateParseError> {
+    ) -> Result<Self, ParseDateTimeError> {
         let mut t = s.split('/');
         match (t.next(), t.next(), t.next()) {
             (Some(year), Some(month), Some(day)) => {
@@ -98,14 +73,14 @@ impl Date {
                 if let Some(year) = default_year {
                     Date::new(year, month.parse()?, day.parse()?)
                 } else {
-                    Err(DateParseError::AmbiguousDate(s.to_string()))
+                    Err(ParseDateTimeError::AmbiguousDate(s.to_owned()))
                 }
             }
             (Some(day), None, None) => {
                 if let (Some(year), Some(month)) = (default_year, default_month) {
                     Date::new(year, month, day.parse()?)
                 } else {
-                    Err(DateParseError::AmbiguousDate(s.to_string()))
+                    Err(ParseDateTimeError::AmbiguousDate(s.to_owned()))
                 }
             }
             _ => unsafe { std::hint::unreachable_unchecked() },

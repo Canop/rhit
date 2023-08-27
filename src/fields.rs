@@ -1,11 +1,14 @@
 use {
     anyhow::Result,
+    std::str::FromStr,
+    thiserror::Error,
 };
 
 /// one of the tables that can be displayed
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Field {
     Dates,
+    Times,
     Methods,
     Status,
     Ip,
@@ -22,6 +25,7 @@ pub static DEFAULT_FIELDS: &[Field] = &[
 
 pub static ALL_FIELDS: &[Field] = &[
     Field::Dates,
+    Field::Times,
     Field::Methods,
     Field::Status,
     Field::Ip,
@@ -70,7 +74,6 @@ impl IntoIterator for Fields {
 
 #[derive(Debug, Error)]
 pub enum ParseFieldError {
-
     #[error("unrecognized field start {0:?}")]
     UnrecognizedFieldStart(char),
 }
@@ -108,6 +111,7 @@ impl FromStr for Fields {
                 c if !skip_alpha => {
                     let field = match c {
                         'd' => Field::Dates,
+                        't' => Field::Times,
                         's' => Field::Status,
                         'a'|'i' => Field::Ip,
                         'r' => Field::Referers,
@@ -141,31 +145,31 @@ mod fields_parsing_tests {
     #[test]
     fn parse_fields_explicit() {
         assert_eq!(
-            Fields::from_arg_value("paths").unwrap(),
+            Fields::from_str("paths").unwrap(),
             Fields(vec![Paths]),
         );
         assert_eq!(
-            Fields::from_arg_value("p").unwrap(),
+            Fields::from_str("p").unwrap(),
             Fields(vec![Paths]),
         );
         assert_eq!(
-            Fields::from_arg_value("ip,date,ref").unwrap(),
+            Fields::from_str("ip,date,ref").unwrap(),
             Fields(vec![Ip, Dates, Referers]),
         );
         assert_eq!(
-            Fields::from_arg_value("ip+date+ref").unwrap(),
+            Fields::from_str("ip+date+ref").unwrap(),
             Fields(vec![Ip, Dates, Referers]),
         );
         assert_eq!(
-            Fields::from_arg_value("i,d,ref").unwrap(),
+            Fields::from_str("i,d,ref").unwrap(),
             Fields(vec![Ip, Dates, Referers]),
         );
         assert_eq!(
-            Fields::from_arg_value("i+d+r").unwrap(),
+            Fields::from_str("i+d+r").unwrap(),
             Fields(vec![Ip, Dates, Referers]),
         );
         assert_eq!(
-            Fields::from_arg_value("method,status,ip,date,ref").unwrap(),
+            Fields::from_str("method,status,ip,date,ref").unwrap(),
             Fields(vec![Methods, Status, Ip, Dates, Referers]),
         );
     }
@@ -173,11 +177,11 @@ mod fields_parsing_tests {
     #[test]
     fn parse_fields_no_duplicate() {
         assert_eq!(
-            Fields::from_arg_value("paths,p").unwrap(),
+            Fields::from_str("paths,p").unwrap(),
             Fields(vec![Paths]),
         );
         assert_eq!(
-            Fields::from_arg_value("referer,method,status,ip,date,ref").unwrap(),
+            Fields::from_str("referer,method,status,ip,date,ref").unwrap(),
             Fields(vec![Methods, Status, Ip, Dates, Referers]),
         );
     }
@@ -185,11 +189,11 @@ mod fields_parsing_tests {
     #[test]
     fn parse_fields_all() {
         assert_eq!(
-            Fields::from_arg_value("a").unwrap(),
+            Fields::from_str("a").unwrap(),
             Fields(ALL_FIELDS.to_vec()),
         );
         assert_eq!(
-            Fields::from_arg_value("all").unwrap(),
+            Fields::from_str("all").unwrap(),
             Fields(ALL_FIELDS.to_vec()),
         );
     }
@@ -197,31 +201,31 @@ mod fields_parsing_tests {
     #[test]
     fn parse_fields_add_remove_to_default() {
         assert_eq!(
-            Fields::from_arg_value("+r+i").unwrap(),
+            Fields::from_str("+r+i").unwrap(),
             Fields(vec![Dates, Status, Paths, Referers, Ip]),
         );
         assert_eq!(
-            Fields::from_arg_value("+s,m").unwrap(),
+            Fields::from_str("+s,m").unwrap(),
             Fields(vec![Dates, Referers, Paths, Status, Methods]),
         );
         assert_eq!(
-            Fields::from_arg_value("+ip-path").unwrap(),
+            Fields::from_str("+ip-path").unwrap(),
             Fields(vec![Dates, Status, Referers, Ip]),
         );
         assert_eq!(
-            Fields::from_arg_value("-p+i,").unwrap(),
+            Fields::from_str("-p+i,").unwrap(),
             Fields(vec![Dates, Status, Referers, Ip]),
         );
         assert_eq!(
-            Fields::from_arg_value("+i,").unwrap(),
+            Fields::from_str("+i,").unwrap(),
             Fields(vec![Dates, Status, Referers, Paths, Ip]),
         );
         assert_eq!(
-            Fields::from_arg_value("-date-p").unwrap(),
+            Fields::from_str("-date-p").unwrap(),
             Fields(vec![Status, Referers]),
         );
         assert_eq!(
-            Fields::from_arg_value("-d-p+i+p+m").unwrap(),
+            Fields::from_str("-d-p+i+p+m").unwrap(),
             Fields(vec![Status, Referers, Ip, Paths, Methods]),
         );
     }
@@ -229,24 +233,24 @@ mod fields_parsing_tests {
     #[test]
     fn parse_fields_algebric_no_default() {
         assert_eq!(
-            Fields::from_arg_value("all+ref+i").unwrap(),
-            Fields(vec![Dates, Methods, Status, Paths, Referers, Ip]),
+            Fields::from_str("all+ref+i").unwrap(),
+            Fields(vec![Dates, Times, Methods, Status, Paths, Referers, Ip]),
         );
         assert_eq!(
-            Fields::from_arg_value("all-ref-i").unwrap(),
-            Fields(vec![Dates, Methods, Status, Paths]),
+            Fields::from_str("all-ref-i").unwrap(),
+            Fields(vec![Dates, Times, Methods, Status, Paths]),
         );
         assert_eq!(
-            Fields::from_arg_value("s-m").unwrap(),
+            Fields::from_str("s-m").unwrap(),
             Fields(vec![Status]),
         );
         assert_eq!(
-            Fields::from_arg_value("all-i,").unwrap(),
-            Fields(vec![Dates, Methods, Status, Referers, Paths]),
+            Fields::from_str("all-i,").unwrap(),
+            Fields(vec![Dates, Times, Methods, Status, Referers, Paths]),
         );
         assert_eq!(
-            Fields::from_arg_value("all-date-p").unwrap(),
-            Fields(vec![Methods, Status, Ip, Referers]),
+            Fields::from_str("all-date-p").unwrap(),
+            Fields(vec![Times, Methods, Status, Ip, Referers]),
         );
     }
 

@@ -20,7 +20,7 @@ impl<'s> Ranger<'s> {
             last: None,
         }
     }
-    pub fn until(&mut self, end: char) -> Result<&'s str, LogParseError> {
+    pub fn until(&mut self, end: char) -> Result<&'s str, ParseLogError> {
         for (idx, c) in &mut self.char_indices {
             if c == end {
                 let start = self.pos;
@@ -29,9 +29,9 @@ impl<'s> Ranger<'s> {
                 return Ok(&self.s[start..self.pos]);
             }
         }
-        Err(LogParseError::CharNotFound(end))
+        Err(ParseLogError::CharNotFound(end))
     }
-    pub fn between(&mut self, start: char, end: char) -> Result<&'s str, LogParseError> {
+    pub fn between(&mut self, start: char, end: char) -> Result<&'s str, ParseLogError> {
         if Some(start) == self.last {
             self.pos += start.len_utf8();
             return self.until(end);
@@ -46,9 +46,9 @@ impl<'s> Ranger<'s> {
                         return Ok(&self.s[pos..self.pos]);
                     }
                 }
-                return Err(LogParseError::CharNotFound(end));
+                return Err(ParseLogError::CharNotFound(end));
             }
         }
-        Err(LogParseError::CharNotFound(start))
+        Err(ParseLogError::CharNotFound(start))
     }
 }

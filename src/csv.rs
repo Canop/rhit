@@ -14,7 +14,7 @@ impl LineConsumer for CsvPrinter {
         &mut self,
         _first_date: Date,
     ) {
-        println!("date,remote address,method,path,status,bytes sent,referer");
+        println!("date,time,remote address,method,path,status,bytes sent,referer");
     }
     fn eat_line(
         &mut self,
@@ -24,8 +24,9 @@ impl LineConsumer for CsvPrinter {
     ) {
         if filtered_out { return; }
         println!(
-            r#"{},{},{},"{}",{},{},"{}""#,
-            line.date,
+            r#"{},{},{},{},"{}",{},{},"{}""#,
+            line.date(),
+            line.time(),
             line.remote_addr,
             line.method,
             line.path,

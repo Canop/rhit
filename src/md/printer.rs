@@ -1,7 +1,6 @@
 use {
     super::*,
     crate::*,
-    crossterm::tty::IsTty,
     have::Fun,
     itertools::*,
     minimad::{OwningTemplateExpander, TextTemplate},
@@ -53,7 +52,7 @@ pub struct Printer {
     pub terminal_width: usize,
     pub detail_level: usize,
     pub key: Key,
-    pub date_filter: Option<DateFilter>,
+    pub date_filter: Option<DateTimeFilter>,
     pub changes: bool,
     pub all_paths: bool,
 }
@@ -63,7 +62,7 @@ impl Printer {
         let detail_level = args.length;
         let fields = args.fields.clone();
         let terminal_width = terminal_size().0 as usize;
-        let color = args.color.value().unwrap_or_else(|| std::io::stdout().is_tty());
+        let color = args.color();
         let skin = skin::make_skin(color);
         let key = args.key;
         let date_filter = log_base.filterer.date_filter().copied();
@@ -93,7 +92,7 @@ impl Printer {
     pub fn md_hits(&self, hits: usize) -> String {
         match self.key {
             Key::Hits => {
-                let mut s = "*".to_string();
+                let mut s = "*".to_owned();
                 s.write_formatted(&hits, &Locale::en).unwrap();
                 s.push('*');
                 s

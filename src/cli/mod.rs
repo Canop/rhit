@@ -1,8 +1,11 @@
 pub mod args;
+mod help;
 
 use {
     crate::*,
+    args::Args,
     anyhow::*,
+    clap::Parser,
     cli_log::*,
     std::path::PathBuf,
 };
@@ -18,11 +21,14 @@ fn print_analysis(paths: &[PathBuf], args: &args::Args) -> Result<()> {
 }
 
 pub fn run() -> anyhow::Result<()> {
-    let mut args: args::Args = argh::from_env();
-    args.fix();
+    let args = Args::parse();
     debug!("args: {:#?}", &args);
     if args.version {
-        println!("rhit {}", env!("CARGO_PKG_VERSION"));
+        println!("dysk {}", env!("CARGO_PKG_VERSION"));
+        return Ok(());
+    }
+    if args.help {
+        help::print();
         return Ok(());
     }
     let mut paths = args.files.clone();

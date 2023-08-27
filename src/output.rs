@@ -1,6 +1,7 @@
 use {
     anyhow::Result,
-    argh::FromArgValue,
+    std::str::FromStr,
+    thiserror::Error,
 };
 
 /// Kind of output
@@ -21,14 +22,21 @@ pub enum Output {
     Json,
 }
 
-impl FromArgValue for Output {
-    fn from_arg_value(value: &str) -> Result<Self, String> {
+#[derive(Debug, Error)]
+pub enum ParseOutputError {
+    #[error("unrecognized output {0:?}")]
+    UnrecognizedValue(String),
+}
+
+impl FromStr for Output {
+    type Err = ParseOutputError;
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
         match value.to_lowercase().as_str() {
             "r" | "raw" => Ok(Self::Raw),
             "t" | "tbl" | "tables" => Ok(Self::Tables),
             "c" | "csv" => Ok(Self::Csv),
             "j" | "json" => Ok(Self::Json),
-            _ => Err(format!("unrecognized output : {value:?}")),
+            _ => Err(ParseOutputError::UnrecognizedValue(value.to_owned()))
         }
     }
 }
