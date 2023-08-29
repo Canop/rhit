@@ -1,5 +1,5 @@
 ### next
-- `--output` parameter lets you choose between the standard tables or the log lines, either raw, as CSV, or as JSON
+- `--output` parameter lets you choose between summary tables (default) or the log lines, either raw, as CSV, or as JSON
 - `--lines` removed (use `--output raw` or `-o r` instead)
 - more helpful `--help`
 
