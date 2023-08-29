@@ -13,7 +13,7 @@ rust-version = "1.60"
 [dependencies]
 bet = "1.0"
 clap = { version = "4.3", features = ["derive", "cargo"] }
-clap-help = "0.6.1"
+clap-help = "0.7.0"
 cli-log = "2.0"
 file-size = "1.0.3"
 flate2 = "1.0.27"

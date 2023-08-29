@@ -210,12 +210,12 @@ dependencies = [
 
 [[package]]
 name = "clap-help"
-version = "0.6.2"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4f06bd287cb07754f8337478ac48ce3737ddbcf729345a607338ffcdff0d908c"
+checksum = "542031cd21cd56842924c779171af859783a04063e2ede297aa9fa0ffbb8a9b3"
 dependencies = [
  "clap",
- "termimad 0.23.2",
+ "termimad 0.25.0",
  "terminal-light",
 ]
 
@@ -784,15 +784,6 @@ dependencies = [
 
 [[package]]
 name = "minimad"
-version = "0.12.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38b136454924e4d020e55c4992e07c105b40d5c41b84662862f0e15bc0a2efef"
-dependencies = [
- "once_cell",
-]
-
-[[package]]
-name = "minimad"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f6c4610f430e49b882fcaad0186134150d4d74fc76080b0a61f7000460c2e268"
@@ -1168,20 +1159,6 @@ dependencies = [
  "crossbeam",
  "crossterm",
  "minimad 0.9.1",
- "thiserror",
- "unicode-width",
-]
-
-[[package]]
-name = "termimad"
-version = "0.23.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e32883199fc52cda7e431958dee8bc3ec6898afabc152b76959b9e0e74e2202"
-dependencies = [
- "coolor",
- "crossbeam",
- "crossterm",
- "minimad 0.12.0",
  "thiserror",
  "unicode-width",
 ]
