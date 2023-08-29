@@ -24,15 +24,15 @@ pub struct Args {
     #[arg(long)]
     pub version: bool,
 
-    /// Whether to have styles and colors (default is usually OK)
+    /// Whether to have styles and colors
     #[arg(long, default_value="auto", value_name = "color")]
     pub color: TriBool,
 
-    /// Key used in sorting and histogram, either 'hits' (default) or 'bytes'
+    /// Key used in sorting and histogram, either 'hits' or 'bytes'
     #[arg(short, long, default_value="hits")]
     pub key: Key,
 
-    /// Detail level, from 0 to 6 (default 1), impacts the lengths of tables
+    /// Detail level, from 0 to 6, impacts the lengths of tables
     #[arg(short, long, default_value = "1")]
     pub length: usize,
 
@@ -93,7 +93,7 @@ pub struct Args {
     #[arg(short, long, default_value="tables")]
     pub output: Output,
 
-    /// Don't print anything during load, no progress bar or file list
+    /// Don't print anything during load: no progress bar or file list
     #[arg(long)]
     pub silent_load: bool,
 
