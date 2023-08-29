@@ -15,7 +15,6 @@ pub use {
 
 use {
     crate::*,
-    anyhow::*,
     smallvec::*,
     std::{
         str::FromStr,
@@ -85,7 +84,7 @@ impl Filterer {
         args: &args::Args,
         first_date: Date,
         last_date: Date,
-    ) -> Result<Self> {
+    ) -> Result<Self, RhitError> {
         let (default_year, default_month) = unique_year_month(first_date, last_date);
         let mut filterings = SmallVec::new();
         if let Some(s) = &args.date {

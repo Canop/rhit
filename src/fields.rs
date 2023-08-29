@@ -1,5 +1,4 @@
 use {
-    anyhow::Result,
     std::str::FromStr,
     thiserror::Error,
 };

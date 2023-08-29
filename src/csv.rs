@@ -1,6 +1,5 @@
 use {
     crate::*,
-    anyhow::*,
     std::{
         path::PathBuf,
     },
@@ -40,7 +39,7 @@ impl LineConsumer for CsvPrinter {
 pub fn print_csv_lines(
     path: &[PathBuf],
     args: &args::Args,
-) -> Result<()> {
+) -> Result<(), RhitError> {
     let mut printer = CsvPrinter{};
     let mut file_reader = FileReader::new(path, args, &mut printer)?;
     time!("reading files", file_reader.read_all_files())?;

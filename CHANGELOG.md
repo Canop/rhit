@@ -1,6 +1,7 @@
 ### next
 - `--output` parameter lets you choose between the standard tables or the log lines, either raw, as CSV, or as JSON
 - `--lines` removed (use `--output raw` or `-o r` instead)
+- more helpful `--help`
 
 <a name="v1.7.2"></a>
 ### v1.7.2 - 2023-04-23

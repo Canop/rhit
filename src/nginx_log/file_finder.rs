@@ -1,7 +1,7 @@
 use {
     crate::*,
-    anyhow::*,
     std::{
+        io,
         path::{Path, PathBuf},
     },
 };
@@ -13,7 +13,7 @@ fn find_files(
     files: &mut Vec<PathBuf>,
     check_name: bool,
     check_deeper_names: bool,
-) -> Result<()> {
+) -> Result<(), io::Error> {
     if path.is_dir() {
         for entry in path.read_dir()? {
             find_files(entry?.path(), files, check_deeper_names, check_deeper_names)?;
@@ -42,7 +42,7 @@ impl<'p> FileFinder<'p> {
     }
     /// return tuples (date, path), sorted, the date being
     /// the one of the first line in file
-    pub fn dated_files(self) -> Result<Vec<(Date, PathBuf)>> {
+    pub fn dated_files(self) -> Result<Vec<(Date, PathBuf)>, RhitError> {
         let mut files = Vec::new();
         for root in self.roots {
             find_files(root.clone(), &mut files, false, self.check_names)?;

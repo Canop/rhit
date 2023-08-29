@@ -1,6 +1,5 @@
 use {
     crate::*,
-    anyhow::*,
 };
 
 const MAX_HISTO_LEN: usize = 20;
@@ -17,7 +16,7 @@ impl TrendComputer {
     pub fn new(
         base: &LogBase,
         args: &args::Args,
-    ) -> Result<Option<Self>> {
+    ) -> Result<Option<Self>, RhitError> {
         let dc = if let Some(date_filter) = base.filterer.date_filter() {
             // if there's a date filtering, we don't want the
             // histograms and trend computation to be based

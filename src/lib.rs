@@ -7,6 +7,7 @@ mod date;
 mod date_histogram;
 mod date_idx;
 mod date_time;
+mod error;
 mod fields;
 mod filters;
 mod histo_line;
@@ -34,6 +35,7 @@ pub use {
     date_histogram::*,
     date_idx::*,
     date_time::*,
+    error::*,
     fields::*,
     filters::*,
     histo_line::*,

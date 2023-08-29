@@ -1,6 +1,5 @@
 use {
     crate::*,
-    anyhow::*,
     std::{
         path::PathBuf,
     },
@@ -63,7 +62,7 @@ impl LogBase {
     pub fn new(
         paths: &[PathBuf],
         args: &args::Args,
-    ) -> Result<Self> {
+    ) -> Result<Self, RhitError> {
         let mut base_content = BaseContent::default();
         let mut file_reader = FileReader::new(paths, args, &mut base_content)?;
         time!("reading files", file_reader.read_all_files())?;
@@ -76,7 +75,7 @@ impl LogBase {
             dates.push(bar.date);
         }
         if unfiltered_count == 0 {
-            bail!("no hit found in {:?}", paths);
+            return Err(RhitError::NoHitInPaths(paths.to_vec()));
         }
         let filtered_count = filtered_histogram.total_hits();
         Ok(Self {

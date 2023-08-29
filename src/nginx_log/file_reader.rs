@@ -1,6 +1,5 @@
 use {
     crate::*,
-    anyhow::{bail, Result},
     flate2::bufread::GzDecoder,
     std::{
         fs::File,
@@ -20,7 +19,7 @@ use {
     },
 };
 
-pub fn get_file_first_date(path: &Path) -> Result<Option<Date>> {
+pub fn get_file_first_date(path: &Path) -> Result<Option<Date>, RhitError> {
     debug!("reading date in file {:?}", &path);
     let file = File::open(path)?;
     if path.extension().and_then(|e| e.to_str()) == Some("gz") {
@@ -30,7 +29,7 @@ pub fn get_file_first_date(path: &Path) -> Result<Option<Date>> {
         read_first_date(file)
     }
 }
-fn read_first_date<R: Read>(file: R) -> Result<Option<Date>> {
+fn read_first_date<R: Read>(file: R) -> Result<Option<Date>, RhitError> {
     let mut reader = BufReader::new(file);
     let mut line = String::new();
     // a log file may contain non log lines, for example when
@@ -77,13 +76,13 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
         paths: &[PathBuf],
         args: &args::Args,
         consumer: &'c mut C,
-    ) -> Result<Self> {
+    ) -> Result<Self, RhitError> {
         let check_names = !args.no_name_check;
         let roots = paths.to_vec().into_boxed_slice();
         let ff = FileFinder::new(&roots, check_names);
         let mut dated_files = time!(ff.dated_files())?;
         if dated_files.is_empty() {
-            bail!("no log file found");
+            return Err(RhitError::NoLogFileFound);
         }
         let first_date = dated_files[0].0;
         let last_date = dated_files[dated_files.len()-1].0; // last first date
@@ -105,7 +104,7 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
     }
     pub fn read_all_files(
         &mut self,
-    ) -> Result<()> {
+    ) -> Result<(), RhitError> {
         let total =  self.paths.len();
         let mut done = 0;
         if !self.silent {
@@ -143,7 +142,7 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
         }
         Ok(())
     }
-    fn read_file_lines(&mut self, path: &Path) -> Result<()> {
+    fn read_file_lines(&mut self, path: &Path) -> Result<(), RhitError> {
         let file = File::open(path)?;
         if path.extension().and_then(|e| e.to_str()) == Some("gz") {
             let file = BufReader::new(file);
@@ -152,7 +151,7 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
             self.read_lines(file, path)
         }
     }
-    fn read_lines<R: Read>(&mut self, file: R, path: &Path) -> Result<()> {
+    fn read_lines<R: Read>(&mut self, file: R, path: &Path) -> Result<(), RhitError> {
         debug!("reading file {:?}", path);
         let mut reader = BufReader::new(file);
         let mut line = String::new();
@@ -190,7 +189,7 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
     }
 }
 
-fn print_progress(done: usize, total: usize) -> Result<()> {
+fn print_progress(done: usize, total: usize) -> Result<(), RhitError> {
     let width = 40;
     let p = ProgressBar::new(done as f32 / (total as f32), width);
     let s = format!("{:width$}", p, width=width);

@@ -4,13 +4,12 @@ mod help;
 use {
     crate::*,
     args::Args,
-    anyhow::*,
     clap::Parser,
     cli_log::*,
     std::path::PathBuf,
 };
 
-fn print_analysis(paths: &[PathBuf], args: &args::Args) -> Result<()> {
+fn print_analysis(paths: &[PathBuf], args: &args::Args) -> Result<(), RhitError> {
     let mut log_base = time!("LogBase::new", LogBase::new(paths, args))?;
     let printer = md::Printer::new(args, &log_base);
     let base = &mut log_base;
@@ -20,7 +19,7 @@ fn print_analysis(paths: &[PathBuf], args: &args::Args) -> Result<()> {
     Ok(())
 }
 
-pub fn run() -> anyhow::Result<()> {
+pub fn run() -> Result<(), RhitError> {
     let args = Args::parse();
     debug!("args: {:#?}", &args);
     if args.version {

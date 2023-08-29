@@ -1,6 +1,5 @@
 use {
     crate::*,
-    anyhow::*,
     std::{
         path::PathBuf,
     },
@@ -32,7 +31,7 @@ impl LineConsumer for RawPrinter {
 pub fn print_raw_lines(
     path: &[PathBuf],
     args: &args::Args,
-) -> Result<()> {
+) -> Result<(), RhitError> {
     let mut printer = RawPrinter{};
     let mut file_reader = FileReader::new(path, args, &mut printer)?;
     time!("reading files", file_reader.read_all_files())?;

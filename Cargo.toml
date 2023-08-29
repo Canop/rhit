@@ -11,7 +11,6 @@ categories = ["command-line-utilities"]
 rust-version = "1.60"
 
 [dependencies]
-anyhow = "1.0.49"
 bet = "1.0"
 clap = { version = "4.3", features = ["derive", "cargo"] }
 clap-help = "0.6.1"
