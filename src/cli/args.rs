@@ -28,11 +28,11 @@ pub struct Args {
     #[arg(long, default_value="auto", value_name = "color")]
     pub color: TriBool,
 
-    /// Key used in sorting and histogram, either 'hits' or 'bytes'
+    /// Key used in sorting and histogram, either `hits` or `bytes`
     #[arg(short, long, default_value="hits")]
     pub key: Key,
 
-    /// Detail level, from 0 to 6, impacts the lengths of tables
+    /// Detail level, from `0` to `6`, impacts the lengths of tables
     #[arg(short, long, default_value = "1")]
     pub length: usize,
 
@@ -43,7 +43,7 @@ pub struct Args {
     #[arg(short, long, default_value = "date,status,ref,path")]
     pub fields: Fields,
 
-    /// Add tables with more popular and less popular entries (ip, referers or paths)
+    /// Add tables with more popular and less popular entries (ip, referers and paths)
     #[arg(short, long)]
     pub changes: bool,
 
