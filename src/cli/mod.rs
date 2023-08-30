@@ -23,7 +23,7 @@ pub fn run() -> Result<(), RhitError> {
     let args = Args::parse();
     debug!("args: {:#?}", &args);
     if args.version {
-        println!("dysk {}", env!("CARGO_PKG_VERSION"));
+        println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
         return Ok(());
     }
     if args.help {
