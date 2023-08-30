@@ -8,8 +8,10 @@
 If it helps you make money, consider helping me find time to add features and to develop new free open-source software.
 
 <div class=sponsorship>
+<!--
 <script src="https://liberapay.com/dystroy/widgets/button.js"></script>
 <noscript><a href="https://liberapay.com/dystroy/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
+-->
 
 <iframe src="https://github.com/sponsors/Canop/button" title="Sponsor Canop" height="35" width="114" style="border: 0; border-radius: 6px;"></iframe>
 </div>
@@ -20,7 +22,7 @@ If it helps you make money, consider helping me find time to add features and to
 The best place to chat about rhit, to talk about features or bugs, is the Miaou chat.
 
 * [Rust & Rhit room on Miaou](https://miaou.dystroy.org/3490?rust)
-* [French Programers room on Miaou](https://miaou.dystroy.org/3)
+* [French Programmers room on Miaou](https://miaou.dystroy.org/3)
 
 # Issues
 

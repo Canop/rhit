@@ -89,7 +89,7 @@ pub struct Args {
     pub no_name_check: bool,
 
     /// Output: by default pretty summary tables but you can also
-    /// output log lines as `csv` or `raw` (as they appear in the log files)
+    /// output log lines as `csv`, `json`, or `raw` (as they appear in the log files)
     #[arg(short, long, default_value="tables")]
     pub output: Output,
 
