@@ -21,17 +21,28 @@ fetch("../download/version")
 
 # From precompiled binaries
 
-Binaries are made available at every release in [download](https://dystroy.org/rhit/download).
+Binaries are made available at every release in [download](https://dystroy.org/rhit/download). They are also available on [GitHub releases](https://github.com/Canop/rhit/releases).
 
-Direct links:
+The archives contain precompiled binaries, as well as the licenses and other files.
 
-Target|Files
+You may also directly download the executable files below, depending on your system:
+
+Target|Download
 -|-
-Linux | [x86_64-linux](https://dystroy.org/rhit/download/x86_64-linux/rhit)
-Linux/musl | [x86_64-unknown-linux-musl](https://dystroy.org/rhit/download/x86_64-unknown-linux-musl/rhit)
-Windows (experimental) | [x86_64-pc-windows-gnu](https://dystroy.org/rhit/download/x86_64-pc-windows-gnu/rhit.exe)
+x86-64 Linux gnu | [x86_64-unknown-linux-gnu](https://dystroy.org/rhit/download/x86_64-unknown-linux-gnu/rhit)
+x86-64 Linux musl  | [x86_64-unknown-linux-musl](https://dystroy.org/rhit/download/x86_64-unknown-linux-musl/rhit)
+ARM32 Linux gnu | [armv7-unknown-linux-gnueabihf](https://dystroy.org/rhit/download/armv7-unknown-linux-gnueabihf/rhit)
+ARM32 Linux musl | [armv7-unknown-linux-musleabi](https://dystroy.org/rhit/download/armv7-unknown-linux-musleabi/rhit)
+ARM64 Linux gnu | [aarch64-unknown-linux-gnu](https://dystroy.org/rhit/download/aarch64-unknown-linux-gnu/rhit)
+ARM64 Linux musl | [aarch64-unknown-linux-musl](https://dystroy.org/rhit/download/aarch64-unknown-linux-musl/rhit)
+Windows 10+ (experimental) | [x86_64-pc-windows-gnu](https://dystroy.org/rhit/download/x86_64-pc-windows-gnu/rhit.exe)
 
-When you download executable files, you'll have to ensure the shell can find them. An easy solution is to put them in `/usr/local/bin`. You may also have to set them executable using `chmod +x rhit`.
+On linux, if you have an old system, the "musl" versions may work when the "gnu" ones ask for a version of glibc that you don't have.
+
+
+When you download executable files, you'll have to ensure the shell can find them. An easy solution on linux is for example to put them in `/usr/local/bin`. You may also have to set them executable using `chmod +x rhit`.
+
+As I can't compile myself for all possible systems, you'll need to compile rhit yourself or use a third-party repository (see below) if your system isn't in the list above.
 
 # From crates.io
 
@@ -51,8 +62,11 @@ Fetch the [Canop/rhit](https://github.com/Canop/rhit) repository, move to the rh
 cargo install --path .
 ```
 
-# From third party repositories
+# Third party repositories
 
+Those packages are maintained by third parties and may be less up to date.
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/rhit.svg)](https://repology.org/project/rhit/versions)
 ## Homebrew
 
 ```bash

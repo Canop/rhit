@@ -5,6 +5,7 @@
 	--text: #aaa;
 	--accent: #fc0;
 	--dark-accent: #ff5f87;
+	--dark-border: #ff5f8759;
 	--bg: #fff;
 	--sidenav-bg: linear-gradient(#4446,#2226);
 	--top-nav-bg: linear-gradient(#444,#222);
@@ -274,7 +275,7 @@ body .navbar-brand {
 	background: transparent;
 }
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-    border-top: 1px solid var(--dark-accent);
+    border-top: thin solid var(--dark-border);
 }
 .table-hover > tbody > tr:hover {
 	background: transparent;
@@ -283,7 +284,7 @@ table td a {
     color: var(--dark-accent);
 }
 .table > thead > tr > th {
-    border-bottom: 2px solid var(--dark-accent);
+    border-bottom: 1px solid var(--dark-accent);
 }
 body .table {
 	color: var(--text);
