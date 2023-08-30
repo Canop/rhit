@@ -20,7 +20,7 @@ impl LineConsumer for JsonPrinter {
     ) {
         if filtered_out { return; }
         if self.written > 0 {
-            print!(",\n");
+            println!(",");
         } else {
             println!("[");
         }

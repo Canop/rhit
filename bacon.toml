@@ -24,6 +24,7 @@ command = [
 	"-A", "clippy::manual_range_contains",
 	"-A", "clippy::match_like_matches_macro",
 	"-A", "clippy::manual_clamp",
+	"-A", "clippy::if_same_then_else",
 ]
 need_stdout = false
 

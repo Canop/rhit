@@ -1,6 +1,7 @@
-### next
+<a name="v2.0.0"></a>
+### v2.0.0 - 2023-08-30
 - `--output` parameter lets you choose between summary tables (default) or the log lines, either raw, as CSV, or as JSON
-- `--lines` removed (use `--output raw` or `-o r` instead)
+- `--lines` parameter removed (use `--output raw` or `-o r` instead)
 - more helpful `--help`
 - more targets for binaries in the official archives, especially ARM 32/64 both gnu and musl
 

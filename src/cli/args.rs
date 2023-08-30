@@ -9,9 +9,7 @@ use {
     termimad::crossterm::tty::IsTty,
 };
 
-/// Rhit gives you a report of the hits found in your nginx logs.
-///
-/// Complete documentation at https://dystroy.org/rhit
+/// Program launch argument
 #[derive(Debug, Default, Parser)]
 #[command(author, about, name = "rhit", disable_version_flag = true, version, disable_help_flag = true)]
 pub struct Args {

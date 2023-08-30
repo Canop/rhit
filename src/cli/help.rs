@@ -11,7 +11,7 @@ use {
 };
 
 static INTRO_TEMPLATE: &str = "
-**Rhit** analyses your nginx logs.
+**Rhit** analyzes your nginx logs.
 
 Complete documentation at *https://dystroy.org/rhit*
 
