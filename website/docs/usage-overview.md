@@ -3,6 +3,14 @@
 
 `rhit` (or `sudo rhit` depending on your configuration) will open the access logs if they're at their standard location.
 
+So you just launch it as
+
+```bash
+rhit
+```
+
+and go on adding filters and fields as you explore your data.
+
 You may open a specific file, or a specific directory, by giving the path as argument:
 
 ```bash

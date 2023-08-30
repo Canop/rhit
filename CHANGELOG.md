@@ -2,6 +2,9 @@
 ### v2.0.0 - 2023-08-30
 - `--output` parameter lets you choose between summary tables (default) or the log lines, either raw, as CSV, or as JSON
 - `--lines` parameter removed (use `--output raw` or `-o r` instead)
+- `--date` precision now the second
+- `--time` filter
+- new time histogram (time of the day, in the server's timezone)
 - more helpful `--help`
 - more targets for binaries in the official archives, especially ARM 32/64 both gnu and musl
 
