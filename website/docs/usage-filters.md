@@ -30,7 +30,7 @@ All days but one | `-d '!2021/02/15'` (don't forget the quotes)
 Days after a specific one | `-d '>2021/02/28'`
 Days before a specific one | `-d '<2021/02/28'`
 Days of a specific range (inclusive) | `-d 2021/11/01-2021/12/25`
-Precise range (3 minutes)| `-d 2021/11/01T15:05-2021/11/01T15:08`
+Precise range (4 minutes)| `-d 2021/11/01T15:05-2021/11/01T15:08`
 Very precise range (a few seconds)| `-d 2021/11/01T15:05:58-2021/11/01T15:06:04`
 
 Shorcuts are sometimes possible. For example if all the log files are from the same year, you may ommit it:

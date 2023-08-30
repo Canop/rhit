@@ -12,7 +12,7 @@ pub enum DateTimeFilter {
     PreciseDate(Date),
     NotDateTime(DateTime),
     PreciseDateTime(DateTime),
-    Range(DateTime, DateTime),
+    Range(DateTime, DateTime), // both times included
 }
 
 impl DateTimeFilter {
@@ -110,15 +110,31 @@ impl DateTimeFilter {
                 3 => { // full date, no time
                     Self::PreciseDate(Date::new(toks[0].parse()?, toks[1].parse()?, toks[2].parse()?)?)
                 }
-                4 => { // date and hour
-                    Self::PreciseDateTime(
-                        DateTime::new(toks[0].parse()?, toks[1].parse()?, toks[2].parse()?, toks[3].parse()?, 0, 0)?,
-                    )
+                4 => {
+                    if toks[0].len() == 4 { // year month day hour
+                        Self::PreciseDateTime(
+                            DateTime::new(toks[0].parse()?, toks[1].parse()?, toks[2].parse()?, toks[3].parse()?, 0, 0)?,
+                        )
+                    } else if let Some(year) = default_year { // month day hour minute
+                        Self::PreciseDateTime(
+                            DateTime::new(year, toks[0].parse()?, toks[1].parse()?, toks[2].parse()?, toks[3].parse()?, 0)?,
+                        )
+                    } else {
+                        return Err(ParseDateTimeError::AmbiguousDate(s.to_owned()));
+                    }
                 }
-                5 => { // date, hour, and minute
-                    Self::PreciseDateTime(
-                        DateTime::new(toks[0].parse()?, toks[1].parse()?, toks[2].parse()?, toks[3].parse()?, toks[4].parse()?, 0)?,
-                    )
+                5 => {
+                    if toks[0].len() == 4 { // year month day hour minute
+                        Self::PreciseDateTime(
+                            DateTime::new(toks[0].parse()?, toks[1].parse()?, toks[2].parse()?, toks[3].parse()?, toks[4].parse()?, 0)?,
+                        )
+                    } else if let Some(year) = default_year { // month day hour minute second
+                        Self::PreciseDateTime(
+                            DateTime::new(year, toks[0].parse()?, toks[1].parse()?, toks[2].parse()?, toks[3].parse()?, toks[4].parse()?)?,
+                        )
+                    } else {
+                        return Err(ParseDateTimeError::AmbiguousDate(s.to_owned()));
+                    }
                 }
                 _ => { // date and time
                     Self::PreciseDateTime(
@@ -165,38 +181,65 @@ fn parse_date_optional_time(
     default_year: Option<u16>,
     default_month: Option<u8>,
 ) -> Result<(Date, Option<Time>), ParseDateTimeError> {
-    let mut t = s.split(|c: char| !c.is_ascii_digit());
-    let date = match (t.next(), t.next(), t.next()) {
-        (Some(year), Some(month), Some(day)) => {
-            Date::new(year.parse()?, month.parse()?, day.parse()?)
-        }
-        (Some(month), Some(day), None) => {
-            if let Some(year) = default_year {
-                Date::new(year, month.parse()?, day.parse()?)
-            } else {
-                Err(ParseDateTimeError::AmbiguousDate(s.to_owned()))
-            }
-        }
-        (Some(day), None, None) => {
+    let toks: Vec<&str> = s
+        .split(|c: char| !c.is_ascii_digit())
+        .collect();
+    match toks.len() {
+        0 => Err(ParseDateTimeError::UnexpectedEnd),
+        1 => { // only the day : the year and month must be provided
             if let (Some(year), Some(month)) = (default_year, default_month) {
-                Date::new(year, month, day.parse()?)
+                Ok((Date::new(year, month, toks[0].parse()?)?, None))
             } else {
                 Err(ParseDateTimeError::AmbiguousDate(s.to_owned()))
             }
         }
-        _ => unsafe { std::hint::unreachable_unchecked() },
-    }?;
-    let time = match t.next() {
-        Some(hour) => {
-            Some(Time::new(
-                hour.parse()?,
-                t.next().map(|m| m.parse()).transpose()?.unwrap_or(0),
-                t.next().map(|s| s.parse()).transpose()?.unwrap_or(0),
-            )?)
+        2 => { // month/day: year must be provided
+            if let Some(year) = default_year {
+                Ok((Date::new(year, toks[0].parse()?, toks[1].parse()?)?, None))
+            } else {
+                Err(ParseDateTimeError::AmbiguousDate(s.to_owned()))
+            }
         }
-        None => None,
-    };
-    Ok((date, time))
+        3 => { // full date, no time
+            Ok((Date::new(toks[0].parse()?, toks[1].parse()?, toks[2].parse()?)?, None))
+        }
+        4 => {
+            if toks[0].len() == 4 { // year month day hour
+                Ok((
+                    Date::new(toks[0].parse()?, toks[1].parse()?, toks[2].parse()?)?,
+                    Some(Time::new(toks[3].parse()?, 0, 0)?)
+                ))
+            } else if let Some(year) = default_year { // month day hour minute
+                Ok((
+                    Date::new(year, toks[0].parse()?, toks[1].parse()?)?,
+                    Some(Time::new(toks[2].parse()?, toks[3].parse()?, 0)?)
+                ))
+            } else {
+                Err(ParseDateTimeError::AmbiguousDate(s.to_owned()))
+            }
+        }
+        5 => {
+            if toks[0].len() == 4 { // year month day hour minute
+                Ok((
+                    Date::new(toks[0].parse()?, toks[1].parse()?, toks[2].parse()?)?,
+                    Some(Time::new(toks[3].parse()?, toks[4].parse()?, 0)?)
+                ))
+            } else if let Some(year) = default_year { // month day hour minute second
+                Ok((
+                    Date::new(year, toks[0].parse()?, toks[1].parse()?)?,
+                    Some(Time::new(toks[2].parse()?, toks[3].parse()?, toks[4].parse()?)?)
+                ))
+            } else {
+                Err(ParseDateTimeError::AmbiguousDate(s.to_owned()))
+            }
+        }
+        _ => { // date and time
+            Ok((
+                Date::new(toks[0].parse()?, toks[1].parse()?, toks[2].parse()?)?,
+                Some(Time::new(toks[3].parse()?, toks[4].parse()?, toks[5].parse()?)?)
+            ))
+        }
+    }
 }
 
 
@@ -216,7 +259,10 @@ mod date_time_filter_tests {
     macro_rules! date_time {
         ($year:literal, $month:literal, $day:literal, $hour:literal, $minute:literal) => {
             DateTime::new($year, $month, $day, $hour, $minute, 0).unwrap()
-        }
+        };
+        ($year:literal, $month:literal, $day:literal, $hour:literal, $minute:literal, $second:literal) => {
+            DateTime::new($year, $month, $day, $hour, $minute, $second).unwrap()
+        };
     }
 
     #[test]
@@ -291,12 +337,48 @@ mod date_time_filter_tests {
     }
 
     #[test]
+    fn test_date_time_range_filter_default_year_with_hour_minute() {
+        let df = DateTimeFilter::new("02/15T15h05-02/16T02:03", Some(2021), Some(02)).unwrap();
+        dbg!(df);
+        assert_eq!(df.overlaps(date!(2021, 01, 28)), false);
+        assert_eq!(df.overlaps(date!(2021, 02, 15)), true);
+        assert_eq!(df.overlaps(date!(2021, 02, 17)), false);
+        assert_eq!(df.contains(date_time!(2021, 02, 15, 15, 02)), false);
+        assert_eq!(df.contains(date_time!(2021, 02, 15, 15, 09)), true);
+        assert_eq!(df.contains(date_time!(2020, 12, 31, 23, 59)), false);
+    }
+
+    #[test]
+    fn test_date_time_range_filter_default_year_with_hour_minute_second() {
+        let df = DateTimeFilter::new("02/15T23:45:53-02/16T0:0:05", Some(2021), Some(02)).unwrap();
+        dbg!(df);
+        assert_eq!(df.overlaps(date!(2021, 01, 28)), false);
+        assert_eq!(df.overlaps(date!(2021, 02, 14)), false);
+        assert_eq!(df.overlaps(date!(2021, 02, 15)), true);
+        assert_eq!(df.overlaps(date!(2021, 02, 17)), false);
+        assert_eq!(df.contains(date_time!(2021, 02, 15, 15, 02, 05)), false);
+        assert_eq!(df.contains(date_time!(2021, 02, 15, 15, 09, 05)), false);
+        assert_eq!(df.contains(date_time!(2020, 12, 31, 23, 59, 05)), false);
+        assert_eq!(df.contains(date_time!(2021, 02, 15, 23, 40, 05)), false);
+        assert_eq!(df.contains(date_time!(2021, 02, 15, 23, 45, 50)), false);
+        assert_eq!(df.contains(date_time!(2021, 02, 15, 23, 45, 53)), true);
+        assert_eq!(df.contains(date_time!(2021, 02, 15, 23, 45, 54)), true);
+        assert_eq!(df.contains(date_time!(2021, 02, 16, 00, 00, 04)), true);
+        assert_eq!(df.contains(date_time!(2021, 02, 16, 00, 00, 05)), true);
+        assert_eq!(df.contains(date_time!(2021, 02, 16, 00, 00, 06)), false);
+    }
+
+    #[test]
     fn test_date_filter_default_month_year() {
         let df = DateTimeFilter::new("15", Some(2021), Some(02)).unwrap();
         dbg!(df);
         assert_eq!(df.overlaps(date!(2021, 01, 28)), false);
         assert_eq!(df.overlaps(date!(2021, 02, 15)), true);
         assert_eq!(df.overlaps(date!(2021, 02, 16)), false);
+        assert_eq!(df.contains(date_time!(2021, 01, 14, 23, 59)), false);
+        assert_eq!(df.contains(date_time!(2021, 02, 15, 0, 0)), true);
+        assert_eq!(df.contains(date_time!(2021, 02, 15, 23, 59)), true);
+        assert_eq!(df.contains(date_time!(2021, 02, 16, 0, 0)), false);
     }
 
     #[test]
@@ -314,5 +396,9 @@ mod date_time_filter_tests {
         assert_eq!(df.overlaps(date!(2021, 01, 28)), true);
         assert_eq!(df.overlaps(date!(2021, 02, 15)), true);
         assert_eq!(df.overlaps(date!(2022, 03, 01)), false);
+        assert_eq!(df.contains(date_time!(2021, 02, 15, 23, 59)), true);
+        assert_eq!(df.contains(date_time!(2021, 12, 24, 23, 59)), true);
+        assert_eq!(df.contains(date_time!(2022, 01, 01, 0, 0)), false);
+        assert_eq!(df.contains(date_time!(2020, 12, 31, 23, 59)), false);
     }
 }

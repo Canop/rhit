@@ -52,6 +52,8 @@ This field is shown by an histogram with 24 bars: one per hour.
 
 You choose it with `--field time`, that you may shorten in `-f d`.
 
+Note that the time is the the server's time.
+
 # Remote IP
 
 The remote adresses table isn't displayed by default.
