@@ -9,6 +9,7 @@ Here's a typical access log line:
 Rhit can show tables on the following fields:
 
 * date,
+* time,
 * method
 * status
 * (remote) IP
@@ -39,11 +40,17 @@ All the fields, with dates moved to the end | `f all+dates` or `-f a+d`
 
 This field is shown by an histogram.
 
-You choose it with `--field date`, that you may shorten in `-f date`:
+You choose it with `--field date`, that you may shorten in `-f date` or `-f d`:
 
 ![date](img/fields-date.png)
 
 By default the length of the bars is based on the hit counts (in pink). You may base it on sent bytes by changing the [sorting key](../usage-key).
+
+# Time
+
+This field is shown by an histogram with 24 bars: one per hour.
+
+You choose it with `--field time`, that you may shorten in `-f d`.
 
 # Remote IP
 

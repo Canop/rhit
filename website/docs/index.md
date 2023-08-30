@@ -5,7 +5,7 @@
 </p>
 
 
-# Clean and Now
+# Clean and Immediate
 
 Rhit works from your standard nginx logs, with no preparation.
 

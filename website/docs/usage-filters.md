@@ -8,11 +8,12 @@ So there's a filter argument for each field, and they may be combined.
 !!! Note
 	On most shells, characters like `$`, `<`, `>`, `|`, or `!` have a special meaning if not between single quotes. In case of doubt put your arguments between quotes, for example `rhit -s '!404'`
 
-# Filter by Date
+# Filter by Date-Time
 
-The date filter argument is `--date`, shortened in `-d`.
+The date-time filter argument is `--date`, shortened in `-d`.
 
-The precision of dates in rhit is the day, and the order of tokens is year, month (numerical) then day (in 1-31).
+The order of tokens is year, month (numerical) then day (in 1-31).
+If you specify the time, it follows the same logic: hour, minute, seconds.
 
 For example here are the 6 days in the range from `2021/02/15` to `2021/02/20`:
 
@@ -29,11 +30,18 @@ All days but one | `-d '!2021/02/15'` (don't forget the quotes)
 Days after a specific one | `-d '>2021/02/28'`
 Days before a specific one | `-d '<2021/02/28'`
 Days of a specific range (inclusive) | `-d 2021/11/01-2021/12/25`
-
+Precise range (3 minutes)| `-d 2021/11/01T15:05-2021/11/01T15:08`
+Very precise range (a few seconds)| `-d 2021/11/01T15:05:58-2021/11/01T15:06:04`
 
 Shorcuts are sometimes possible. For example if all the log files are from the same year, you may ommit it:
 
 ![filter by date no year](img/filter-date-no-year.png)
+
+# Filter by Time
+
+To filter by the time in the day (in the server timezone), use `--time` or `-t`.
+
+For example to get evening hits, use `-t '>18:30'`.
 
 # Filter by Remote IP Address
 
