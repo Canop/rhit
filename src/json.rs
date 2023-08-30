@@ -20,9 +20,9 @@ impl LineConsumer for JsonPrinter {
     ) {
         if filtered_out { return; }
         if self.written > 0 {
-            print!(", ");
+            print!(",\n");
         } else {
-            println!("\n[");
+            println!("[");
         }
         print!(r#"  {{
     "date": "{}",
@@ -48,6 +48,9 @@ impl LineConsumer for JsonPrinter {
     fn end_eating(
         &mut self,
     ) {
+        if self.written == 0 {
+            print!("[");
+        }
         println!("\n]");
     }
 }

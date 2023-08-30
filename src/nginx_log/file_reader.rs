@@ -10,10 +10,10 @@ use {
     termimad::{
         crossterm::{
             cursor,
-            execute,
             style::{style, Color, Print, PrintStyledContent, Stylize},
             terminal::{Clear, ClearType},
             queue,
+            tty::IsTty,
         },
         ProgressBar,
     },
@@ -89,6 +89,15 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
         let filterer = Filterer::new(args, first_date, last_date)?;
         let paths: Vec<PathBuf> = dated_files.drain(..).map(|df| df.1).collect();
         let stop_on_error = check_names;
+        let silent = if args.silent_load {
+            true
+        } else if args.output != Output::Tables && std::io::stdout().is_tty() {
+            // if we dump many lines to the terminal, the progress bar is
+            // at best flown away
+            true
+        } else {
+            false
+        };
         consumer.start_eating(first_date);
         Ok(Self {
             roots,
@@ -96,7 +105,7 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
             consumer,
             paths,
             stop_on_error,
-            silent: args.silent_load,
+            silent,
         })
     }
     pub fn filterer(self) -> Filterer {
@@ -124,7 +133,9 @@ impl<'c, C: LineConsumer> FileReader<'c, C> {
                 print_progress(done, total)?;
             }
         }
-        execute!(io::stderr(), Clear(ClearType::CurrentLine))?;
+        if !self.silent {
+            clear_progress()?;
+        }
         self.consumer.end_eating();
         if !self.silent {
             // if we're here, total, which is the count of log files, is at least 1
@@ -198,6 +209,15 @@ fn print_progress(done: usize, total: usize) -> Result<(), RhitError> {
     queue!(stderr, Clear(ClearType::CurrentLine))?;
     queue!(stderr, Print(format!("{:>4} / {} ", done, total)))?;
     queue!(stderr, PrintStyledContent(style(s).with(Color::Yellow).on(Color::DarkMagenta)))?;
+    queue!(stderr, cursor::RestorePosition)?;
+    stderr.flush()?;
+    Ok(())
+}
+///
+fn clear_progress() -> Result<(), RhitError> {
+    let mut stderr = io::stderr();
+    queue!(stderr, cursor::SavePosition)?;
+    queue!(stderr, Clear(ClearType::CurrentLine))?;
     queue!(stderr, cursor::RestorePosition)?;
     stderr.flush()?;
     Ok(())

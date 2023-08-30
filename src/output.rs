@@ -4,10 +4,7 @@ use {
 };
 
 /// Kind of output
-///
-/// TODO:
-/// - JSON
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub enum Output {
     /// log lines exactly as they appear in the ngnix log files
     Raw,
