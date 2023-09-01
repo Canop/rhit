@@ -7,6 +7,7 @@ use {
     clap::Parser,
     cli_log::*,
     std::path::PathBuf,
+    std::io::ErrorKind,
 };
 
 fn print_analysis(paths: &[PathBuf], args: &args::Args) -> Result<(), RhitError> {
@@ -34,13 +35,21 @@ pub fn run() -> Result<(), RhitError> {
     if paths.is_empty() {
         paths.push(PathBuf::from("/var/log/nginx"));
     }
-    match args.output {
-        Output::Raw => print_raw_lines(&paths, &args)?,
-        Output::Tables => print_analysis(&paths, &args)?,
-        Output::Csv => print_csv_lines(&paths, &args)?,
-        Output::Json => print_json_lines(&paths, &args)?,
+    let result = match args.output {
+        Output::Raw => print_raw_lines(&paths, &args),
+        Output::Tables => print_analysis(&paths, &args),
+        Output::Csv => print_csv_lines(&paths, &args),
+        Output::Json => print_json_lines(&paths, &args),
+    };
+    if let Err(RhitError::Io(ref e)) = result {
+        if e.kind() == ErrorKind::NotFound {
+            eprintln!(
+                "Following path(s) not found: {:?} (do you have nginx set up?)",
+                paths
+            );
+        }
     }
     log_mem(Level::Info);
-    Ok(())
+    result
 }
 
