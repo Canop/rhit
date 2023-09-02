@@ -13,6 +13,8 @@ pub enum RhitError {
     NoHitInPaths(Vec<PathBuf>),
     #[error("No log file found")]
     NoLogFileFound,
+    #[error("Path not found: {0:?}")]
+    PathNotFound(PathBuf),
     #[error("IO error: {0:?}")]
     Io(#[from] io::Error),
     #[error("Date time parsing error: {0:?}")]

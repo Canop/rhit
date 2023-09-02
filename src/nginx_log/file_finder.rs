@@ -1,9 +1,6 @@
 use {
     crate::*,
-    std::{
-        io,
-        path::{Path, PathBuf},
-    },
+    std::path::{Path, PathBuf},
 };
 
 /// from a root path, which may be a file or directory,
@@ -13,7 +10,10 @@ fn find_files(
     files: &mut Vec<PathBuf>,
     check_name: bool,
     check_deeper_names: bool,
-) -> Result<(), io::Error> {
+) -> Result<(), RhitError> {
+    if !path.exists() {
+        return Err(RhitError::PathNotFound(path));
+    }
     if path.is_dir() {
         for entry in path.read_dir()? {
             find_files(entry?.path(), files, check_deeper_names, check_deeper_names)?;

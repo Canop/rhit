@@ -7,7 +7,6 @@ use {
     clap::Parser,
     cli_log::*,
     std::path::PathBuf,
-    std::io::ErrorKind,
 };
 
 const DEFAULT_NGINX_LOCATION: &str = "/var/log/nginx";
@@ -43,19 +42,11 @@ pub fn run() -> Result<(), RhitError> {
         Output::Csv => print_csv_lines(&paths, &args),
         Output::Json => print_json_lines(&paths, &args),
     };
-    if let Err(RhitError::Io(ref e)) = result {
-        if e.kind() == ErrorKind::NotFound {
-            eprint!(
-                "Following path(s) not found: {:?}",
-                paths
+    if let Err(RhitError::PathNotFound(ref path)) = result {
+        if path == &PathBuf::from(DEFAULT_NGINX_LOCATION) {
+            eprintln!(
+                "No nginx log found at default location, do you have nginx set up?"
             );
-            if paths == vec![PathBuf::from(DEFAULT_NGINX_LOCATION)] {
-                eprint!(
-                    " (which is the default location for nginx files, \
-                        do you have nginx set up?)",
-                );
-            }
-            eprintln!();
         }
     }
     log_mem(Level::Info);
