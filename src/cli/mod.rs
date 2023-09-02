@@ -10,6 +10,10 @@ use {
 };
 
 const DEFAULT_NGINX_LOCATION: &str = "/var/log/nginx";
+static MISSING_DEFAULT_MESSAGE: &str = "\
+No nginx log found at default location, do you have nginx set up?
+If necessary, provide the path to the log file(s) as argument.
+More information with 'rhit --help'.";
 
 fn print_analysis(paths: &[PathBuf], args: &args::Args) -> Result<(), RhitError> {
     let mut log_base = time!("LogBase::new", LogBase::new(paths, args))?;
@@ -44,9 +48,7 @@ pub fn run() -> Result<(), RhitError> {
     };
     if let Err(RhitError::PathNotFound(ref path)) = result {
         if path == &PathBuf::from(DEFAULT_NGINX_LOCATION) {
-            eprintln!(
-                "No nginx log found at default location, do you have nginx set up?"
-            );
+            eprintln!("{}", MISSING_DEFAULT_MESSAGE);
         }
     }
     log_mem(Level::Info);
