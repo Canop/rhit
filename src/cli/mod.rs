@@ -10,6 +10,8 @@ use {
     std::io::ErrorKind,
 };
 
+const DEFAULT_NGINX_LOCATION: &str = "/var/log/nginx";
+
 fn print_analysis(paths: &[PathBuf], args: &args::Args) -> Result<(), RhitError> {
     let mut log_base = time!("LogBase::new", LogBase::new(paths, args))?;
     let printer = md::Printer::new(args, &log_base);
@@ -33,7 +35,7 @@ pub fn run() -> Result<(), RhitError> {
     }
     let mut paths = args.files.clone();
     if paths.is_empty() {
-        paths.push(PathBuf::from("/var/log/nginx"));
+        paths.push(PathBuf::from(DEFAULT_NGINX_LOCATION));
     }
     let result = match args.output {
         Output::Raw => print_raw_lines(&paths, &args),
@@ -43,10 +45,17 @@ pub fn run() -> Result<(), RhitError> {
     };
     if let Err(RhitError::Io(ref e)) = result {
         if e.kind() == ErrorKind::NotFound {
-            eprintln!(
-                "Following path(s) not found: {:?} (do you have nginx set up?)",
+            eprint!(
+                "Following path(s) not found: {:?}",
                 paths
             );
+            if paths == vec![PathBuf::from(DEFAULT_NGINX_LOCATION)] {
+                eprint!(
+                    " (which is the default location for nginx files, \
+                        do you have nginx set up?)",
+                );
+            }
+            eprintln!();
         }
     }
     log_mem(Level::Info);
