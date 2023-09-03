@@ -210,12 +210,12 @@ dependencies = [
 
 [[package]]
 name = "clap-help"
-version = "0.7.0"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "542031cd21cd56842924c779171af859783a04063e2ede297aa9fa0ffbb8a9b3"
+checksum = "4b3a08fe055ca94ba53737ef3c876c5258cfead4162befe5f26b4070e01418cc"
 dependencies = [
  "clap",
- "termimad 0.25.0",
+ "termimad 0.25.1",
  "terminal-light",
 ]
 
@@ -988,7 +988,7 @@ checksum = "dbb5fb1acd8a1a18b3dd5be62d25485eb770e05afb408a9627d14d451bae12da"
 
 [[package]]
 name = "rhit"
-version = "2.0.1-dev"
+version = "2.0.1"
 dependencies = [
  "bet",
  "clap",
@@ -1002,7 +1002,7 @@ dependencies = [
  "lazy-regex",
  "num-format",
  "smallvec",
- "termimad 0.25.0",
+ "termimad 0.25.1",
  "thiserror",
 ]
 
@@ -1165,9 +1165,9 @@ dependencies = [
 
 [[package]]
 name = "termimad"
-version = "0.25.0"
+version = "0.25.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "29bffc8a18091227aeac7ccbf7ccc0359a4b7d4c0b53a4a7680050aae05a0b31"
+checksum = "97570fe2683b4b519d43c56dc5e9f7240dc4300f83851058b2620648c1ab9543"
 dependencies = [
  "coolor",
  "crossbeam",

@@ -1,4 +1,5 @@
-### next
+<a name="v2.0.1"></a>
+### v2.0.1 - 2023-09-03
 - fix app name in `--version`
 - better error message on path not found - thanks @orhun
 
