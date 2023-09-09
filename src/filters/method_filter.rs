@@ -15,6 +15,7 @@ impl MethodFilter {
         if negative {
             pattern = &pattern[1..];
         }
+        let pattern = pattern.trim();
         let method = Method::from(pattern);
         Self { negative, method }
     }

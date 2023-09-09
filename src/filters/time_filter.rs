@@ -40,16 +40,18 @@ impl FromStr for TimeFilter {
     type Err= ParseTimeFilterError;
     fn from_str(s: &str) -> Result<Self, ParseTimeFilterError> {
         if let Some(s) = s.strip_prefix('>') {
+            let s = s.trim();
             return Ok(Self::After(
                 s.parse()?
             ));
         }
         if let Some(s) = s.strip_prefix('<') {
+            let s = s.trim();
             return Ok(Self::Before(
                 s.parse()?
             ));
         }
-        if let Some((_, min, max)) = regex_captures!("^([^-]+)-([^-]+)$", s) {
+        if let Some((_, min, max)) = regex_captures!(r"^\s*([^-]+)\s*-\s*([^-]+)\s*$", s) {
             return Ok(Self::Range( min.parse()?, max.parse()?));
         }
         Err(ParseTimeFilterError::InvalidFormat)

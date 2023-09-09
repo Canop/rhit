@@ -1,3 +1,6 @@
+### next
+- allow some additional spaces in filters of several kinds, eg `-d '> 12/25'`
+
 <a name="v2.0.1"></a>
 ### v2.0.1 - 2023-09-03
 - fix app name in `--version`

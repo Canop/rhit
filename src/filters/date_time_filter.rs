@@ -22,6 +22,7 @@ impl DateTimeFilter {
         default_month: Option<u8>,
     ) -> Result<Self, ParseDateTimeError> {
         if let Some(s) = s.strip_prefix('>') {
+            let s = s.trim();
             let (date, time) = parse_date_optional_time(s, default_year, default_month)?;
             return Ok(match time {
                 Some(time) => Self::AfterDateTime(DateTime{date, time}),
@@ -29,6 +30,7 @@ impl DateTimeFilter {
             });
         }
         if let Some(s) = s.strip_prefix('<') {
+            let s = s.trim();
             let (date, time) = parse_date_optional_time(s, default_year, default_month)?;
             return Ok(match time {
                 Some(time) => Self::BeforeDateTime(DateTime{date, time}),
@@ -36,6 +38,7 @@ impl DateTimeFilter {
             });
         }
         if let Some(s) = s.strip_prefix('!') {
+            let s = s.trim();
             let (date, time) = parse_date_optional_time(s, default_year, default_month)?;
             match time {
                 Some(time) => {
@@ -49,8 +52,9 @@ impl DateTimeFilter {
             }
         }
         let mut tokens = s.split('-');
-        let a = tokens.next().unwrap(); // there's always a first token in a split
+        let a = tokens.next().unwrap().trim(); // there's always a first token in a split
         if let Some(b) = tokens.next() {
+            let b = b.trim();
             // two dates: a range
             let (da, ta) = parse_date_optional_time(a, default_year, default_month)?;
             let (db, tb) = parse_date_optional_time(b, default_year, default_month)?;
@@ -267,7 +271,7 @@ mod date_time_filter_tests {
 
     #[test]
     fn test_date_filter_fully_defined_range() {
-        let df = DateTimeFilter::new("2021/01/03-2021/02/15", None, None).unwrap();
+        let df = DateTimeFilter::new("2021/01/03 - 2021/02/15", None, None).unwrap();
         assert_eq!(df.overlaps(date!(2021, 01, 28)), true);
         assert_eq!(df.overlaps(date!(2021, 02, 01)), true);
         assert_eq!(df.overlaps(date!(2021, 02, 15)), true);
@@ -302,7 +306,7 @@ mod date_time_filter_tests {
 
     #[test]
     fn test_date_filter_after_date_implicit_year() {
-        let df = DateTimeFilter::new(">02/15", Some(2021), None).unwrap();
+        let df = DateTimeFilter::new("> 02/15", Some(2021), None).unwrap();
         dbg!(df);
         assert_eq!(df.overlaps(date!(2020, 11, 12)), false);
         assert_eq!(df.overlaps(date!(2021, 01, 28)), false);

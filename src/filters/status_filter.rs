@@ -72,7 +72,9 @@ impl FromStr for StatusFilter {
         let mut include = SmallVec::new();
         let mut exclude = SmallVec::new();
         for s in value.split(',') {
+            let s = s.trim();
             if let Some(s) = s.strip_prefix('!') {
+                let s = s.trim();
                 exclude.push(parse_range(s)?);
             } else {
                 include.push(parse_range(s)?);
@@ -101,7 +103,7 @@ mod status_filter_tests {
         assert_eq!(sf.accepts(405), true);
         assert_eq!(sf.accepts(512), true);
         assert_eq!(sf.accepts(513), false);
-        let sf = StatusFilter::from_str("4xx,!404").unwrap();
+        let sf = StatusFilter::from_str("4xx, ! 404").unwrap();
         assert_eq!(sf.accepts(200), false);
         assert_eq!(sf.accepts(400), true);
         assert_eq!(sf.accepts(404), false);
