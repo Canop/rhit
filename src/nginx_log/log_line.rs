@@ -65,9 +65,9 @@ impl LogLine {
             || s.ends_with(".woff2")
             || s.ends_with(".webp")
         // verified to be much much slower:
-        // lazy_regex::regex_is_match!(
+        // lazy_regex::bytes_regex_is_match!(
         //     "\\.(png|css|svg|jpe?g|gif|ico|js|woff2|webp)$",
-        //     &self.path,
+        //     self.path.as_bytes(),
         // )
     }
     pub fn date(&self) -> Date {

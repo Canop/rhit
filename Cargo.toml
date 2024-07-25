@@ -11,15 +11,15 @@ categories = ["command-line-utilities"]
 rust-version = "1.60"
 
 [dependencies]
-bet = "1.0"
+bet = "1.0.3"
 clap = { version = "4.4", features = ["derive", "cargo"] }
 clap-help = "1.0.0"
 cli-log = "2.0"
 file-size = "1.0.3"
-flate2 = "1.0.27"
+flate2 = "1.0.30"
 have = "0.1.1"
-itertools = "0.11"
-lazy-regex = "3.0.1"
+itertools = "0.13"
+lazy-regex = "3.2"
 num-format = "0.4"
 smallvec = "1.11"
 termimad = { version = "0.25.1", default-features = false, features = ["special-renders"] }
