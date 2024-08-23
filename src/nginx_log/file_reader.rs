@@ -213,7 +213,7 @@ fn print_progress(done: usize, total: usize) -> Result<(), RhitError> {
     stderr.flush()?;
     Ok(())
 }
-///
+
 fn clear_progress() -> Result<(), RhitError> {
     let mut stderr = io::stderr();
     queue!(stderr, cursor::SavePosition)?;

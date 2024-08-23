@@ -25,6 +25,7 @@ command = [
 	"-A", "clippy::match_like_matches_macro",
 	"-A", "clippy::manual_clamp",
 	"-A", "clippy::if_same_then_else",
+    "-A", "clippy::manual_range_contains",
 ]
 need_stdout = false
 
@@ -65,3 +66,4 @@ allow_warnings = true
 # should go in your personal global prefs.toml file instead.
 [keybindings]
 # alt-m = "job:my-job"
+c = "job:clippy"

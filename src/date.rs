@@ -94,6 +94,22 @@ impl fmt::Display for Date {
     }
 }
 
+pub fn unique_year_month(start_date: Date, end_date: Date) -> (Option<u16>, Option<u8>) {
+    let y1 = start_date.year;
+    let y2 = end_date.year;
+    if y1 == y2 {
+        let m1 = start_date.month;
+        let m2 = end_date.month;
+        if m1 == m2 {
+            (Some(y1), Some(m1))
+        } else {
+            (Some(y1), None)
+        }
+    } else {
+        (None, None)
+    }
+}
+
 #[cfg(test)]
 mod date_parsing_tests {
 
@@ -112,21 +128,5 @@ mod date_parsing_tests {
             Date::from_nginx("1977-04-22T01:00:00-05:00").unwrap(),
             Date::new(1977, 4, 22).unwrap(),
         );
-    }
-}
-
-pub fn unique_year_month(start_date: Date, end_date: Date) -> (Option<u16>, Option<u8>) {
-    let y1 = start_date.year;
-    let y2 = end_date.year;
-    if y1 == y2 {
-        let m1 = start_date.month;
-        let m2 = end_date.month;
-        if m1 == m2 {
-            (Some(y1), Some(m1))
-        } else {
-            (Some(y1), None)
-        }
-    } else {
-        (None, None)
     }
 }
