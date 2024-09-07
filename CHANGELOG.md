@@ -1,5 +1,7 @@
-### next
+<a name="v2.0.2"></a>
+### v2.0.2 - 2024-09-07
 - allow some additional spaces in filters of several kinds, eg `-d '> 12/25'`
+- fix some problems in filters using several operators without parenthesis
 
 <a name="v2.0.1"></a>
 ### v2.0.1 - 2023-09-03

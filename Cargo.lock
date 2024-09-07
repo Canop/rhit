@@ -150,9 +150,9 @@ checksum = "9e1b586273c5702936fe7b7d6896644d8be71e6314cfe09d3167c95f712589e8"
 
 [[package]]
 name = "bet"
-version = "1.0.3"
+version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "346ce34c9a1bde8113a8590f3f9c8bcc87532188535066bc6b98c2b69f97cc38"
+checksum = "4a33cd5a98377df6ecfedff9c018c1c1ea92c730c4baf9173cfe0d7c3df20ab6"
 
 [[package]]
 name = "bitflags"
@@ -989,7 +989,7 @@ checksum = "7a66a03ae7c801facd77a29370b4faec201768915ac14a721ba36f20bc9c209b"
 
 [[package]]
 name = "rhit"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "bet",
  "clap",
