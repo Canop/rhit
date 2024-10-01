@@ -37,7 +37,7 @@ p img.logo {
 
 body {
 	background-image:
-		linear-gradient(to right, rgba(22, 32, 32, 0.67) 0%, #162020 25%, #162020 75%, rgba(22, 32, 32, 0.67) 100%),
+		linear-gradient(to right, rgba(1,1,1, 0.67) 0%, #000 25%, #111 75%, rgba(1,1,1, 0.67) 100%),
 		url("../img/whiskey.jpg");
 	background-position: repeat;
 	background-size: initial;

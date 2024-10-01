@@ -1,3 +1,7 @@
+<a name="v2.0.3"></a>
+### v2.0.3 - 2024-10-01
+- right align the 'hits' column of histograms
+
 <a name="v2.0.2"></a>
 ### v2.0.2 - 2024-09-07
 - allow some additional spaces in filters of several kinds, eg `-d '> 12/25'`

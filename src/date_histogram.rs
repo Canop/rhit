@@ -7,7 +7,7 @@ use {
 static MD: &str = r#"
 |:-:|:-:|:-:|:-
 |**date**|**hits**|**bytes**|**${scale}**
-|:-|:-:|-:|:-
+|:-|-:|-:|:-
 ${bars
 |${date}|${hits}|${bytes}|*${bar}*
 }
