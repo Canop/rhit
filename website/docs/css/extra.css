@@ -37,7 +37,7 @@ p img.logo {
 
 body {
 	background-image:
-		linear-gradient(to right, rgba(1,1,1, 0.67) 0%, #000 25%, #111 75%, rgba(1,1,1, 0.67) 100%),
+		linear-gradient(to right, #222a 0%, #222 25%, #222 75%, #222a 100%),
 		url("../img/whiskey.jpg");
 	background-position: repeat;
 	background-size: initial;
@@ -94,7 +94,7 @@ body .card {
 }
 
 .container h1 {
-	font-size: 22px;
+	font-size: 20px;
 	border-bottom: solid 1px;
 	padding-bottom: 8px;
 	margin: 40px 0 25px 0;
@@ -222,7 +222,7 @@ kbd.b {
 	border: none;
 	border-radius: 0;
 	margin: 10px auto 20px auto;
-	box-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+	box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
 }
 .navbar-collapse {
 	padding-left: 0;
