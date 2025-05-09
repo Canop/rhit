@@ -13,7 +13,7 @@ rust-version = "1.60"
 [dependencies]
 bet = "1.0.4"
 clap = { version = "4.4", features = ["derive", "cargo"] }
-clap-help = "1.0.0"
+clap-help = "1.4.0"
 cli-log = "2.0"
 file-size = "1.0.3"
 flate2 = "1.0.30"
@@ -22,7 +22,7 @@ itertools = "0.13"
 lazy-regex = "3.3"
 num-format = "0.4"
 smallvec = "1.11"
-termimad = { version = "0.30", default-features = false, features = ["special-renders"] }
+termimad = { version = "0.32", default-features = false, features = ["special-renders"] }
 thiserror = "1.0"
 
 [dev-dependencies]
