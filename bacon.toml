@@ -60,6 +60,16 @@ command = [
 need_stdout = true
 allow_warnings = true
 
+# Serve the website
+[jobs.website]
+command = [
+    "ddoc", "--serve", "website"
+]
+need_stdout = true
+background = false
+on_change_strategy = "kill_then_restart"
+watch = ["website/ddoc.hjson", "website/src"]
+
 # You may define here keybindings that would be specific to
 # a project, for example a shortcut to launch a specific job.
 # Shortcuts to internal functions (scrolling, toggling, etc.)
@@ -67,3 +77,4 @@ allow_warnings = true
 [keybindings]
 # alt-m = "job:my-job"
 c = "job:clippy"
+s = "job:website"

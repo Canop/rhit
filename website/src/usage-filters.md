@@ -5,7 +5,7 @@ While you may discover some big phenomenas when looking at the unfiltered tables
 
 So there's a filter argument for each field, and they may be combined.
 
-!!! Note
+**Note:**
 	On most shells, characters like `$`, `<`, `>`, `|`, or `!` have a special meaning if not between single quotes. In case of doubt put your arguments between quotes, for example `rhit -s '!404'`
 
 # Filter by Date-Time

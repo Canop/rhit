@@ -1,10 +1,5 @@
 
 
-<p class=logo align=center style="width:600px">
-<img class=logo src="img/logo-rhit.svg">
-</p>
-
-
 # Clean and Immediate
 
 Rhit works from your standard nginx logs, with no preparation.

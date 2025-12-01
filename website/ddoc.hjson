@@ -1,0 +1,65 @@
+
+# This is a configuration file for the ddoc static site generator.
+# For details and instruction, see https://dystroy.org/ddoc/
+
+title: "rhit"
+description: "nginx log \" analyzer"
+favicon: null // eg "img/favicon.ico"
+
+// All pages must be listed here
+// One of them must be index.md
+// You can have submenus, eg:
+// pages: {
+//     Home: index.md
+//     Guide: {
+//         "Getting Started": guide/getting_started.md
+//         "Advanced Topics": guide/advanced_topics.md
+//     }
+// }
+pages: {
+    Why: index
+    Install: install
+    Usage: {
+        "Launch": usage-overview
+        "Displayed Fields": usage-fields
+        "Filters": usage-filters
+        "Recent Changes": usage-changes
+        "Export": export
+    }
+    Community: community
+}
+
+// Nav links can have { img, url, class, label}, all optional
+// URL starting with '/' are relative to the site's root
+nav_links: {
+    before_menu: [
+        {
+            img: img/dystroy-rust-white.svg
+            url: https://dystroy.org
+            alt: dystroy.org homepage
+            class: external-nav-link
+        }
+        {
+            img: img/logo-rhit.svg
+            url: /index.md
+            alt: Rhit homepage
+            class: rhit-nav-logo
+        }
+    ]
+    after_menu: [
+        {
+            img: img/github-mark-white.svg
+            class: external-nav-link
+            alt: GitHub
+            url: https://github.com/Canop/rhit
+        }
+    ]
+}
+
+// UI options
+ui: {
+    // if true, the generated HTML includes a checkbox which
+    // can be styled into a hamburger menu for small screens
+    hamburger_checkbox: true
+}
+
