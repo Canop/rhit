@@ -1,3 +1,7 @@
+<a name="v2.0.4"></a>
+### v2.0.4 - 2025-12-04
+- fix rhit not compiling anymore without `--locked` - Fix #34
+
 <a name="v2.0.3"></a>
 ### v2.0.3 - 2024-10-01
 - right align the 'hits' column of histograms
