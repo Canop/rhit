@@ -6,16 +6,6 @@ title: "rhit"
 description: "nginx log \" analyzer"
 favicon: null // eg "img/favicon.ico"
 
-// All pages must be listed here
-// One of them must be index.md
-// You can have submenus, eg:
-// pages: {
-//     Home: index.md
-//     Guide: {
-//         "Getting Started": guide/getting_started.md
-//         "Advanced Topics": guide/advanced_topics.md
-//     }
-// }
 pages: {
     Why: index
     Install: install
@@ -31,8 +21,8 @@ pages: {
 
 // Nav links can have { img, url, class, label}, all optional
 // URL starting with '/' are relative to the site's root
-nav_links: {
-    before_menu: [
+header: {
+    before-menu: [
         {
             img: img/dystroy-rust-white.svg
             url: https://dystroy.org
@@ -46,7 +36,8 @@ nav_links: {
             class: rhit-nav-logo
         }
     ]
-    after_menu: [
+    in-left-col: menu
+    after-menu: [
         {
             img: img/github-mark-white.svg
             class: external-nav-link
