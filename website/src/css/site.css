@@ -31,8 +31,6 @@ nav ul, nav li, nav a {
 	padding: 0;
 }
 
-/* Top navigation bar */
-
 @media (max-width: 911px) { /* mobile */
 	header {
 		position: fixed;

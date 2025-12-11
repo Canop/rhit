@@ -13,6 +13,7 @@ pages: {
         "Launch": usage-overview
         "Displayed Fields": usage-fields
         "Filters": usage-filters
+        "Key": usage-key
         "Recent Changes": usage-changes
         "Export": export
     }
