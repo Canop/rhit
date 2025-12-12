@@ -37,16 +37,47 @@ header: {
             class: rhit-nav-logo
         }
     ]
-    in-left-col: menu
+    middle: menu
     after-menu: [
+        {   
+            img: img/ddoc-left-arrow.svg
+            href: --previous
+            class: previous-page-link
+            alt: Previous Page
+        }
+        {
+            img: img/ddoc-search.svg
+            href: --search
+            class: search-opener
+            alt: Search
+        }
+        {
+            img: img/ddoc-right-arrow.svg
+            href: --next
+            class: next-page-link
+            alt: Next Page
+        }
         {
             img: img/github-mark-white.svg
             class: external-nav-link
             alt: GitHub
-            url: https://github.com/Canop/rhit
+            href: https://github.com/Canop/ddoc
         }
     ]
 }
+footer: {
+    made-with-ddoc: [
+        {
+            label: made with
+        }
+        {
+            label: ddoc
+            href: https://dystroy.org/ddoc
+            class: link-to-ddoc
+        }
+    ]
+}
+
 
 // UI options
 ui: {
