@@ -5,6 +5,7 @@
 title: "rhit"
 description: "nginx log \" analyzer"
 favicon: null // eg "img/favicon.ico"
+ddoc-version: 0.16
 
 pages: {
     Why: index
@@ -38,20 +39,10 @@ body: {
             hamburger-checkbox: true
         }
         nav.after-menu: {
-            ddoc-link.previous-page-link: {
-                inline: img/ddoc-left-arrow.svg
-                href: --previous
-                alt: Previous Page
-            }
             ddoc-link.search-opener: {
                 inline: img/ddoc-search.svg
                 href: --search
                 alt: Search
-            }
-            ddoc-link.next-page-link: {
-                inline: img/ddoc-right-arrow.svg
-                href: --next
-                alt: Next Page
             }
             ddoc-link.external-nav-link.github: {
                 inline: img/github-mark.svg
@@ -66,17 +57,21 @@ body: {
                 activate-visible-item: true
             }
         }
-        ddoc-main: {}
-    }
-    footer: {
-        nav.made-with-ddoc: {
-            ddoc-link: {
-                label: made with
-            }
-            ddoc-link: {
-                label: ddoc
-                href: https://dystroy.org/ddoc
-                class: link-to-ddoc
+        div.main-content: {
+            ddoc-main: {}
+            nav.prev-next: {
+                ddoc-link.previous-page-link: {
+                    inline: img/ddoc-left-arrow.svg
+                    href: --previous
+                    alt: Previous Page
+                    label: --previous-page-title
+                }
+                ddoc-link.next-page-link: {
+                    label: --next-page-title
+                    inline: img/ddoc-right-arrow.svg
+                    href: --next
+                    alt: Next Page
+                }
             }
         }
     }
